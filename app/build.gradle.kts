@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.lab.artchart"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.lab.artchart"
