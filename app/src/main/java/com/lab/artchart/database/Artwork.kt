@@ -7,5 +7,5 @@ data class Artwork(
     val latitude: Double? = null,
     val longitude: Double? = null,
     val description: String? = null,
-    var imageHttpUrl: String? = null
+    var imageUrl: String? = null
 )

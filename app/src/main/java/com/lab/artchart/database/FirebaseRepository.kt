@@ -34,7 +34,7 @@ class FirebaseRepository {
             val imageUrl = uploadTask.storage.downloadUrl.await()
 
             // update URL and save artwork to database
-            artwork.imageHttpUrl = imageUrl.toString()
+            artwork.imageUrl = imageUrl.toString()
             artworkReference.child(artworkId).setValue(artwork).await()
 
             Log.i("FIREBASE_REPO", "Saved Artwork $artworkId")
