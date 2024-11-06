@@ -91,8 +91,8 @@ class AddArtFragment : Fragment() {
 
                 // save to firebase realtime database and firebase storage
                 firebaseViewModel.saveArtwork(testArtwork, artworkImageUri!!)
-            }
-            else {
+                Toast.makeText(requireContext(), "Saved Test Artwork to database", Toast.LENGTH_SHORT).show()
+            } else {
                 Toast.makeText(requireContext(), "Please upload artwork image to submit", Toast.LENGTH_SHORT).show()
             }
         }
