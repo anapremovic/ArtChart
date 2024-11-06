@@ -39,7 +39,7 @@ class SearchFragment : Fragment() {
         val listView = binding.artworkListView
         listView.adapter = adapter
         val firebaseViewModel = (activity as MainActivity).firebaseViewModel
-        firebaseViewModel.allArtworks.observe(this) {
+        firebaseViewModel.allArtworks.observe(viewLifecycleOwner) {
             adapter.replace(it)
             adapter.notifyDataSetChanged()
         }
