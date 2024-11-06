@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.lab.artchart.MainActivity
 import com.lab.artchart.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
@@ -23,7 +24,7 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val galleryViewModel =
-            ViewModelProvider(this).get(SearchViewModel::class.java)
+            ViewModelProvider(this)[SearchViewModel::class.java]
 
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -32,6 +33,17 @@ class SearchFragment : Fragment() {
         galleryViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        // observe remote database items and update listview
+        val adapter = ArtworkAdapter(requireContext(), mutableListOf())
+        val listView = binding.artworkListView
+        listView.adapter = adapter
+        val firebaseViewModel = (activity as MainActivity).firebaseViewModel
+        firebaseViewModel.allArtworks.observe(this) {
+            adapter.replace(it)
+            adapter.notifyDataSetChanged()
+        }
+
         return root
     }
 
