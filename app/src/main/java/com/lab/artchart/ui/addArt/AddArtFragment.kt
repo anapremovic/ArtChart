@@ -31,6 +31,7 @@ class AddArtFragment : Fragment() {
     private var artworkImageUri: Uri? = null
     private lateinit var artworkImageView: ImageView
 
+    // launcher for gallery permission
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
             getImageFromGallery()
@@ -39,10 +40,12 @@ class AddArtFragment : Fragment() {
         }
     }
 
+    // launcher to handle selected image from gallery
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             artworkImageUri = result.data?.data
             artworkImageUri?.let {
+                // update view
                 artworkImageView.setImageURI(it)
             }
         }
@@ -82,6 +85,16 @@ class AddArtFragment : Fragment() {
         }
         saveButton.setOnClickListener {
             firebaseViewModel = (activity as MainActivity).firebaseViewModel
+            if (artworkImageUri != null) {
+                // TODO: get art details from EditTexts and get LngLat by selecting on map
+                val testArtwork = Artwork("Mosaic Mural", "Gordon Smith", 1964, 49.279075, -122.917560, "Venetian tile art mural at the SFU AQ")
+
+                // save to firebase realtime database and firebase storage
+                firebaseViewModel.saveArtwork(testArtwork, artworkImageUri!!)
+            }
+            else {
+                Toast.makeText(requireContext(), "Please upload artwork image to submit", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return root
@@ -92,6 +105,7 @@ class AddArtFragment : Fragment() {
         _binding = null
     }
 
+    // open gallery if permission already granted or launch permission launcher
     private fun openGalleryOrRequestPermission(permission: String) {
         if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             getImageFromGallery()
@@ -100,6 +114,7 @@ class AddArtFragment : Fragment() {
         }
     }
 
+    // launch intent to open gallery
     private fun getImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         selectImageLauncher.launch(intent)
