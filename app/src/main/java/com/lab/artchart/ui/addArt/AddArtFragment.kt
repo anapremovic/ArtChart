@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -60,22 +59,17 @@ class AddArtFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val slideshowViewModel =
-            ViewModelProvider(this)[AddArtViewModel::class.java]
+        val addArtViewModel = ViewModelProvider(this)[AddArtViewModel::class.java]
 
         _binding = FragmentAddArtBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textAddArt
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-
-        // test saving to database
+        // views
         val saveButton = binding.saveButton
         val selectPhotoButton = binding.selectPhotoButton
-        artworkImageView = binding.artPhoto
+        artworkImageView = binding.artworkImage
 
+        // request correct permission based on android version or open gallery if already granted
         selectPhotoButton.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 openGalleryOrRequestPermission(Manifest.permission.READ_MEDIA_IMAGES)
@@ -83,11 +77,18 @@ class AddArtFragment : Fragment() {
                 openGalleryOrRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }
+
+        // save artwork to database
         saveButton.setOnClickListener {
             firebaseViewModel = (activity as MainActivity).firebaseViewModel
             if (artworkImageUri != null) {
-                // TODO: get art details from EditTexts and get LngLat by selecting on map
-                val testArtwork = Artwork("Mosaic Mural", "Gordon Smith", 1964, 49.279075, -122.917560, "Venetian tile art mural at the SFU AQ")
+                // TODO: get LngLat by selecting on map
+                val testArtwork = Artwork(binding.title.text.toString(),
+                    binding.artistName.text.toString(),
+                    binding.year.text.toString().toIntOrNull(),
+                    binding.latitude.text.toString().toDoubleOrNull(),
+                    binding.longitude.text.toString().toDoubleOrNull(),
+                    binding.description.text.toString())
 
                 // save to firebase realtime database and firebase storage
                 firebaseViewModel.saveArtwork(testArtwork, artworkImageUri!!)
