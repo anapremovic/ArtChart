@@ -10,55 +10,101 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/titleImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/artchartaddart"/>
+
+        <ImageView
             android:id="@+id/artwork_image"
             android:layout_width="250dp"
-            android:layout_height="250dp"/>
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_art_default"/>
 
         <Button
             android:id="@+id/select_photo_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Photo From Gallery"/>
+            android:layout_gravity="center"
+            android:text="@string/choose_photo"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Artwork Title:"/>
 
         <EditText
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:hint="Enter Artwork's Title"
             android:inputType="text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Artist:"/>
 
         <EditText
             android:id="@+id/artist_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:hint="Enter Artist's Name"
             android:inputType="text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Year created:"/>
 
         <EditText
             android:id="@+id/year"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:hint="Enter Year Artwork Created"
             android:inputType="number" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Latitude:"/>
 
         <EditText
             android:id="@+id/latitude"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:hint="Enter Artwork's Latitude"
             android:inputType="numberSigned|numberDecimal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Longitude:"/>
 
         <EditText
             android:id="@+id/longitude"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:hint="Enter Artwork's Longitude"
             android:inputType="numberSigned|numberDecimal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description:"/>
 
         <EditText
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:hint="Enter a Description of the Artwork"
             android:inputType="textMultiLine" />
 
@@ -66,7 +112,8 @@
             android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Submit Artwork to ArtChart"/>
+            android:layout_gravity="center"
+            android:text="@string/submit_art"/>
 
     </LinearLayout>
 </ScrollView>

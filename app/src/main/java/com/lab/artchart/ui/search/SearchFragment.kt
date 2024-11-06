@@ -29,11 +29,6 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textSearch
-        galleryViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-
         // observe remote database items and update listview
         val adapter = ArtworkAdapter(requireContext(), mutableListOf())
         val listView = binding.artworkListView

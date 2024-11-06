@@ -11,4 +11,14 @@
     <string name="menu_search">Search</string>
     <string name="menu_addArt">Add Art</string>
     <string name="menu_profile">Profile</string>
+
+    <string name="search_hint">Search here</string>
+    <string name="filter_by_text">Filter by:</string>
+    <string name="filter_name">Name</string>
+    <string name="filter_dist">Distance</string>
+    <string name="filter_reviews">Reviews</string>
+    <string name="filter_years">Year</string>
+
+    <string name="choose_photo">Choose photo from gallery</string>
+    <string name="submit_art">Submit artwork to ArtChart</string>
 </resources>

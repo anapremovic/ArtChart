@@ -12,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -43,6 +45,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener,
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            initLocationManager()
+        }
+        else{
+            Toast.makeText(requireContext(), "Gallery permission needed to use map", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -107,10 +118,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     fun checkPermission() {
         if (Build.VERSION.SDK_INT < 23) return
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_CODE)
-        else
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             initLocationManager()
+        }
+        else{
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
     }
 
     override fun onMapClick(latLng: LatLng) {
@@ -121,12 +134,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener,
         println("ArtChart1: map clicked long ${latLng.latitude}, ${latLng.longitude}")
     }
 
+    /*
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) initLocationManager()
         }
     }
+     */
 
     override fun onDestroyView() {
         super.onDestroyView()
