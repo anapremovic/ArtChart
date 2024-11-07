@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.lab.artchart.MainActivity
@@ -14,25 +13,14 @@ class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val galleryViewModel =
-            ViewModelProvider(this)[SearchViewModel::class.java]
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val galleryViewModel = ViewModelProvider(this)[SearchViewModel::class.java]
 
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        val textView: TextView = binding.textSearch
-        galleryViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
 
         // observe remote database items and update listview
         val adapter = ArtworkAdapter(requireContext(), mutableListOf())

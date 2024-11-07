@@ -50,15 +50,10 @@ class AddArtFragment : Fragment() {
         }
     }
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val addArtViewModel = ViewModelProvider(this)[AddArtViewModel::class.java]
 
         _binding = FragmentAddArtBinding.inflate(inflater, container, false)
@@ -92,7 +87,7 @@ class AddArtFragment : Fragment() {
 
                 // save to firebase realtime database and firebase storage
                 firebaseViewModel.saveArtwork(testArtwork, artworkImageUri!!)
-                Toast.makeText(requireContext(), "Saved Test Artwork to database", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Saved Artwork to database", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "Please upload artwork image to submit", Toast.LENGTH_SHORT).show()
             }
