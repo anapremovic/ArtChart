@@ -100,7 +100,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap
             }
 
             // request location updates from GPS
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5f, this)
         } catch (e: SecurityException) {
             Log.e("HOME_FRAG", "Security error when initializing location manager: $e")
             Toast.makeText(requireContext(), "Allow location services to find art near you", Toast.LENGTH_SHORT).show()
