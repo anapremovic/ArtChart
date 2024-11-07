@@ -46,45 +46,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="324dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
+        android:gravity="center">
 
         <Button
             android:id="@+id/filterNameButton"
-            android:layout_width="match_parent"
+            android:layout_marginEnd="2dp"
+            android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:text="@string/filter_name">
-        </Button>
+            android:padding="0dp"
+            android:text="@string/filter_name" />
+
         <Button
             android:id="@+id/filterDistanceButton"
-            android:layout_marginStart="8dp"
-            android:layout_width="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:textSize="10sp"
-            android:text="@string/filter_dist">
-        </Button>
+            android:padding="0dp"
+            android:text="@string/filter_dist" />
+
         <Button
             android:id="@+id/filterReviewsButton"
-            android:layout_marginStart="8dp"
-            android:layout_width="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:textSize="11sp"
-            android:text="@string/filter_reviews">
-        </Button>
+            android:padding="0dp"
+            android:text="@string/filter_reviews" />
+
         <Button
             android:id="@+id/filterYearButton"
-            android:layout_marginStart="8dp"
-            android:layout_width="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
+            android:padding="0dp"
+            android:text="@string/filter_years" />
 
-            android:text="@string/filter_years">
-        </Button>
     </LinearLayout>
 
     <ListView
@@ -93,6 +94,5 @@
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        />
+        android:layout_marginEnd="8dp" />
 </LinearLayout>
