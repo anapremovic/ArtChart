@@ -54,7 +54,7 @@ ArtChart is an online art database where you can find public art close to you, s
    ```
 
 ### Through APK
-Download the APK file from <a href="">our website</a> directly to your android device and run.
+Download the APK file from <a href="https://qq-zhong.github.io/artChart_site/">our website</a> directly to your android device and run.
 
 ## Usage
 
