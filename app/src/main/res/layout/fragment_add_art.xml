@@ -72,28 +72,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Latitude:"/>
+            android:text="Art Location:"/>
 
-        <EditText
-            android:id="@+id/latitude"
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:hint="Enter Artwork's Latitude"
-            android:inputType="numberSigned|numberDecimal" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Longitude:"/>
-
-        <EditText
-            android:id="@+id/longitude"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:hint="Enter Artwork's Longitude"
-            android:inputType="numberSigned|numberDecimal" />
+            android:layout_height="260dp"/>
 
         <TextView
             android:layout_width="match_parent"
