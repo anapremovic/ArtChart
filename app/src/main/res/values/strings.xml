@@ -31,4 +31,6 @@
     <string name="password">Password</string>
     <string name="verify_password">Verify Password</string>
     <string name="sign_up">Sign Up</string>
+    <string name="sign_in_to_art_chart">Sign In to ArtChart</string>
+    <string name="sign_in">Sign In</string>
 </resources>
