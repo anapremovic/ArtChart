@@ -93,21 +93,21 @@
         android:text="Update Email"/>
 
     <Button
-        android:id="@+id/notificationPreferencesButton"
+        android:id="@+id/signUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:gravity="start"
-        android:text="Notification Preferences"/>
+        android:text="@string/sign_up_for_art_chart"/>
 
     <Button
-        android:id="@+id/privacySettinsButton"
+        android:id="@+id/signIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:gravity="start"
-        android:text="Privacy Settings"/>
+        android:text="@string/sign_in_to_art_chart"/>
 
 </LinearLayout>
