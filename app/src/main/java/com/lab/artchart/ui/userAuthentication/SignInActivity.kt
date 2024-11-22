@@ -27,6 +27,7 @@ class SignInActivity : AppCompatActivity() {
 
         // update UI
         updateErrors()
+        PasswordUtils.handleShowPasswordCheckBox(listOf(binding.password), binding.showPasswordCheckbox)
     }
 
     private fun updateErrors() {

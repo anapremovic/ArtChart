@@ -39,6 +39,13 @@
             android:inputType="textPassword"
             android:autofillHints="password"
             android:padding="12dp"
+            android:layout_marginBottom="8dp" />
+
+        <CheckBox
+            android:id="@+id/show_password_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_password"
             android:layout_marginBottom="16dp" />
 
         <Button
