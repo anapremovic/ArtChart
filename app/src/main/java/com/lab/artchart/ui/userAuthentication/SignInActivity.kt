@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.databinding.ActivitySignInBinding
+import com.lab.artchart.util.PasswordUtils
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding

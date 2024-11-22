@@ -1,4 +1,4 @@
-package com.lab.artchart.ui.userAuthentication
+package com.lab.artchart.util
 
 import android.text.InputType
 import android.widget.CheckBox
