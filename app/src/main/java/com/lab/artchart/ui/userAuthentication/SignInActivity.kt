@@ -1,5 +1,6 @@
 package com.lab.artchart.ui.userAuthentication
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +29,11 @@ class SignInActivity : AppCompatActivity() {
         // update UI
         updateErrors()
         PasswordUtils.handleShowPasswordCheckBox(listOf(binding.password), binding.showPasswordCheckbox)
+
+        // go to sign up screen
+        binding.signUpLink.setOnClickListener {
+            startActivity(Intent(this, SignUpActivity::class.java))
+        }
     }
 
     private fun updateErrors() {
