@@ -23,29 +23,29 @@ class UserAuthenticationViewModel : ViewModel() {
 
     // call Firebase API to sign user in
     fun signIn(email: String, password: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            if (verifyEmailAndPassword(email, password)) {
-                try {
+        if (verifyEmailAndPassword(email, password)) {
+            try {
+                CoroutineScope(Dispatchers.IO).launch {
                     Firebase.auth.signInWithEmailAndPassword(email, password).await()
-                } catch (e: FirebaseAuthInvalidUserException) {
-                    invalidUser.value = true
-                    Log.w("WARNING", "User email and password combination invalid for user with email $email", e)
-                } catch (e: Exception) {
-                    Log.e("ERROR", "Failed to sign in user with email $email", e)
                 }
+            } catch (e: FirebaseAuthInvalidUserException) {
+                invalidUser.value = true
+                Log.w("WARNING", "User email and password combination invalid for user with email $email", e)
+            } catch (e: Exception) {
+                Log.e("ERROR", "Failed to sign in user with email $email", e)
             }
         }
     }
 
     // call Firebase API to create account for user
     fun verifyInfoAndSignUp(email: String, password: String, passwordVerify: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            if (verifyEmailAndPassword(email, password) && verifyPasswordsMatch(password, passwordVerify)) {
-                try {
+        if (verifyEmailAndPassword(email, password) && verifyPasswordsMatch(password, passwordVerify)) {
+            try {
+                CoroutineScope(Dispatchers.IO).launch {
                     Firebase.auth.createUserWithEmailAndPassword(email, password).await()
-                } catch (e: Exception) {
-                    Log.e("ERROR", "Failed to create account for user with email $email", e)
                 }
+            } catch (e: Exception) {
+                Log.e("ERROR", "Failed to create account for user with email $email", e)
             }
         }
     }
