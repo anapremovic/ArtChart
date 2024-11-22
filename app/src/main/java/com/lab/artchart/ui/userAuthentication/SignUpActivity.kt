@@ -24,6 +24,10 @@ class SignUpActivity : AppCompatActivity() {
                 binding.password.text.toString(),
                 binding.passwordVerify.text.toString())
         }
+        // go back to previous page
+        binding.backButton.setOnClickListener {
+            finish()
+        }
 
         // update UI
         updateErrors()

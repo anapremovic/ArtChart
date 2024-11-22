@@ -34,4 +34,7 @@
     <string name="sign_in_to_art_chart">Sign In to ArtChart</string>
     <string name="sign_in">Sign In</string>
     <string name="show_password">Show Password</string>
+
+    <!-- Common Buttons -->
+    <string name="back">Back</string>
 </resources>

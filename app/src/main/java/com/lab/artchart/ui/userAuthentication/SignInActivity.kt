@@ -26,6 +26,10 @@ class SignInActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error validating credentials due to invalid username or password", Toast.LENGTH_LONG).show()
             }
         }
+        // go back to previous page
+        binding.backButton.setOnClickListener {
+            finish()
+        }
 
         // update UI
         updateErrors()
