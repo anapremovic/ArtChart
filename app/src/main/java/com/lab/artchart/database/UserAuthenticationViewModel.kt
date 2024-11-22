@@ -30,9 +30,9 @@ class UserAuthenticationViewModel : ViewModel() {
                 }
             } catch (e: FirebaseAuthInvalidUserException) {
                 invalidUser.value = true
-                Log.w("WARNING", "User email and password combination invalid for user with email $email", e)
+                Log.w("SIGN_IN_ACT", "User email and password combination invalid for user with email $email", e)
             } catch (e: Exception) {
-                Log.e("ERROR", "Failed to sign in user with email $email", e)
+                Log.e("SIGN_IN_ACT", "Failed to sign in user with email $email", e)
             }
         }
     }
@@ -45,7 +45,7 @@ class UserAuthenticationViewModel : ViewModel() {
                     Firebase.auth.createUserWithEmailAndPassword(email, password).await()
                 }
             } catch (e: Exception) {
-                Log.e("ERROR", "Failed to create account for user with email $email", e)
+                Log.e("SIGN_IN_ACT", "Failed to create account for user with email $email", e)
             }
         }
     }
