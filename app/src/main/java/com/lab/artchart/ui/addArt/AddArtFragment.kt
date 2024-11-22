@@ -17,7 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.lab.artchart.MainActivity
+import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.database.FirebaseViewModel
 import com.lab.artchart.databinding.FragmentAddArtBinding

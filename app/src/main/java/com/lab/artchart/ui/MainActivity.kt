@@ -1,4 +1,4 @@
-package com.lab.artchart
+package com.lab.artchart.ui
 
 import android.os.Bundle
 import android.view.Menu
@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.lab.artchart.R
 import com.lab.artchart.database.FirebaseRepository
 import com.lab.artchart.database.FirebaseViewModel
 import com.lab.artchart.database.FirebaseViewModelFactory
