@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.lab.artchart.R
 import com.lab.artchart.database.ArtworkViewModel
 import com.lab.artchart.database.UserAuthenticationViewModel
+import com.lab.artchart.database.UserAuthenticationViewModelFactory
+import com.lab.artchart.database.UserViewModel
 import com.lab.artchart.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +33,8 @@ class MainActivity : AppCompatActivity() {
 
     // view models
     lateinit var artworkViewModel: ArtworkViewModel
+    lateinit var userViewModel: UserViewModel
+    lateinit var userAuthenticationViewModelFactory: UserAuthenticationViewModelFactory
     private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +89,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun initializeViewModels() {
         artworkViewModel = ViewModelProvider(this)[ArtworkViewModel::class.java]
-        userAuthenticationViewModel = ViewModelProvider(this)[UserAuthenticationViewModel::class.java]
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel)
+        userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
     }
 
     // set up custom navigation depending on currently signed in user

@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.lab.artchart.R
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.databinding.FragmentProfileBinding
+import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.util.UserAuthenticationUtils
 
 class ProfileFragment : Fragment() {
@@ -38,7 +39,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        userAuthenticationViewModel = ViewModelProvider(this)[UserAuthenticationViewModel::class.java]
+        userAuthenticationViewModel = ViewModelProvider(this, (activity as MainActivity).userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
 
         // update UI
         setUserProfileInformation()

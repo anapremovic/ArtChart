@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
-class UserAuthenticationViewModel : ViewModel() {
+class UserAuthenticationViewModel(private val userViewModel: UserViewModel) : ViewModel() {
     val currentUser = currentUserFlow.asLiveData()
 
     var signInSuccessful = MutableLiveData<Boolean>()
