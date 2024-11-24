@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+//import com.iarcuschin.simpleratingbar.SimpleRatingBar
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
 import com.squareup.picasso.Picasso
@@ -26,11 +27,17 @@ class ArtworkAdapter(private val context: Context, private var artworks: List<Ar
 
         // set views
         view.findViewById<TextView>(R.id.title).text = artwork.title
-        view.findViewById<TextView>(R.id.artist_name).text = artwork.artistName
-        view.findViewById<TextView>(R.id.year).text = artwork.creationYear.toString()
-        view.findViewById<TextView>(R.id.latitude).text = artwork.latitude.toString()
-        view.findViewById<TextView>(R.id.longitude).text = artwork.longitude.toString()
-        view.findViewById<TextView>(R.id.description).text = artwork.description
+        val artistAndYearString = artwork.artistName+" | "+artwork.creationYear
+        view.findViewById<TextView>(R.id.artist_name_and_year).text = artistAndYearString
+        val latAndLong = artwork.latitude.toString()+", "+artwork.longitude.toString()
+        view.findViewById<TextView>(R.id.distance).text = latAndLong
+        //change when reviews are implemented
+//        view.findViewById<SimpleRatingBar>(R.id.rating_bar).rating = 4.5f
+//        view.findViewById<TextView>(R.id.artist_name).text = artwork.artistName
+//        view.findViewById<TextView>(R.id.year).text = artwork.creationYear.toString()
+//        view.findViewById<TextView>(R.id.latitude).text = artwork.latitude.toString()
+//        view.findViewById<TextView>(R.id.longitude).text = artwork.longitude.toString()
+//        view.findViewById<TextView>(R.id.description).text = artwork.description
         // Picasso handles async image loading
         Picasso.get().load(artwork.imageUrl).into(imageView)
 
