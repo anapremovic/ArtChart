@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseUser
 import com.lab.artchart.R
 import com.lab.artchart.database.FirebaseRepository
 import com.lab.artchart.database.FirebaseViewModel
@@ -55,8 +56,12 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // custom navigation
-        handleNavigation()
+        // initialize custom navigation
+        handleNavigation(userAuthenticationViewModel.currentUser.value)
+        // change navigation when user account created
+        userAuthenticationViewModel.currentUser.observe(this) { user ->
+            handleNavigation(user)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -78,12 +83,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     // set up custom navigation depending on currently signed in user
-    private fun handleNavigation() {
+    private fun handleNavigation(currentUser: FirebaseUser?) {
         navView.setNavigationItemSelectedListener { menuItem ->
             // show correct fragment depending on if user is already signed in
             when (menuItem.itemId) {
                 R.id.nav_profile -> {
-                    if (userAuthenticationViewModel.currentUser.value != null) {
+                    if (currentUser != null) {
                         navController.navigate(R.id.nav_profile)
                     } else {
                         navController.navigate(R.id.nav_signIn)
