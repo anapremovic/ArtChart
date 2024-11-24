@@ -48,12 +48,18 @@ class UserAuthenticationViewModel : ViewModel() {
 
     // call Firebase API to sign user in
     fun signIn(email: String, password: String) {
-        // sign in
+        // sign in if email verified
         CoroutineScope(Dispatchers.IO).launch {
             Firebase.auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        signInSuccessful.postValue(true)
+                        val user = task.result.user
+                        if (user == null || !user.isEmailVerified) {
+                            signOut()
+                            toastError.postValue("Please verify email to sign in")
+                        } else {
+                            signInSuccessful.postValue(true)
+                        }
                     } else {
                         handleFirebaseError(task.exception, "Sign in error",
                             "Failed to sign in user with email $email",
