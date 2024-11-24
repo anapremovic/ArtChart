@@ -105,6 +105,13 @@ class UserAuthenticationViewModel : ViewModel() {
         }
     }
 
+    // call Firebase API to sign user out
+    fun signOut() {
+        CoroutineScope(Dispatchers.IO).launch {
+            Firebase.auth.signOut()
+        }
+    }
+
     private fun verifyEmailAndPasswordFormat(email: String, password: String): Boolean {
         if (email.isBlank()) {
             emailError.value = "Email is required"
