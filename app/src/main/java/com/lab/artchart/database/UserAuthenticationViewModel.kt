@@ -4,6 +4,7 @@ import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -18,6 +19,8 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
 class UserAuthenticationViewModel : ViewModel() {
+    val currentUser = currentUserFlow.asLiveData()
+
     // sign in
     var invalidUser = MutableLiveData<Boolean>()
     var signInSuccessful = MutableLiveData<Boolean>()
@@ -29,8 +32,8 @@ class UserAuthenticationViewModel : ViewModel() {
     var alreadyExists = MutableLiveData<Boolean>()
     var signUpSuccessful = MutableLiveData<Boolean>()
 
-    // currently authenticated user
-    val currentUser: Flow<FirebaseUser?>
+    // flow object of currently authenticated user
+    private val currentUserFlow: Flow<FirebaseUser?>
         get() = callbackFlow {
             val listener = FirebaseAuth.AuthStateListener { auth ->
                 this.trySend(auth.currentUser)
@@ -42,11 +45,6 @@ class UserAuthenticationViewModel : ViewModel() {
                 Firebase.auth.removeAuthStateListener(listener)
             }
         }
-
-    // check if there is a currently authenticated user
-    fun currentlySignedIn(): Boolean {
-        return Firebase.auth.currentUser != null
-    }
 
     // call Firebase API to sign user in
     fun signIn(email: String, password: String) {

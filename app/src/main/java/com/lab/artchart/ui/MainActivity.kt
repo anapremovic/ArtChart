@@ -10,34 +10,43 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import com.lab.artchart.R
 import com.lab.artchart.database.FirebaseRepository
 import com.lab.artchart.database.FirebaseViewModel
 import com.lab.artchart.database.FirebaseViewModelFactory
+import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
+    private lateinit var navController: NavController
+
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var repository: FirebaseRepository
     lateinit var firebaseViewModel: FirebaseViewModel
+    lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.appBarMain.toolbar)
+        // set up global view models
+        initializeViewModels()
 
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        // navbar
+        drawerLayout = binding.drawerLayout
+        navView = binding.navView
+        navController = findNavController(R.id.nav_host_fragment_content_main)
+
+        setSupportActionBar(binding.appBarMain.toolbar)
+        // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_search, R.id.nav_addArt, R.id.nav_profile
@@ -46,8 +55,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // set up database view model using global repository for app
-        initializeFirebaseViewModel()
+        // custom navigation
+        handleNavigation()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -61,9 +70,36 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun initializeFirebaseViewModel() {
+    private fun initializeViewModels() {
         repository = FirebaseRepository() // initialize repository in MainActivity so it's global
         val viewModelFactory = FirebaseViewModelFactory(repository)
         firebaseViewModel = ViewModelProvider(this, viewModelFactory)[FirebaseViewModel::class.java]
+        userAuthenticationViewModel = ViewModelProvider(this)[UserAuthenticationViewModel::class.java]
+    }
+
+    // set up custom navigation depending on currently signed in user
+    private fun handleNavigation() {
+        navView.setNavigationItemSelectedListener { menuItem ->
+            // show correct fragment depending on if user is already signed in
+            when (menuItem.itemId) {
+                R.id.nav_profile -> {
+                    if (userAuthenticationViewModel.currentUser.value != null) {
+                        navController.navigate(R.id.nav_profile)
+                    } else {
+                        navController.navigate(R.id.nav_signIn)
+                    }
+
+                    // close nav bar view
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                else -> {
+                    // otherwise show chosen fragment
+                    navController.navigate(menuItem.itemId)
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+            }
+        }
     }
 }

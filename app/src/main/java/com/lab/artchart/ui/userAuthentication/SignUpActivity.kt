@@ -40,6 +40,7 @@ class SignUpActivity : AppCompatActivity() {
         PasswordUtils.handleShowPasswordCheckBox(listOf(binding.password, binding.passwordVerify), binding.showPasswordCheckbox)
     }
 
+    // update UI or toast when there is an error with the sign up
     private fun updateErrors() {
         userAuthenticationViewModel.emailError.observe(this) {
             binding.email.error = it

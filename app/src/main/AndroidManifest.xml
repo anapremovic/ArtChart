@@ -37,9 +37,6 @@
         <activity
             android:name=".ui.userAuthentication.SignUpActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.userAuthentication.SignInActivity"
-            android:exported="false" />
     </application>
 
 </manifest>
