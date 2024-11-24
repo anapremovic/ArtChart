@@ -22,9 +22,6 @@ class SignInActivity : AppCompatActivity() {
         // sign into existing account with user input or show error
         binding.signInButton.setOnClickListener {
             userAuthenticationViewModel.signIn(binding.email.text.toString(), binding.password.text.toString())
-            if (userAuthenticationViewModel.invalidUser.value == true) {
-                Toast.makeText(this, "Error validating credentials due to invalid username or password", Toast.LENGTH_LONG).show()
-            }
         }
         // go back to previous page
         binding.backButton.setOnClickListener {
@@ -47,6 +44,11 @@ class SignInActivity : AppCompatActivity() {
         }
         userAuthenticationViewModel.passwordError.observe(this) {
             binding.password.error = it
+        }
+        userAuthenticationViewModel.invalidUser.observe(this) {
+            if (it) {
+                Toast.makeText(this, "Error validating credentials due to invalid username or password", Toast.LENGTH_LONG).show()
+            }
         }
     }
 }

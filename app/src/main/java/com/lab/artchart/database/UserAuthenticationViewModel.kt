@@ -5,7 +5,7 @@ import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,15 +24,16 @@ class UserAuthenticationViewModel : ViewModel() {
     // call Firebase API to sign user in
     fun signIn(email: String, password: String) {
         if (verifyEmailAndPassword(email, password)) {
-            try {
-                CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+
                     Firebase.auth.signInWithEmailAndPassword(email, password).await()
+                } catch (e: FirebaseAuthInvalidCredentialsException) {
+                    Log.d("SIGN_IN_ACT", "User email and password combination invalid for user with email $email", e)
+                    invalidUser.postValue(true)
+                } catch (e: Exception) {
+                    Log.e("SIGN_IN_ACT", "Failed to sign in user with email $email", e)
                 }
-            } catch (e: FirebaseAuthInvalidUserException) {
-                invalidUser.value = true
-                Log.w("SIGN_IN_ACT", "User email and password combination invalid for user with email $email", e)
-            } catch (e: Exception) {
-                Log.e("SIGN_IN_ACT", "Failed to sign in user with email $email", e)
             }
         }
     }
@@ -40,12 +41,12 @@ class UserAuthenticationViewModel : ViewModel() {
     // call Firebase API to create account for user
     fun verifyInfoAndSignUp(email: String, password: String, passwordVerify: String) {
         if (verifyEmailAndPassword(email, password) && verifyPasswordsMatch(password, passwordVerify)) {
-            try {
-                CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
                     Firebase.auth.createUserWithEmailAndPassword(email, password).await()
+                } catch (e: Exception) {
+                    Log.e("SIGN_IN_ACT", "Failed to create account for user with email $email", e)
                 }
-            } catch (e: Exception) {
-                Log.e("SIGN_IN_ACT", "Failed to create account for user with email $email", e)
             }
         }
     }
