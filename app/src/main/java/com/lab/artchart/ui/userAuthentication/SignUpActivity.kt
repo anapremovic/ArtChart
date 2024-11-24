@@ -26,8 +26,9 @@ class SignUpActivity : AppCompatActivity() {
             val password = binding.password.text.toString()
             val passwordVerify = binding.passwordVerify.text.toString()
 
-            if (UserAuthenticationUtils.verifyEmailAndPasswordFormat(email, password, binding.email, binding.password)
-                && verifyPasswordSignUpRequirements(password, passwordVerify)) {
+            if ((UserAuthenticationUtils.verifyEmailFormat(email, binding.email) &&
+                UserAuthenticationUtils.verifyPasswordNotBlank(password, binding.password)) &&
+                UserAuthenticationUtils.verifyPasswordRequirements(password, passwordVerify, binding.password, binding.passwordVerify)) {
                 userAuthenticationViewModel.signUp(email, password)
             }
         }
@@ -51,18 +52,5 @@ class SignUpActivity : AppCompatActivity() {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
         UserAuthenticationUtils.handleShowPasswordCheckBox(listOf(binding.password, binding.passwordVerify), binding.showPasswordCheckbox)
-    }
-
-    private fun verifyPasswordSignUpRequirements(password: String, passwordVerify: String): Boolean {
-        if (password.length < 6) {
-            binding.password.error = "Password must be at least 6 characters long"
-            return false
-        }
-        if (password != passwordVerify) {
-            binding.passwordVerify.error = "Passwords do not match"
-            return false
-        }
-
-        return true
     }
 }

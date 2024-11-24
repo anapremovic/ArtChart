@@ -117,7 +117,8 @@ class ProfileFragment : Fragment() {
             val email = emailInput.text.toString()
             val password = passwordInput.text.toString()
 
-            if (UserAuthenticationUtils.verifyEmailAndPasswordFormat(email, password, emailInput, passwordInput)) {
+            if (UserAuthenticationUtils.verifyEmailFormat(email, emailInput) &&
+                UserAuthenticationUtils.verifyPasswordNotBlank(password, passwordInput)) {
                 userAuthenticationViewModel.reAuthenticate(email, password) {
                     // delete account after re-authenticating
                     userAuthenticationViewModel.deleteAccount()

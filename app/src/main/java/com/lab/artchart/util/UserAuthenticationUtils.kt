@@ -20,19 +20,36 @@ object UserAuthenticationUtils {
         }
     }
 
-    fun verifyEmailAndPasswordFormat(email: String, password: String, emailText: EditText, passwordText: EditText): Boolean {
+    fun verifyEmailFormat(email: String, emailInput: EditText): Boolean {
         if (email.isBlank()) {
-            emailText.error = "Email is required"
+            emailInput.error = "Email is required"
             return false
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailText.error = "Please enter a valid email"
+            emailInput.error = "Please enter a valid email"
             return false
         }
 
+        return true
+    }
+
+    fun verifyPasswordNotBlank(password: String, passwordInput: EditText): Boolean {
         if (password.isBlank()) {
-            passwordText.error = "Password is required"
+            passwordInput.error = "Password is required"
+            return false
+        }
+
+        return true
+    }
+
+    fun verifyPasswordRequirements(password: String, passwordVerify: String, passwordInput: EditText, passwordVerifyInput: EditText): Boolean {
+        if (password.length < 6) {
+            passwordInput.error = "Password must be at least 6 characters long"
+            return false
+        }
+        if (password != passwordVerify) {
+            passwordVerifyInput.error = "Passwords do not match"
             return false
         }
 

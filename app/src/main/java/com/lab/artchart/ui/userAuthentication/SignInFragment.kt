@@ -30,7 +30,8 @@ class SignInFragment : Fragment() {
             val email = binding.email.text.toString()
             val password = binding.password.text.toString()
 
-            if (UserAuthenticationUtils.verifyEmailAndPasswordFormat(email, password, binding.email, binding.password)) {
+            if (UserAuthenticationUtils.verifyEmailFormat(email, binding.email) &&
+                UserAuthenticationUtils.verifyPasswordNotBlank(password, binding.password)) {
                 userAuthenticationViewModel.signIn(email, password)
             }
         }
