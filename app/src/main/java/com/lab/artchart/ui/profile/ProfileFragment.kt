@@ -154,8 +154,7 @@ class ProfileFragment : Fragment() {
                 // update user live data
                 userViewModel.fetchUserByUid(user.uid)
             } else {
-                // unexpected behaviour - fragment should only be accessible when there is a user signed in
-                Log.w("PROFILE_FRAG", "No currently authenticated user")
+                Log.d("PROFILE_FRAG", "No currently authenticated user to observe")
             }
         }
 
@@ -184,7 +183,7 @@ class ProfileFragment : Fragment() {
             val user = userAuthenticationViewModel.currentUser.value
             val username = usernameInput.text.toString()
             if (user == null) {
-                // unexpected behaviour - should not be able to access ProfileFragment if not signed in
+                // unexpected behaviour - should not be able to access dialog if not signed in
                 dismissChangeUsernameDialog()
                 Toast.makeText(requireContext(), "User not signed in", Toast.LENGTH_SHORT).show()
                 Log.w("PROFILE_FRAG", "Tried to update username when no user authenticated")

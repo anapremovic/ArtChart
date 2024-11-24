@@ -4,9 +4,11 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,6 +80,26 @@ class UserViewModel : ViewModel() {
                     Log.e("USER_VIEW_MODEL", "Failed to change username for user $uid", e)
                     toastError.postValue("Username change error")
                 }
+        }
+    }
+
+    fun deleteUser(uid: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                userReference.child(uid).removeValue().await()
+                Log.i("USER_VIEW_MODEL", "Deleted user $uid from real-time database")
+
+                storageReference.child(uid).delete().await()
+                Log.i("USER_VIEW_MODEL", "Deleted profile picture for user $uid")
+
+                // success message handled in UserAuthenticationViewModel
+            } catch (e: StorageException) {
+                Log.d("USER_VIEW_MODEL", "No profile picture, skip")
+            }
+            catch (e: Exception) {
+                Log.e("USER_VIEW_MODEL", "Failed to delete user with ID $uid", e)
+                // failure message handled in UserAuthenticationViewModel
+            }
         }
     }
 }

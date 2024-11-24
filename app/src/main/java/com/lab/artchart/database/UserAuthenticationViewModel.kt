@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -12,12 +13,16 @@ import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class UserAuthenticationViewModel(private val userViewModel: UserViewModel) : ViewModel() {
     val currentUser = currentUserFlow.asLiveData()
@@ -155,16 +160,47 @@ class UserAuthenticationViewModel(private val userViewModel: UserViewModel) : Vi
     // call Firebase API to delete user's account
     fun deleteAccount() {
         CoroutineScope(Dispatchers.IO).launch {
-            currentUser.value?.delete()
-                ?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        deleteSuccessful.postValue(true)
-                    } else {
-                        handleFirebaseError(task.exception, "Account deletion error",
-                            "Failed to delete account for user with email ${currentUser.value?.email}",
-                            null, "deleteAccount")
-                    }
+            val user = currentUser.value
+            if (user == null) {
+                Log.d("USER_AUTH_VIEW_MODEL", "Failed to delete account because no authenticated user found")
+                toastError.postValue("Account deletion error")
+                return@launch
+            }
+
+            try {
+                // run both operations asynchronously
+                val deleteAccountTask = async {
+                    user.delete().awaitTask()
+                    Log.i("USER_AUTH_VIEW_MODEL", "Deleted account with ID ${user.uid}")
                 }
+                val deleteUserDataTask = async {
+                    userViewModel.deleteUser(user.uid)
+                }
+
+                // wait for deleting account and deleting user data from real-time database and storage to complete
+                deleteAccountTask.await()
+                deleteUserDataTask.await()
+
+                // if both succeed, post success
+                deleteSuccessful.postValue(true)
+            } catch (e: Exception) {
+                handleFirebaseError(e, "Account deletion error",
+                    "Failed to delete account or user information for user with email ${user.email}",
+                    user.email, "")
+            }
+        }
+    }
+
+    // convert Firebase Task to be compatible with Kotlin coroutines
+    private suspend fun <T> Task<T>.awaitTask(): T {
+        return suspendCancellableCoroutine { cont ->
+            addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    cont.resume(task.result)
+                } else {
+                    cont.resumeWithException(task.exception ?: Exception("Unknown Task Exception"))
+                }
+            }
         }
     }
 
