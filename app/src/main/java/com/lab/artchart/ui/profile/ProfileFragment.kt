@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -18,10 +19,12 @@ import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.database.UserViewModel
 import com.lab.artchart.databinding.FragmentProfileBinding
 import com.lab.artchart.ui.MainActivity
+import com.lab.artchart.util.ImageGalleryManager
 import com.lab.artchart.util.UserAuthenticationUtils
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
+    private lateinit var imageGalleryManager: ImageGalleryManager
     private lateinit var userViewModel: UserViewModel
     private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
 
@@ -34,6 +37,16 @@ class ProfileFragment : Fragment() {
     private var newPassword: String? = null
     private var confirmCredentialsDialog: AlertDialog? = null
 
+    // launcher to handle selected image from gallery
+    private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        imageGalleryManager.handleSelectedImage(result)
+    }
+
+    // launcher for gallery permission
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        imageGalleryManager.handlePermission(isGranted, requireContext(), selectImageLauncher)
+    }
+
     override fun onStart() {
         super.onStart()
         userAuthenticationViewModel.deleteSuccessful.value = false
@@ -42,8 +55,14 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        imageGalleryManager = ImageGalleryManager(binding.profileImage)
         userViewModel = (activity as MainActivity).userViewModel
         userAuthenticationViewModel = ViewModelProvider(this, (activity as MainActivity).userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
+
+        // handle image selection
+        binding.changeProfilePicButton.setOnClickListener {
+            imageGalleryManager.openGalleryOrRequestPermission(requireContext(), requestPermissionLauncher, selectImageLauncher)
+        }
 
         // update UI
         setUserProfileInformation()
