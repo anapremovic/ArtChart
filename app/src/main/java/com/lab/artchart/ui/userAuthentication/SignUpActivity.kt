@@ -1,6 +1,7 @@
 package com.lab.artchart.ui.userAuthentication
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.lab.artchart.database.UserAuthenticationViewModel
@@ -43,6 +44,11 @@ class SignUpActivity : AppCompatActivity() {
         }
         userAuthenticationViewModel.passwordVerifyError.observe(this) {
             binding.passwordVerify.error = it
+        }
+        userAuthenticationViewModel.alreadyExists.observe(this) {
+            if (it) {
+                Toast.makeText(this, "This email is already associated with an account", Toast.LENGTH_LONG).show()
+            }
         }
     }
 }

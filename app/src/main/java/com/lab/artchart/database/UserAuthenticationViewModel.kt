@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,13 +21,13 @@ class UserAuthenticationViewModel : ViewModel() {
     var emailError = MutableLiveData<String>()
     var passwordError = MutableLiveData<String>()
     var passwordVerifyError = MutableLiveData<String>()
+    var alreadyExists = MutableLiveData<Boolean>()
 
     // call Firebase API to sign user in
     fun signIn(email: String, password: String) {
         if (verifyEmailAndPassword(email, password)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-
                     Firebase.auth.signInWithEmailAndPassword(email, password).await()
                 } catch (e: FirebaseAuthInvalidCredentialsException) {
                     Log.d("SIGN_IN_ACT", "User email and password combination invalid for user with email $email", e)
@@ -44,6 +45,9 @@ class UserAuthenticationViewModel : ViewModel() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     Firebase.auth.createUserWithEmailAndPassword(email, password).await()
+                } catch (e: FirebaseAuthUserCollisionException) {
+                    Log.d("SIGN_IN_ACT", "User with email $email already exists", e)
+                    alreadyExists.postValue(true)
                 } catch (e: Exception) {
                     Log.e("SIGN_IN_ACT", "Failed to create account for user with email $email", e)
                 }
