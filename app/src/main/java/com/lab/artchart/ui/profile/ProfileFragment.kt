@@ -81,6 +81,7 @@ class ProfileFragment : Fragment() {
         userAuthenticationViewModel.changeEmailSent.observe(viewLifecycleOwner) { sent ->
             if (sent) {
                 dismissChangeEmailDialog()
+                dismissConfirmCredentialsDialog()
                 userAuthenticationViewModel.signOut()
                 Toast.makeText(requireContext(), "Please check your new email to verify", Toast.LENGTH_LONG).show()
                 findNavController().navigate(R.id.nav_signIn)
@@ -89,12 +90,13 @@ class ProfileFragment : Fragment() {
         userAuthenticationViewModel.passwordChanged.observe(viewLifecycleOwner) { changed ->
             if (changed) {
                 dismissChangePasswordDialog()
+                dismissConfirmCredentialsDialog()
                 Toast.makeText(requireContext(), "Password changed", Toast.LENGTH_LONG).show()
             }
         }
         userAuthenticationViewModel.deleteSuccessful.observe(viewLifecycleOwner) { success ->
             if (success) {
-                dismissReAuthenticationDialog()
+                dismissConfirmCredentialsDialog()
                 Toast.makeText(requireContext(), "Account deleted", Toast.LENGTH_LONG).show()
                 findNavController().navigate(R.id.nav_signIn)
             }
@@ -271,7 +273,7 @@ class ProfileFragment : Fragment() {
         changePasswordDialog?.dismiss()
         changePasswordDialog = null
     }
-    private fun dismissReAuthenticationDialog() {
+    private fun dismissConfirmCredentialsDialog() {
         confirmCredentialsDialog?.dismiss()
         confirmCredentialsDialog = null
     }
