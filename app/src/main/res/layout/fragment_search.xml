@@ -5,94 +5,120 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.search.SearchFragment">
+    tools:context=".ui.search.SearchFragment"
+    android:layout_marginTop="10dp">
 
-    <EditText
-        android:id="@+id/text_search"
+    <SearchView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:paddingStart="32dp"
-        android:paddingEnd="16dp"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:hint="@string/search_hint"
-        android:textColorHint="@color/white"
-        android:background="#e38307"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:queryHint="Search Here"
+        android:iconifiedByDefault="false"
+        android:layout_marginEnd="15dp"/>
 
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="-30dp"
-        android:layout_marginEnd="8dp"
-        app:srcCompat="@drawable/ic_search_bar"/>
+<!--    <EditText-->
+<!--        android:id="@+id/text_search"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:paddingStart="32dp"-->
+<!--        android:paddingEnd="16dp"-->
+<!--        android:textSize="20sp"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:hint="@string/search_hint"-->
+<!--        android:textColorHint="@color/white"-->
+<!--        android:background="#e38307"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/filter_by_text"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"/>
+<!--    <ImageView-->
+<!--        android:layout_width="32dp"-->
+<!--        android:layout_height="32dp"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginTop="-30dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        app:srcCompat="@drawable/ic_search_bar"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp">
 
-        <Button
-            android:id="@+id/filterNameButton"
-            android:layout_marginEnd="2dp"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:padding="0dp"
-            android:text="@string/filter_name" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_by_text"/>
 
-        <Button
-            android:id="@+id/filterDistanceButton"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:padding="0dp"
-            android:text="@string/filter_dist" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="5dp">
 
-        <Button
-            android:id="@+id/filterReviewsButton"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:padding="0dp"
-            android:text="@string/filter_reviews" />
+            <Button
+                android:id="@+id/filterNameButton"
+                android:layout_marginEnd="3dp"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:background="@drawable/rounded_button"
+                android:textAllCaps="false"
+                android:text="@string/filter_name"
+                android:textSize="13sp"/>
 
-        <Button
-            android:id="@+id/filterYearButton"
-            android:layout_marginStart="2dp"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:padding="0dp"
-            android:text="@string/filter_years" />
+            <Button
+                android:id="@+id/filterDistanceButton"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:background="@drawable/rounded_button"
+                android:textAllCaps="false"
+                android:text="@string/filter_dist"
+                android:textSize="13sp"/>
 
+            <Button
+                android:id="@+id/filterReviewsButton"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:background="@drawable/rounded_button"
+                android:textAllCaps="false"
+                android:text="@string/filter_reviews"
+                android:textSize="13sp"/>
+
+            <Button
+                android:id="@+id/filterYearButton"
+                android:layout_marginStart="3dp"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:background="@drawable/rounded_button"
+                android:textAllCaps="false"
+                android:text="@string/filter_years"
+                android:textSize="13sp"/>
+
+        </LinearLayout>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/artwork_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp" />
+        <ListView
+            android:id="@+id/artwork_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+
 </LinearLayout>

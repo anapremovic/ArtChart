@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/orange"/>
+    <corners android:radius="50dp"/>
+<!--    <padding android:left="8dp" android:top="8dp" android:right="8dp" android:bottom="8dp"/>-->
+<!--    android:id="@+id/filterDistanceButton"-->
+<!--    android:layout_marginStart="5dp"-->
+<!--    android:layout_marginEnd="5dp"-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="48dp"-->
+<!--    android:layout_weight="1"-->
+<!--    android:padding="0dp"-->
+<!--    android:text="@string/filter_dist" />-->
+</shape>
