@@ -25,7 +25,16 @@
     <string name="choose_photo">Choose photo from gallery</string>
     <string name="submit_art">Submit artwork to ArtChart</string>
 
-    <!-- SignUp/SignIn -->
+    <!-- ProfileFragment -->
+    <string name="change_profile_picture">Change Profile Picture</string>
+    <string name="change_username">Change Username</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_email">Change Email</string>
+    <string name="reviewed_artwork">Reviewed Artwork</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="delete_account">Delete Account</string>
+
+    <!-- SignUp/SignIn Activities -->
     <string name="sign_up_for_art_chart">Sign Up for ArtChart</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
