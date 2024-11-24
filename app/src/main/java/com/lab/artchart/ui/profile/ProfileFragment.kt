@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -13,6 +15,7 @@ import com.lab.artchart.R
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.databinding.FragmentProfileBinding
 import com.lab.artchart.ui.MainActivity
+import com.lab.artchart.util.UserAuthenticationUtils
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
@@ -27,10 +30,25 @@ class ProfileFragment : Fragment() {
 
         // update UI
         setUserProfileInformation()
+        userAuthenticationViewModel.toastError.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+        }
 
         // button listeners
         binding.signOutButton.setOnClickListener {
-            openSignOutConfirmationDialog()
+            openConfirmationDialog("Confirm Sign Out", "Are you sure you want to sign out?", ::signOut)
+        }
+        binding.deleteAccountButton.setOnClickListener {
+            openConfirmationDialog("Confirm Delete Account", "Are you sure you want to delete your account? This cannot be undone.", ::deleteAccount)
+        }
+
+        // listen for successful or unsuccessful API calls
+        userAuthenticationViewModel.deleteSuccessful.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), "Account deleted", Toast.LENGTH_LONG).show()
+            findNavController().navigate(R.id.nav_signIn)
+        }
+        userAuthenticationViewModel.needReAuthenticate.observe(viewLifecycleOwner) {
+            openReAuthenticationDialog()
         }
 
         return root
@@ -49,24 +67,55 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    // confirmation dialog
-    private fun openSignOutConfirmationDialog() {
+    // generic confirmation dialog
+    private fun openConfirmationDialog(title: String, message: String, action: () -> Unit) {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Confirm Sign Out")
-        builder.setMessage("Are you sure you want to sign out?")
+        builder.setTitle(title)
+        builder.setMessage(message)
 
-        // sign user out and navigate back to sign in page
         builder.setPositiveButton("Yes") { _, _ ->
-            userAuthenticationViewModel.signOut()
-            Toast.makeText(requireContext(), "Signed out", Toast.LENGTH_LONG).show()
-            findNavController().navigate(R.id.nav_signIn)
+            action()
         }
-
         builder.setNegativeButton("No") { dialog, _ ->
             dialog.dismiss()
         }
 
         builder.create().show()
+    }
+
+    private fun signOut() {
+        userAuthenticationViewModel.signOut()
+        Toast.makeText(requireContext(), "Signed out", Toast.LENGTH_LONG).show()
+        findNavController().navigate(R.id.nav_signIn)
+    }
+
+    private fun deleteAccount() {
+        userAuthenticationViewModel.deleteAccount()
+    }
+
+    private fun openReAuthenticationDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_confirm_credentials, null)
+        val emailInput = view.findViewById<EditText>(R.id.email)
+        val passwordInput = view.findViewById<EditText>(R.id.password)
+        val confirmButton = view.findViewById<Button>(R.id.confirm_button)
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(view)
+        val dialog = builder.create()
+
+        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, viewLifecycleOwner, emailInput, passwordInput)
+
+        confirmButton.setOnClickListener {
+            val email = emailInput.text.toString()
+            val password = passwordInput.text.toString()
+            userAuthenticationViewModel.reAuthenticate(email, password) {
+                // delete account after re-authenticating
+                userAuthenticationViewModel.deleteAccount()
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     override fun onDestroyView() {

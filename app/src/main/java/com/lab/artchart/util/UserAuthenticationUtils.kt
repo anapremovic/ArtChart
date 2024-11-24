@@ -1,10 +1,8 @@
 package com.lab.artchart.util
 
-import android.content.Context
 import android.text.InputType
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import com.lab.artchart.database.UserAuthenticationViewModel
 
@@ -23,18 +21,14 @@ object UserAuthenticationUtils {
         }
     }
 
-    // observe errors and toast for user authentication pages
+    // observe errors for user authentication pages
     fun updateErrorMessages(userAuthenticationViewModel: UserAuthenticationViewModel,
-                            observerOwner: LifecycleOwner, email: EditText, password: EditText,
-                            toastContext: Context) {
+                            observerOwner: LifecycleOwner, email: EditText, password: EditText) {
         userAuthenticationViewModel.emailError.observe(observerOwner) {
             email.error = it
         }
         userAuthenticationViewModel.passwordError.observe(observerOwner) {
             password.error = it
-        }
-        userAuthenticationViewModel.toastError.observe(observerOwner) {
-            Toast.makeText(toastContext, it, Toast.LENGTH_LONG).show()
         }
     }
 }

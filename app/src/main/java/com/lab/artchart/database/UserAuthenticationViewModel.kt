@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.google.firebase.Firebase
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.FirebaseUser
@@ -23,6 +25,8 @@ class UserAuthenticationViewModel : ViewModel() {
 
     var signUpSuccessful = MutableLiveData<Boolean>()
     var signInSuccessful = MutableLiveData<Boolean>()
+    var deleteSuccessful = MutableLiveData<Boolean>()
+    var needReAuthenticate = MutableLiveData<Boolean>()
 
     var emailError = MutableLiveData<String>()
     var passwordError = MutableLiveData<String>()
@@ -109,6 +113,61 @@ class UserAuthenticationViewModel : ViewModel() {
     fun signOut() {
         CoroutineScope(Dispatchers.IO).launch {
             Firebase.auth.signOut()
+        }
+    }
+
+    // call Firebase API to delete user's account
+    fun deleteAccount() {
+        CoroutineScope(Dispatchers.IO).launch {
+            currentUser.value?.delete()
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        deleteSuccessful.postValue(true)
+                    } else {
+                        handleUnsuccessfulDeletion(task.exception)
+                    }
+                }
+        }
+    }
+
+    // prompt re-authentication or log and notify error
+    private fun handleUnsuccessfulDeletion(exception: Exception?) {
+        if (exception is FirebaseAuthRecentLoginRequiredException) {
+            Log.d("USER_AUTH", "Prompting user to re-authenticate in order to delete their account")
+            needReAuthenticate.postValue(true)
+        } else {
+            Log.e("USER_AUTH", "Failed to delete account for user with email ${currentUser.value?.email}", exception)
+            toastError.postValue("Account deletion error")
+        }
+    }
+
+    // call Firebase API to re-authenticate user credentials
+    fun reAuthenticate(email: String, password: String, action: () -> Unit) {
+        if (!verifyEmailAndPasswordFormat(email, password)) {
+            return
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val credential = EmailAuthProvider.getCredential(email, password)
+            currentUser.value?.reauthenticate(credential)
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        action()
+                    } else {
+                        handleUnsuccessfulReAuthentication(task.exception, email)
+                    }
+                }
+        }
+    }
+
+    // log and notify user when sign in fails
+    private fun handleUnsuccessfulReAuthentication(exception: Exception?, email: String) {
+        if (exception is FirebaseAuthInvalidCredentialsException) {
+            Log.d("USER_AUTH", "User email and password combination invalid for user with email $email", exception)
+            toastError.postValue("Error validating credentials due to invalid username or password")
+        } else {
+            Log.e("USER_AUTH", "Failed to re-authenticate user with email $email", exception)
+            toastError.postValue("Authentication error")
         }
     }
 

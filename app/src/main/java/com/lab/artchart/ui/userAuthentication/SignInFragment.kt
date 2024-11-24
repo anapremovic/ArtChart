@@ -36,7 +36,10 @@ class SignInFragment : Fragment() {
         }
 
         // update UI
-        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, viewLifecycleOwner, binding.email, binding.password, requireContext())
+        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, viewLifecycleOwner, binding.email, binding.password)
+        userAuthenticationViewModel.toastError.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+        }
         UserAuthenticationUtils.handleShowPasswordCheckBox(listOf(binding.password), binding.showPasswordCheckbox)
 
         // go to sign up screen

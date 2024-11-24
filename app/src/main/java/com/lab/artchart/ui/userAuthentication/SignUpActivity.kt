@@ -49,9 +49,12 @@ class SignUpActivity : AppCompatActivity() {
 
     // update UI or toast when there is an error with the sign up
     private fun updateErrors() {
-        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, this, binding.email, binding.password, this)
+        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, this, binding.email, binding.password)
         userAuthenticationViewModel.passwordVerifyError.observe(this) {
             binding.passwordVerify.error = it
+        }
+        userAuthenticationViewModel.toastError.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
     }
 }
