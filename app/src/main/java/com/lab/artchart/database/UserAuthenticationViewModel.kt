@@ -70,14 +70,23 @@ class UserAuthenticationViewModel(private val userViewModel: UserViewModel) : Vi
     }
 
     // call Firebase API to create account for user
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String, username: String) {
         // sign up
         CoroutineScope(Dispatchers.IO).launch {
             Firebase.auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val user = task.result.user
-                        sendEmailVerification(user, email) // verify email
+                        // created user
+                        val userAuth = task.result.user
+
+                        // save user to real-time database
+                        userAuth?.let {
+                            val user = User(authUid = it.uid, username = username)
+                            userViewModel.saveUser(user)
+                        }
+
+                        // verify email
+                        sendEmailVerification(userAuth, email)
                     } else {
                         handleFirebaseError(task.exception, "Sign up error",
                             "Failed to create account for user with email $email",
@@ -183,15 +192,15 @@ class UserAuthenticationViewModel(private val userViewModel: UserViewModel) : Vi
                 handleReAuthenticate(reAuthenticateReason)
             }
             is FirebaseAuthUserCollisionException -> {
-                Log.d("USER_AUTH", "User with email $email already exists", exception)
+                Log.d("USER_AUTH_VIEW_MODEL", "User with email $email already exists", exception)
                 toastError.postValue("This email is already associated with an account")
             }
             is FirebaseAuthInvalidCredentialsException -> {
-                Log.d("USER_AUTH", "User email and password combination invalid for user with email $email", exception)
+                Log.d("USER_AUTH_VIEW_MODEL", "User email and password combination invalid for user with email $email", exception)
                 toastError.postValue("Error validating credentials due to invalid username or password")
             }
             else -> {
-                Log.e("USER_AUTH", genericErrorLog, exception)
+                Log.e("USER_AUTH_VIEW_MODEL", genericErrorLog, exception)
                 toastError.postValue(genericToast)
             }
         }
@@ -200,15 +209,15 @@ class UserAuthenticationViewModel(private val userViewModel: UserViewModel) : Vi
     private fun handleReAuthenticate(reason: String) {
         when (reason) {
             "changeEmail" -> {
-                Log.d("USER_AUTH", "Prompting user to re-authenticate in order to change their email")
+                Log.d("USER_AUTH_VIEW_MODEL", "Prompting user to re-authenticate in order to change their email")
                 needReAuthenticateToChangeEmail.postValue(true)
             }
             "changePassword" -> {
-                Log.d("USER_AUTH", "Prompting user to re-authenticate in order to change their password")
+                Log.d("USER_AUTH_VIEW_MODEL", "Prompting user to re-authenticate in order to change their password")
                 needReAuthenticateToChangePassword.postValue(true)
             }
             "deleteAccount" -> {
-                Log.d("USER_AUTH", "Prompting user to re-authenticate in order to delete their account")
+                Log.d("USER_AUTH_VIEW_MODEL", "Prompting user to re-authenticate in order to delete their account")
                 needReAuthenticateToDeleteAccount.postValue(true)
             }
         }

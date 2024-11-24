@@ -15,12 +15,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.lab.artchart.R
 import com.lab.artchart.database.UserAuthenticationViewModel
+import com.lab.artchart.database.UserViewModel
 import com.lab.artchart.databinding.FragmentProfileBinding
 import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.util.UserAuthenticationUtils
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
+    private lateinit var userViewModel: UserViewModel
     private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
 
     private val binding get() = _binding!!
@@ -39,6 +41,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        userViewModel = (activity as MainActivity).userViewModel
         userAuthenticationViewModel = ViewModelProvider(this, (activity as MainActivity).userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
 
         // update UI
@@ -100,12 +103,20 @@ class ProfileFragment : Fragment() {
     private fun setUserProfileInformation() {
         userAuthenticationViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             if (user != null) {
-                // TODO: set username text
+                // set email from current user
                 binding.emailText.text = user.email.toString()
+
+                // update username live data
+                userViewModel.fetchUserByUid(user.uid)
             } else {
                 // unexpected behaviour - fragment should only be accessible when there is a user signed in
                 Log.w("PROFILE_FRAG", "No currently authenticated user")
             }
+        }
+
+        // set username from live data
+        userViewModel.username.observe(viewLifecycleOwner) { username ->
+            binding.usernameText.text = username
         }
     }
 

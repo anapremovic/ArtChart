@@ -36,7 +36,7 @@ class SignUpActivity : AppCompatActivity() {
                 UserAuthenticationUtils.verifyEmailFormat(email, binding.email) &&
                 UserAuthenticationUtils.verifyPasswordNotBlank(password, binding.password) &&
                 UserAuthenticationUtils.verifyPasswordRequirements(password, passwordVerify, binding.password, binding.passwordVerify)) {
-                userAuthenticationViewModel.signUp(email, password)
+                userAuthenticationViewModel.signUp(email, password, username)
             }
         }
         // on successful sign up navigate to ProfileActivity
