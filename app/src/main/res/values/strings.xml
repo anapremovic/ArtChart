@@ -47,9 +47,11 @@
 
     <!-- Update Email Dialog -->
     <string name="change_email_message">Enter your new email address.</string>
+    <string name="new_email">New Email</string>
 
     <!-- ChangePasswordDialog -->
     <string name="change_password_message">Enter your new password.</string>
+    <string name="new_password">New Password</string>
 
     <!-- Common View Texts -->
     <string name="back">Back</string>
