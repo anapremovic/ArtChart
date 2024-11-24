@@ -51,10 +51,8 @@ class SignUpActivity : AppCompatActivity() {
         userAuthenticationViewModel.passwordVerifyError.observe(this) {
             binding.passwordVerify.error = it
         }
-        userAuthenticationViewModel.alreadyExists.observe(this) {
-            if (it) {
-                Toast.makeText(this, "This email is already associated with an account", Toast.LENGTH_LONG).show()
-            }
+        userAuthenticationViewModel.toastError.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
     }
 }

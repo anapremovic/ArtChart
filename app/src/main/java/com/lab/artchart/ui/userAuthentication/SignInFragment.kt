@@ -55,10 +55,8 @@ class SignInFragment : Fragment() {
         userAuthenticationViewModel.passwordError.observe(viewLifecycleOwner) {
             binding.password.error = it
         }
-        userAuthenticationViewModel.invalidUser.observe(viewLifecycleOwner) {
-            if (it) {
-                Toast.makeText(requireContext(), "Error validating credentials due to invalid username or password", Toast.LENGTH_LONG).show()
-            }
+        userAuthenticationViewModel.toastError.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         }
     }
 

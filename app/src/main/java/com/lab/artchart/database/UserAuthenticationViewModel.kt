@@ -21,16 +21,13 @@ import kotlinx.coroutines.launch
 class UserAuthenticationViewModel : ViewModel() {
     val currentUser = currentUserFlow.asLiveData()
 
-    // sign in
-    var invalidUser = MutableLiveData<Boolean>()
+    var signUpSuccessful = MutableLiveData<Boolean>()
     var signInSuccessful = MutableLiveData<Boolean>()
 
-    // sign up
     var emailError = MutableLiveData<String>()
     var passwordError = MutableLiveData<String>()
     var passwordVerifyError = MutableLiveData<String>()
-    var alreadyExists = MutableLiveData<Boolean>()
-    var signUpSuccessful = MutableLiveData<Boolean>()
+    var toastError = MutableLiveData<String>()
 
     // flow object of currently authenticated user
     private val currentUserFlow: Flow<FirebaseUser?>
@@ -69,10 +66,11 @@ class UserAuthenticationViewModel : ViewModel() {
     // log and notify user when sign in fails
     private fun handleUnsuccessfulSignIn(exception: Exception?, email: String) {
         if (exception is FirebaseAuthInvalidCredentialsException) {
-            Log.d("SIGN_IN_ACT", "User  email and password combination invalid for user with email $email", exception)
-            invalidUser .postValue(true)
+            Log.d("SIGN_IN_ACT", "User email and password combination invalid for user with email $email", exception)
+            toastError.postValue("Error validating credentials due to invalid username or password")
         } else {
             Log.e("SIGN_IN_ACT", "Failed to sign in user with email $email", exception)
+            toastError.postValue("Sign in error")
         }
     }
 
@@ -100,9 +98,10 @@ class UserAuthenticationViewModel : ViewModel() {
     private fun handleUnsuccessfulSignUp(exception: Exception?, email: String) {
         if (exception is FirebaseAuthUserCollisionException) {
             Log.d("SIGN_IN_ACT", "User with email $email already exists", exception)
-            alreadyExists.postValue(true)
+            toastError.postValue("This email is already associated with an account")
         } else {
             Log.e("SIGN_IN_ACT", "Failed to create account for user with email $email", exception)
+            toastError.postValue("Sign up error")
         }
     }
 
