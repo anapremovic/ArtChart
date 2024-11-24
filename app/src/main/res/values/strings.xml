@@ -43,7 +43,7 @@
 
     <!-- Confirm Credentials Dialog -->
     <string name="confirm_credentials">Confirm Credentials</string>
-    <string name="confirm_credentials_message">For security reasons, please re-enter your credentials.</string>
+    <string name="confirm_credentials_message">For security reasons, please re-enter your existing credentials.</string>
 
     <!-- Update Email Dialog -->
     <string name="change_email_message">Enter your new email address.</string>

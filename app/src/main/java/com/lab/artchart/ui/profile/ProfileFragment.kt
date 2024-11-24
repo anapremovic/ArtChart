@@ -64,7 +64,9 @@ class ProfileFragment : Fragment() {
         userAuthenticationViewModel.changeEmailSent.observe(viewLifecycleOwner) { sent ->
             if (sent) {
                 dismissChangeEmailDialog()
+                userAuthenticationViewModel.signOut()
                 Toast.makeText(requireContext(), "Please check your new email to verify", Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.nav_signIn)
             }
         }
         userAuthenticationViewModel.passwordChanged.observe(viewLifecycleOwner) { changed ->
