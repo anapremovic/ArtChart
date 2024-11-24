@@ -27,7 +27,9 @@ class UserAuthenticationViewModel : ViewModel() {
     var changeEmailSent = MutableLiveData<Boolean>()
     var passwordChanged = MutableLiveData<Boolean>()
     var deleteSuccessful = MutableLiveData<Boolean>()
-    var needReAuthenticate = MutableLiveData<Boolean>()
+    var needReAuthenticateToChangeEmail = MutableLiveData<Boolean>()
+    var needReAuthenticateToChangePassword = MutableLiveData<Boolean>()
+    var needReAuthenticateToDeleteAccount = MutableLiveData<Boolean>()
     var toastError = MutableLiveData<String>()
 
     // flow object of currently authenticated user
@@ -54,7 +56,8 @@ class UserAuthenticationViewModel : ViewModel() {
                         signInSuccessful.postValue(true)
                     } else {
                         handleFirebaseError(task.exception, "Sign in error",
-                            "Failed to sign in user with email $email", email)
+                            "Failed to sign in user with email $email",
+                            email, "")
                     }
                 }
         }
@@ -70,7 +73,8 @@ class UserAuthenticationViewModel : ViewModel() {
                         signUpSuccessful.postValue(true)
                     } else {
                         handleFirebaseError(task.exception, "Sign up error",
-                            "Failed to create account for user with email $email", email)
+                            "Failed to create account for user with email $email",
+                            email, "")
                     }
                 }
         }
@@ -85,7 +89,8 @@ class UserAuthenticationViewModel : ViewModel() {
                         changeEmailSent.postValue(true)
                     } else {
                         handleFirebaseError(task.exception, "Error sending email-change email",
-                            "Failed to send email-change email to user $email")
+                            "Failed to send email-change email to user $email",
+                            email, "changeEmail")
                     }
                 }
         }
@@ -100,7 +105,8 @@ class UserAuthenticationViewModel : ViewModel() {
                         passwordChanged.postValue(true)
                     } else {
                         handleFirebaseError(task.exception, "Password change error",
-                            "Failed to change password for user with email ${currentUser.value?.email}")
+                            "Failed to change password for user with email ${currentUser.value?.email}",
+                            null, "changePassword")
                     }
                 }
         }
@@ -122,7 +128,8 @@ class UserAuthenticationViewModel : ViewModel() {
                         deleteSuccessful.postValue(true)
                     } else {
                         handleFirebaseError(task.exception, "Account deletion error",
-                            "Failed to delete account for user with email ${currentUser.value?.email}")
+                            "Failed to delete account for user with email ${currentUser.value?.email}",
+                            null, "deleteAccount")
                     }
                 }
         }
@@ -138,18 +145,18 @@ class UserAuthenticationViewModel : ViewModel() {
                         action()
                     } else {
                         handleFirebaseError(task.exception, "Authentication error",
-                            "Failed to re-authenticate user with email $email", email)
+                            "Failed to re-authenticate user with email $email",
+                            email, "")
                     }
                 }
         }
     }
 
     // log and notify user when Firebase API call fails
-    private fun handleFirebaseError(exception: Exception?, genericToast: String, genericErrorLog: String, email: String? = null) {
+    private fun handleFirebaseError(exception: Exception?, genericToast: String, genericErrorLog: String, email: String? = null, reAuthenticateReason: String) {
         when (exception) {
             is FirebaseAuthRecentLoginRequiredException -> {
-                Log.d("USER_AUTH", "Prompting user to re-authenticate in order to delete their account")
-                needReAuthenticate.postValue(true)
+                handleReAuthenticate(reAuthenticateReason)
             }
             is FirebaseAuthUserCollisionException -> {
                 Log.d("USER_AUTH", "User with email $email already exists", exception)
@@ -162,6 +169,23 @@ class UserAuthenticationViewModel : ViewModel() {
             else -> {
                 Log.e("USER_AUTH", genericErrorLog, exception)
                 toastError.postValue(genericToast)
+            }
+        }
+    }
+
+    private fun handleReAuthenticate(reason: String) {
+        when (reason) {
+            "changeEmail" -> {
+                Log.d("USER_AUTH", "Prompting user to re-authenticate in order to change their email")
+                needReAuthenticateToChangeEmail.postValue(true)
+            }
+            "changePassword" -> {
+                Log.d("USER_AUTH", "Prompting user to re-authenticate in order to change their password")
+                needReAuthenticateToChangePassword.postValue(true)
+            }
+            "deleteAccount" -> {
+                Log.d("USER_AUTH", "Prompting user to re-authenticate in order to delete their account")
+                needReAuthenticateToDeleteAccount.postValue(true)
             }
         }
     }

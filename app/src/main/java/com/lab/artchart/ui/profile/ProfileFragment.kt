@@ -25,7 +25,9 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var changeEmailDialog: AlertDialog? = null
+    private var newEmail: String? = null
     private var changePasswordDialog: AlertDialog? = null
+    private var newPassword: String? = null
     private var confirmCredentialsDialog: AlertDialog? = null
 
     override fun onStart() {
@@ -59,6 +61,18 @@ class ProfileFragment : Fragment() {
         }
 
         // listen for successful or unsuccessful API calls
+        userAuthenticationViewModel.changeEmailSent.observe(viewLifecycleOwner) { sent ->
+            if (sent) {
+                dismissChangeEmailDialog()
+                Toast.makeText(requireContext(), "Please check your new email to verify", Toast.LENGTH_LONG).show()
+            }
+        }
+        userAuthenticationViewModel.passwordChanged.observe(viewLifecycleOwner) { changed ->
+            if (changed) {
+                dismissChangePasswordDialog()
+                Toast.makeText(requireContext(), "Password updated", Toast.LENGTH_LONG).show()
+            }
+        }
         userAuthenticationViewModel.deleteSuccessful.observe(viewLifecycleOwner) { success ->
             if (success) {
                 dismissReAuthenticationDialog()
@@ -66,8 +80,14 @@ class ProfileFragment : Fragment() {
                 findNavController().navigate(R.id.nav_signIn)
             }
         }
-        userAuthenticationViewModel.needReAuthenticate.observe(viewLifecycleOwner) {
-            openConfirmCredentialsDialog()
+        userAuthenticationViewModel.needReAuthenticateToChangeEmail.observe(viewLifecycleOwner) {
+            openConfirmCredentialsDialog { userAuthenticationViewModel.changeEmail(newEmail!!) }
+        }
+        userAuthenticationViewModel.needReAuthenticateToChangePassword.observe(viewLifecycleOwner) {
+            openConfirmCredentialsDialog { userAuthenticationViewModel.changePassword(newPassword!!) }
+        }
+        userAuthenticationViewModel.needReAuthenticateToDeleteAccount.observe(viewLifecycleOwner) {
+            openConfirmCredentialsDialog { userAuthenticationViewModel.deleteAccount() }
         }
 
         return root
@@ -99,6 +119,7 @@ class ProfileFragment : Fragment() {
         confirmButton.setOnClickListener {
             val email = emailInput.text.toString()
             if (UserAuthenticationUtils.verifyEmailFormat(email, emailInput)) {
+                newEmail = email
                 userAuthenticationViewModel.changeEmail(email)
             }
         }
@@ -116,7 +137,7 @@ class ProfileFragment : Fragment() {
 
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(view)
-        changeEmailDialog = builder.create()
+        changePasswordDialog = builder.create()
         UserAuthenticationUtils.handleShowPasswordCheckBox(listOf(passwordInput, passwordVerifyInput), showPasswordCheckBox)
 
         confirmButton.setOnClickListener {
@@ -124,11 +145,12 @@ class ProfileFragment : Fragment() {
             val passwordVerify = passwordVerifyInput.text.toString()
             if (UserAuthenticationUtils.verifyPasswordNotBlank(password, passwordInput) &&
                 UserAuthenticationUtils.verifyPasswordRequirements(password, passwordVerify, passwordInput, passwordVerifyInput)) {
+                newPassword = password
                 userAuthenticationViewModel.changePassword(password)
             }
         }
 
-        changeEmailDialog?.show()
+        changePasswordDialog?.show()
     }
 
     // generic confirmation dialog - prompt user to confirm action
@@ -158,7 +180,7 @@ class ProfileFragment : Fragment() {
     }
 
     // prompt user to confirm their credentials
-    private fun openConfirmCredentialsDialog() {
+    private fun openConfirmCredentialsDialog(action: () -> Unit) {
         val view = layoutInflater.inflate(R.layout.dialog_confirm_credentials, null)
         val emailInput = view.findViewById<EditText>(R.id.email)
         val passwordInput = view.findViewById<EditText>(R.id.password)
@@ -175,8 +197,8 @@ class ProfileFragment : Fragment() {
             if (UserAuthenticationUtils.verifyEmailFormat(email, emailInput) &&
                 UserAuthenticationUtils.verifyPasswordNotBlank(password, passwordInput)) {
                 userAuthenticationViewModel.reAuthenticate(email, password) {
-                    // delete account after re-authenticating
-                    userAuthenticationViewModel.deleteAccount()
+                    // perform corresponding action after confirming credentials
+                    action()
                 }
             }
         }
@@ -184,11 +206,11 @@ class ProfileFragment : Fragment() {
         confirmCredentialsDialog?.show()
     }
 
-    private fun dismissUpdateEmailDialog() {
+    private fun dismissChangeEmailDialog() {
         changeEmailDialog?.dismiss()
         changeEmailDialog = null
     }
-    private fun dismissUpdatePasswordDialog() {
+    private fun dismissChangePasswordDialog() {
         changePasswordDialog?.dismiss()
         changePasswordDialog = null
     }
