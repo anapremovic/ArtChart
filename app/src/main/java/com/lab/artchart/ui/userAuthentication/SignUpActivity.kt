@@ -25,6 +25,11 @@ class SignUpActivity : AppCompatActivity() {
                 binding.password.text.toString(),
                 binding.passwordVerify.text.toString())
         }
+        // on successful sign up
+        userAuthenticationViewModel.signUpSuccessful.observe(this) {
+            Toast.makeText(this, "Account created successfully", Toast.LENGTH_LONG).show()
+            finish()
+        }
         // go back to previous page
         binding.backButton.setOnClickListener {
             finish()

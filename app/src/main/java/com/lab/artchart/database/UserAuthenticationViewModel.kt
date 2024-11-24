@@ -11,24 +11,27 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class UserAuthenticationViewModel : ViewModel() {
     // sign in
     var invalidUser = MutableLiveData<Boolean>()
+    var signInSuccessful = MutableLiveData<Boolean>()
 
     // sign up
     var emailError = MutableLiveData<String>()
     var passwordError = MutableLiveData<String>()
     var passwordVerifyError = MutableLiveData<String>()
     var alreadyExists = MutableLiveData<Boolean>()
+    var signUpSuccessful = MutableLiveData<Boolean>()
 
     // call Firebase API to sign user in
     fun signIn(email: String, password: String) {
         if (verifyEmailAndPassword(email, password)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    Firebase.auth.signInWithEmailAndPassword(email, password).await()
+                    Firebase.auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
+                        signInSuccessful.postValue(true)
+                    }
                 } catch (e: FirebaseAuthInvalidCredentialsException) {
                     Log.d("SIGN_IN_ACT", "User email and password combination invalid for user with email $email", e)
                     invalidUser.postValue(true)
@@ -44,7 +47,9 @@ class UserAuthenticationViewModel : ViewModel() {
         if (verifyEmailAndPassword(email, password) && verifyPasswordSignUp(password, passwordVerify)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    Firebase.auth.createUserWithEmailAndPassword(email, password).await()
+                    Firebase.auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
+                        signUpSuccessful.postValue(true)
+                    }
                 } catch (e: FirebaseAuthUserCollisionException) {
                     Log.d("SIGN_IN_ACT", "User with email $email already exists", e)
                     alreadyExists.postValue(true)

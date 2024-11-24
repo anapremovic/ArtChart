@@ -23,6 +23,11 @@ class SignInActivity : AppCompatActivity() {
         binding.signInButton.setOnClickListener {
             userAuthenticationViewModel.signIn(binding.email.text.toString(), binding.password.text.toString())
         }
+        // on successful sign in
+        userAuthenticationViewModel.signInSuccessful.observe(this) {
+            Toast.makeText(this, "Signed in to ArtChart", Toast.LENGTH_LONG).show()
+            finish()
+        }
         // go back to previous page
         binding.backButton.setOnClickListener {
             finish()
