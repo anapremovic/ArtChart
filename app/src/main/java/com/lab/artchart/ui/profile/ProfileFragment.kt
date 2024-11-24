@@ -10,11 +10,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.lab.artchart.R
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.databinding.FragmentProfileBinding
-import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.util.UserAuthenticationUtils
 
 class ProfileFragment : Fragment() {
@@ -23,10 +23,17 @@ class ProfileFragment : Fragment() {
 
     private val binding get() = _binding!!
 
+    private var reAuthenticationDialog: AlertDialog? = null
+
+    override fun onStart() {
+        super.onStart()
+        userAuthenticationViewModel.deleteSuccessful.value = false
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        userAuthenticationViewModel = (activity as MainActivity).userAuthenticationViewModel
+        userAuthenticationViewModel = ViewModelProvider(this)[UserAuthenticationViewModel::class.java]
 
         // update UI
         setUserProfileInformation()
@@ -43,9 +50,12 @@ class ProfileFragment : Fragment() {
         }
 
         // listen for successful or unsuccessful API calls
-        userAuthenticationViewModel.deleteSuccessful.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), "Account deleted", Toast.LENGTH_LONG).show()
-            findNavController().navigate(R.id.nav_signIn)
+        userAuthenticationViewModel.deleteSuccessful.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                dismissReAuthenticationDialog()
+                Toast.makeText(requireContext(), "Account deleted", Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.nav_signIn)
+            }
         }
         userAuthenticationViewModel.needReAuthenticate.observe(viewLifecycleOwner) {
             openReAuthenticationDialog()
@@ -101,7 +111,7 @@ class ProfileFragment : Fragment() {
 
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(view)
-        val dialog = builder.create()
+        reAuthenticationDialog = builder.create()
 
         UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, viewLifecycleOwner, emailInput, passwordInput)
 
@@ -112,10 +122,14 @@ class ProfileFragment : Fragment() {
                 // delete account after re-authenticating
                 userAuthenticationViewModel.deleteAccount()
             }
-            dialog.dismiss()
         }
 
-        dialog.show()
+        reAuthenticationDialog?.show()
+    }
+
+    private fun dismissReAuthenticationDialog() {
+        reAuthenticationDialog?.dismiss()
+        reAuthenticationDialog = null
     }
 
     override fun onDestroyView() {

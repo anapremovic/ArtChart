@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var repository: FirebaseRepository
     lateinit var firebaseViewModel: FirebaseViewModel
-    lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
+    private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

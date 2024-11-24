@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.lab.artchart.R
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.databinding.FragmentSignInBinding
-import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.util.UserAuthenticationUtils
 
 class SignInFragment : Fragment() {
@@ -23,7 +23,7 @@ class SignInFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        userAuthenticationViewModel = (activity as MainActivity).userAuthenticationViewModel
+        userAuthenticationViewModel = ViewModelProvider(this)[UserAuthenticationViewModel::class.java]
 
         // sign into existing account with user input or show error
         binding.signInButton.setOnClickListener {
