@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.picasso)
     implementation(libs.androidx.activity)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

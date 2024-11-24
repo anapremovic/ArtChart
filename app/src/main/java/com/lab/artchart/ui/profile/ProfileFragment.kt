@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.lab.artchart.R
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.database.UserViewModel
@@ -40,6 +41,12 @@ class ProfileFragment : Fragment() {
     // launcher to handle selected image from gallery
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         imageGalleryManager.handleSelectedImage(result)
+
+        // make profile picture circular
+        Glide.with(this)
+            .load(imageGalleryManager.imageUri)
+            .circleCrop()
+            .into(binding.profileImage)
     }
 
     // launcher for gallery permission
