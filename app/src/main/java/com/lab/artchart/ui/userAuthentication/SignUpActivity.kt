@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.databinding.ActivitySignUpBinding
-import com.lab.artchart.util.PasswordUtils
+import com.lab.artchart.util.UserAuthenticationUtils
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
@@ -37,22 +37,14 @@ class SignUpActivity : AppCompatActivity() {
 
         // update UI
         updateErrors()
-        PasswordUtils.handleShowPasswordCheckBox(listOf(binding.password, binding.passwordVerify), binding.showPasswordCheckbox)
+        UserAuthenticationUtils.handleShowPasswordCheckBox(listOf(binding.password, binding.passwordVerify), binding.showPasswordCheckbox)
     }
 
     // update UI or toast when there is an error with the sign up
     private fun updateErrors() {
-        userAuthenticationViewModel.emailError.observe(this) {
-            binding.email.error = it
-        }
-        userAuthenticationViewModel.passwordError.observe(this) {
-            binding.password.error = it
-        }
+        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, this, binding.email, binding.password, this)
         userAuthenticationViewModel.passwordVerifyError.observe(this) {
             binding.passwordVerify.error = it
-        }
-        userAuthenticationViewModel.toastError.observe(this) {
-            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
     }
 }

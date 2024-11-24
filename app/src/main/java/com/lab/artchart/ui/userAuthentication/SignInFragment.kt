@@ -12,7 +12,7 @@ import com.lab.artchart.R
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.databinding.FragmentSignInBinding
 import com.lab.artchart.ui.MainActivity
-import com.lab.artchart.util.PasswordUtils
+import com.lab.artchart.util.UserAuthenticationUtils
 
 class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
@@ -36,8 +36,8 @@ class SignInFragment : Fragment() {
         }
 
         // update UI
-        updateErrors()
-        PasswordUtils.handleShowPasswordCheckBox(listOf(binding.password), binding.showPasswordCheckbox)
+        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, viewLifecycleOwner, binding.email, binding.password, requireContext())
+        UserAuthenticationUtils.handleShowPasswordCheckBox(listOf(binding.password), binding.showPasswordCheckbox)
 
         // go to sign up screen
         binding.signUpLink.setOnClickListener {
@@ -45,19 +45,6 @@ class SignInFragment : Fragment() {
         }
 
         return root
-    }
-
-    // update UI or toast when there is an error with the sign in
-    private fun updateErrors() {
-        userAuthenticationViewModel.emailError.observe(viewLifecycleOwner) {
-            binding.email.error = it
-        }
-        userAuthenticationViewModel.passwordError.observe(viewLifecycleOwner) {
-            binding.password.error = it
-        }
-        userAuthenticationViewModel.toastError.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-        }
     }
 
     override fun onDestroyView() {
