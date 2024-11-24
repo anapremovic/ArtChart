@@ -41,7 +41,7 @@ class UserAuthenticationViewModel : ViewModel() {
 
     // call Firebase API to create account for user
     fun verifyInfoAndSignUp(email: String, password: String, passwordVerify: String) {
-        if (verifyEmailAndPassword(email, password) && verifyPasswordsMatch(password, passwordVerify)) {
+        if (verifyEmailAndPassword(email, password) && verifyPasswordSignUp(password, passwordVerify)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     Firebase.auth.createUserWithEmailAndPassword(email, password).await()
@@ -74,7 +74,11 @@ class UserAuthenticationViewModel : ViewModel() {
         return true
     }
 
-    private fun verifyPasswordsMatch(password: String, passwordVerify: String): Boolean {
+    private fun verifyPasswordSignUp(password: String, passwordVerify: String): Boolean {
+        if (password.length < 6) {
+            passwordError.value = "Password must be at least 6 characters long"
+            return false
+        }
         if (password != passwordVerify) {
             passwordVerifyError.value = "Passwords do not match"
             return false
