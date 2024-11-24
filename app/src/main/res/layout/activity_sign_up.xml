@@ -39,6 +39,16 @@
                 android:paddingBottom="16dp" />
 
             <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/username"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                android:padding="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <EditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

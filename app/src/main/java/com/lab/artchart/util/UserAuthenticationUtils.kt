@@ -20,6 +20,20 @@ object UserAuthenticationUtils {
         }
     }
 
+    fun verifyUsernameRequirements(username: String, usernameInput: EditText): Boolean {
+        if (username.isBlank()) {
+            usernameInput.error = "Username is required"
+            return false
+        }
+
+        if (username.length in 4..15) {
+            usernameInput.error = "Username must be between 4 and 15 characters long"
+            return false
+        }
+
+        return true
+    }
+
     fun verifyEmailFormat(email: String, emailInput: EditText): Boolean {
         if (email.isBlank()) {
             emailInput.error = "Email is required"
