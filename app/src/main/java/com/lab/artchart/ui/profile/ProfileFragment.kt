@@ -113,14 +113,15 @@ class ProfileFragment : Fragment() {
         builder.setView(view)
         reAuthenticationDialog = builder.create()
 
-        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, viewLifecycleOwner, emailInput, passwordInput)
-
         confirmButton.setOnClickListener {
             val email = emailInput.text.toString()
             val password = passwordInput.text.toString()
-            userAuthenticationViewModel.reAuthenticate(email, password) {
-                // delete account after re-authenticating
-                userAuthenticationViewModel.deleteAccount()
+
+            if (UserAuthenticationUtils.verifyEmailAndPasswordFormat(email, password, emailInput, passwordInput)) {
+                userAuthenticationViewModel.reAuthenticate(email, password) {
+                    // delete account after re-authenticating
+                    userAuthenticationViewModel.deleteAccount()
+                }
             }
         }
 

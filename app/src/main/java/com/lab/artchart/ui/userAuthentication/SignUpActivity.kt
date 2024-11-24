@@ -20,12 +20,16 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
         userAuthenticationViewModel = ViewModelProvider(this)[UserAuthenticationViewModel::class.java]
 
-        // create account with user input
+        // create account with user input if fields correct
         binding.signUpButton.setOnClickListener {
-            userAuthenticationViewModel.signUp(
-                binding.email.text.toString(),
-                binding.password.text.toString(),
-                binding.passwordVerify.text.toString())
+            val email = binding.email.text.toString()
+            val password = binding.password.text.toString()
+            val passwordVerify = binding.passwordVerify.text.toString()
+
+            if (UserAuthenticationUtils.verifyEmailAndPasswordFormat(email, password, binding.email, binding.password)
+                && verifyPasswordSignUpRequirements(password, passwordVerify)) {
+                userAuthenticationViewModel.signUp(email, password)
+            }
         }
         // on successful sign up navigate to ProfileActivity
         userAuthenticationViewModel.signUpSuccessful.observe(this) {
@@ -43,18 +47,22 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         // update UI
-        updateErrors()
-        UserAuthenticationUtils.handleShowPasswordCheckBox(listOf(binding.password, binding.passwordVerify), binding.showPasswordCheckbox)
-    }
-
-    // update UI or toast when there is an error with the sign up
-    private fun updateErrors() {
-        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, this, binding.email, binding.password)
-        userAuthenticationViewModel.passwordVerifyError.observe(this) {
-            binding.passwordVerify.error = it
-        }
         userAuthenticationViewModel.toastError.observe(this) {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
+        UserAuthenticationUtils.handleShowPasswordCheckBox(listOf(binding.password, binding.passwordVerify), binding.showPasswordCheckbox)
+    }
+
+    private fun verifyPasswordSignUpRequirements(password: String, passwordVerify: String): Boolean {
+        if (password.length < 6) {
+            binding.password.error = "Password must be at least 6 characters long"
+            return false
+        }
+        if (password != passwordVerify) {
+            binding.passwordVerify.error = "Passwords do not match"
+            return false
+        }
+
+        return true
     }
 }

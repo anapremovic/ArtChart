@@ -27,7 +27,12 @@ class SignInFragment : Fragment() {
 
         // sign into existing account with user input or show error
         binding.signInButton.setOnClickListener {
-            userAuthenticationViewModel.signIn(binding.email.text.toString(), binding.password.text.toString())
+            val email = binding.email.text.toString()
+            val password = binding.password.text.toString()
+
+            if (UserAuthenticationUtils.verifyEmailAndPasswordFormat(email, password, binding.email, binding.password)) {
+                userAuthenticationViewModel.signIn(email, password)
+            }
         }
         // on successful sign in go back to profile
         userAuthenticationViewModel.signInSuccessful.observe(viewLifecycleOwner) {
@@ -36,7 +41,6 @@ class SignInFragment : Fragment() {
         }
 
         // update UI
-        UserAuthenticationUtils.updateErrorMessages(userAuthenticationViewModel, viewLifecycleOwner, binding.email, binding.password)
         userAuthenticationViewModel.toastError.observe(viewLifecycleOwner) {
             Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         }

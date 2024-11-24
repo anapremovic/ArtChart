@@ -1,7 +1,6 @@
 package com.lab.artchart.database
 
 import android.util.Log
-import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -27,10 +26,6 @@ class UserAuthenticationViewModel : ViewModel() {
     var signInSuccessful = MutableLiveData<Boolean>()
     var deleteSuccessful = MutableLiveData<Boolean>()
     var needReAuthenticate = MutableLiveData<Boolean>()
-
-    var emailError = MutableLiveData<String>()
-    var passwordError = MutableLiveData<String>()
-    var passwordVerifyError = MutableLiveData<String>()
     var toastError = MutableLiveData<String>()
 
     // flow object of currently authenticated user
@@ -49,11 +44,6 @@ class UserAuthenticationViewModel : ViewModel() {
 
     // call Firebase API to sign user in
     fun signIn(email: String, password: String) {
-        // check formatting
-        if (!verifyEmailAndPasswordFormat(email, password)) {
-            return
-        }
-
         // sign in
         CoroutineScope(Dispatchers.IO).launch {
             Firebase.auth.signInWithEmailAndPassword(email, password)
@@ -69,12 +59,7 @@ class UserAuthenticationViewModel : ViewModel() {
     }
 
     // call Firebase API to create account for user
-    fun signUp(email: String, password: String, passwordVerify: String) {
-        // check formatting and password
-        if (!verifyEmailAndPasswordFormat(email, password) || !verifyPasswordSignUpRequirements(password, passwordVerify)) {
-            return
-        }
-
+    fun signUp(email: String, password: String) {
         // sign up
         CoroutineScope(Dispatchers.IO).launch {
             Firebase.auth.createUserWithEmailAndPassword(email, password)
@@ -113,10 +98,6 @@ class UserAuthenticationViewModel : ViewModel() {
 
     // call Firebase API to re-authenticate user credentials
     fun reAuthenticate(email: String, password: String, action: () -> Unit) {
-        if (!verifyEmailAndPasswordFormat(email, password)) {
-            return
-        }
-
         CoroutineScope(Dispatchers.IO).launch {
             val credential = EmailAuthProvider.getCredential(email, password)
             currentUser.value?.reauthenticate(credential)
@@ -151,37 +132,5 @@ class UserAuthenticationViewModel : ViewModel() {
                 toastError.postValue(genericToast)
             }
         }
-    }
-
-    private fun verifyEmailAndPasswordFormat(email: String, password: String): Boolean {
-        if (email.isBlank()) {
-            emailError.value = "Email is required"
-            return false
-        }
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailError.value = "Please enter a valid email"
-            return false
-        }
-
-        if (password.isBlank()) {
-            passwordError.value = "Password is required"
-            return false
-        }
-
-        return true
-    }
-
-    private fun verifyPasswordSignUpRequirements(password: String, passwordVerify: String): Boolean {
-        if (password.length < 6) {
-            passwordError.value = "Password must be at least 6 characters long"
-            return false
-        }
-        if (password != passwordVerify) {
-            passwordVerifyError.value = "Passwords do not match"
-            return false
-        }
-
-        return true
     }
 }

@@ -1,10 +1,9 @@
 package com.lab.artchart.util
 
 import android.text.InputType
+import android.util.Patterns
 import android.widget.CheckBox
 import android.widget.EditText
-import androidx.lifecycle.LifecycleOwner
-import com.lab.artchart.database.UserAuthenticationViewModel
 
 // helper functions for user authentication
 object UserAuthenticationUtils {
@@ -21,14 +20,22 @@ object UserAuthenticationUtils {
         }
     }
 
-    // observe errors for user authentication pages
-    fun updateErrorMessages(userAuthenticationViewModel: UserAuthenticationViewModel,
-                            observerOwner: LifecycleOwner, email: EditText, password: EditText) {
-        userAuthenticationViewModel.emailError.observe(observerOwner) {
-            email.error = it
+    fun verifyEmailAndPasswordFormat(email: String, password: String, emailText: EditText, passwordText: EditText): Boolean {
+        if (email.isBlank()) {
+            emailText.error = "Email is required"
+            return false
         }
-        userAuthenticationViewModel.passwordError.observe(observerOwner) {
-            password.error = it
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailText.error = "Please enter a valid email"
+            return false
         }
+
+        if (password.isBlank()) {
+            passwordText.error = "Password is required"
+            return false
+        }
+
+        return true
     }
 }
