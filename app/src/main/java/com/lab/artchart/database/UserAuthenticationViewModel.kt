@@ -48,37 +48,61 @@ class UserAuthenticationViewModel : ViewModel() {
 
     // call Firebase API to sign user in
     fun signIn(email: String, password: String) {
-        if (verifyEmailAndPasswordFormat(email, password)) {
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    Firebase.auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
+        // check formatting
+        if (!verifyEmailAndPasswordFormat(email, password)) {
+            return
+        }
+
+        // sign in
+        CoroutineScope(Dispatchers.IO).launch {
+            Firebase.auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
                         signInSuccessful.postValue(true)
+                    } else {
+                        handleUnsuccessfulSignIn(task.exception, email)
                     }
-                } catch (e: FirebaseAuthInvalidCredentialsException) {
-                    Log.d("SIGN_IN_ACT", "User email and password combination invalid for user with email $email", e)
-                    invalidUser.postValue(true)
-                } catch (e: Exception) {
-                    Log.e("SIGN_IN_ACT", "Failed to sign in user with email $email", e)
                 }
-            }
+        }
+    }
+
+    // log and notify user when sign in fails
+    private fun handleUnsuccessfulSignIn(exception: Exception?, email: String) {
+        if (exception is FirebaseAuthInvalidCredentialsException) {
+            Log.d("SIGN_IN_ACT", "User  email and password combination invalid for user with email $email", exception)
+            invalidUser .postValue(true)
+        } else {
+            Log.e("SIGN_IN_ACT", "Failed to sign in user with email $email", exception)
         }
     }
 
     // call Firebase API to create account for user
     fun signUp(email: String, password: String, passwordVerify: String) {
-        if (verifyEmailAndPasswordFormat(email, password) && verifyPasswordSignUpRequirements(password, passwordVerify)) {
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    Firebase.auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
+        // check formatting and password
+        if (!verifyEmailAndPasswordFormat(email, password) || !verifyPasswordSignUpRequirements(password, passwordVerify)) {
+            return
+        }
+
+        // sign up
+        CoroutineScope(Dispatchers.IO).launch {
+            Firebase.auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
                         signUpSuccessful.postValue(true)
+                    } else {
+                        handleUnsuccessfulSignUp(task.exception, email)
                     }
-                } catch (e: FirebaseAuthUserCollisionException) {
-                    Log.d("SIGN_IN_ACT", "User with email $email already exists", e)
-                    alreadyExists.postValue(true)
-                } catch (e: Exception) {
-                    Log.e("SIGN_IN_ACT", "Failed to create account for user with email $email", e)
                 }
-            }
+        }
+    }
+
+    // log and notify user when sign up fails
+    private fun handleUnsuccessfulSignUp(exception: Exception?, email: String) {
+        if (exception is FirebaseAuthUserCollisionException) {
+            Log.d("SIGN_IN_ACT", "User with email $email already exists", exception)
+            alreadyExists.postValue(true)
+        } else {
+            Log.e("SIGN_IN_ACT", "Failed to create account for user with email $email", exception)
         }
     }
 
