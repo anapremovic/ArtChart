@@ -79,8 +79,8 @@ class MainActivity : AppCompatActivity() {
     // handle navigating to ProfileFragment from SignUpActivity
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.getStringExtra("NAVIGATE_TO") == "ProfileFragment") {
-            navController.navigate(R.id.nav_profile)
+        if (intent.getStringExtra("NAVIGATE_TO") == "SignInFragment") {
+            navController.navigate(R.id.nav_signIn)
         }
     }
 

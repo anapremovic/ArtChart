@@ -70,10 +70,28 @@ class UserAuthenticationViewModel : ViewModel() {
             Firebase.auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        signUpSuccessful.postValue(true)
+                        val user = task.result.user
+                        sendEmailVerification(user, email) // verify email
                     } else {
                         handleFirebaseError(task.exception, "Sign up error",
                             "Failed to create account for user with email $email",
+                            email, "")
+                    }
+                }
+        }
+    }
+
+    // call Firebase API to send verification email to newly created user
+    private fun sendEmailVerification(user: FirebaseUser?, email: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            user?.sendEmailVerification()
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        signOut() // sign out
+                        signUpSuccessful.postValue(true)
+                    } else {
+                        handleFirebaseError(task.exception, "Error sending verification email",
+                            "Failed to send verification email to $email",
                             email, "")
                     }
                 }

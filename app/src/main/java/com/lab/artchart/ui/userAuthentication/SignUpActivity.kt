@@ -34,9 +34,9 @@ class SignUpActivity : AppCompatActivity() {
         }
         // on successful sign up navigate to ProfileActivity
         userAuthenticationViewModel.signUpSuccessful.observe(this) {
-            Toast.makeText(this, "Account created successfully", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Account created successfully, please verify your email to sign in", Toast.LENGTH_LONG).show()
             val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("NAVIGATE_TO", "ProfileFragment")
+            intent.putExtra("NAVIGATE_TO", "SignInFragment")
             // ensure we don't create new instances of MainActivity and fragments
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
