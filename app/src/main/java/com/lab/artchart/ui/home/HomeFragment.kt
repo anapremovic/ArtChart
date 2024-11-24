@@ -1,6 +1,7 @@
 package com.lab.artchart.ui.home
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -83,17 +84,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener{//, Google
 
         firebaseViewModel = (requireActivity() as MainActivity).firebaseViewModel
         firebaseViewModel.allArtworks.observe(viewLifecycleOwner, Observer { it ->
-            println("Artwork List Updated")
             artworkList = it
-
             //Adds all artwork markers
             for (artwork in artworkList){
-                println("title: "+artwork.title)
                 addArtMarker(artwork)
             }
         })
 
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireContext()))
+
+        mMap.setOnInfoWindowClickListener { marker ->
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            startActivity(intent)
+        }
 
         getLocationPermissionOrConfigureLocationManager()
     }
