@@ -40,7 +40,7 @@ class ArtworkViewModel : ViewModel() {
             artwork.imageUrl = imageUrl.toString()
             artworkReference.child(artworkId).setValue(artwork).await()
 
-            Log.i("FIREBASE_REPO", "Saved Artwork $artworkId")
+            Log.i("ARTWORK_VIEW_MODEL", "Saved Artwork $artworkId")
         }
     }
 
