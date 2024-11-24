@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         userAuthenticationViewModel.currentUser.observe(this) { user ->
             handleNavigation(user)
         }
+        handleSignUpActivityFinished()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -105,6 +106,13 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
             }
+        }
+    }
+
+    // handle navigating to ProfileFragment from SignUpActivity
+    private fun handleSignUpActivityFinished() {
+        if (intent.getStringExtra("NAVIGATE_TO") == "ProfileFragment") {
+            navController.navigate(R.id.nav_profile)
         }
     }
 }
