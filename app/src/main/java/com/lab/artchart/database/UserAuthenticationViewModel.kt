@@ -22,8 +22,10 @@ import kotlinx.coroutines.launch
 class UserAuthenticationViewModel : ViewModel() {
     val currentUser = currentUserFlow.asLiveData()
 
-    var signUpSuccessful = MutableLiveData<Boolean>()
     var signInSuccessful = MutableLiveData<Boolean>()
+    var signUpSuccessful = MutableLiveData<Boolean>()
+    var changeEmailSent = MutableLiveData<Boolean>()
+    var passwordChanged = MutableLiveData<Boolean>()
     var deleteSuccessful = MutableLiveData<Boolean>()
     var needReAuthenticate = MutableLiveData<Boolean>()
     var toastError = MutableLiveData<String>()
@@ -69,6 +71,36 @@ class UserAuthenticationViewModel : ViewModel() {
                     } else {
                         handleFirebaseError(task.exception, "Sign up error",
                             "Failed to create account for user with email $email", email)
+                    }
+                }
+        }
+    }
+
+    // call Firebase API to change user email
+    fun changeEmail(email: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            currentUser.value?.verifyBeforeUpdateEmail(email)
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        changeEmailSent.postValue(true)
+                    } else {
+                        handleFirebaseError(task.exception, "Error sending email-change email",
+                            "Failed to send email-change email to user $email")
+                    }
+                }
+        }
+    }
+
+    // call Firebase API to change user password
+    fun changePassword(password: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            currentUser.value?.updatePassword(password)
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        passwordChanged.postValue(true)
+                    } else {
+                        handleFirebaseError(task.exception, "Password change error",
+                            "Failed to change password for user with email ${currentUser.value?.email}")
                     }
                 }
         }
