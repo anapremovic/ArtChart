@@ -33,6 +33,7 @@ import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.database.ArtworkViewModel
 import com.lab.artchart.databinding.FragmentAddArtBinding
+import com.lab.artchart.util.ImageGalleryManager
 
 class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap.OnMapClickListener {
 
@@ -50,27 +51,16 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
     private var _binding: FragmentAddArtBinding? = null
 
     private lateinit var artworkViewModel: ArtworkViewModel
-    private var artworkImageUri: Uri? = null
-    private lateinit var artworkImageView: ImageView
-
-    // launcher for gallery permission
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            getImageFromGallery()
-        } else {
-            Toast.makeText(requireContext(), "Gallery permission needed to upload artwork image", Toast.LENGTH_SHORT).show()
-        }
-    }
+    private lateinit var imageGalleryManager: ImageGalleryManager
 
     // launcher to handle selected image from gallery
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            artworkImageUri = result.data?.data
-            artworkImageUri?.let {
-                // update view
-                artworkImageView.setImageURI(it)
-            }
-        }
+        imageGalleryManager.handleSelectedImage(result)
+    }
+
+    // launcher for gallery permission
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        imageGalleryManager.handlePermission(isGranted, requireContext(), selectImageLauncher)
     }
 
     // This property is only valid between onCreateView and onDestroyView.
@@ -85,7 +75,7 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
         // views
         val saveButton = binding.saveButton
         val selectPhotoButton = binding.selectPhotoButton
-        artworkImageView = binding.artworkImage
+        imageGalleryManager = ImageGalleryManager(binding.artworkImage)
 
         // Map stuff
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -93,17 +83,13 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
 
         // request correct permission based on android version or open gallery if already granted
         selectPhotoButton.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                openGalleryOrRequestPermission(Manifest.permission.READ_MEDIA_IMAGES)
-            } else {
-                openGalleryOrRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
+            imageGalleryManager.openGalleryOrRequestPermission(requireContext(), requestPermissionLauncher, selectImageLauncher)
         }
 
         // save artwork to database
         saveButton.setOnClickListener {
             artworkViewModel = (activity as MainActivity).artworkViewModel
-            if (artworkImageUri != null) {
+            if (imageGalleryManager.imageUri != null) {
                 var roundedLat: Double? = 0.0
                 if (latitude != null) {
                     roundedLat = (Math.round(latitude!! * 100) / 100.0)
@@ -125,7 +111,7 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
                     roundedLong,
                     binding.description.text.toString())
                 // save to firebase realtime database and firebase storage
-                artworkViewModel.saveArtwork(testArtwork, artworkImageUri!!)
+                artworkViewModel.saveArtwork(testArtwork, imageGalleryManager.imageUri!!)
                 Toast.makeText(requireContext(), "Saved Artwork to database", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "Please upload artwork image to submit", Toast.LENGTH_SHORT).show()
@@ -202,20 +188,5 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
         } else {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
-    }
-
-    // open gallery if permission already granted or launch permission launcher
-    private fun openGalleryOrRequestPermission(permission: String) {
-        if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            getImageFromGallery()
-        } else {
-            requestPermissionLauncher.launch(permission)
-        }
-    }
-
-    // launch intent to open gallery
-    private fun getImageFromGallery() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        selectImageLauncher.launch(intent)
     }
 }
