@@ -26,7 +26,7 @@ object UserAuthenticationUtils {
             return false
         }
 
-        if (username.length in 4..15) {
+        if (username.length !in 4..15) {
             usernameInput.error = "Username must be between 4 and 15 characters long"
             return false
         }
