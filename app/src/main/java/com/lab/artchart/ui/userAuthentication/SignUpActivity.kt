@@ -22,12 +22,14 @@ class SignUpActivity : AppCompatActivity() {
 
         // create account with user input if fields correct
         binding.signUpButton.setOnClickListener {
+            val username = binding.username.text.toString()
             val email = binding.email.text.toString()
             val password = binding.password.text.toString()
             val passwordVerify = binding.passwordVerify.text.toString()
 
-            if ((UserAuthenticationUtils.verifyEmailFormat(email, binding.email) &&
-                UserAuthenticationUtils.verifyPasswordNotBlank(password, binding.password)) &&
+            if (UserAuthenticationUtils.verifyUsernameRequirements(username, binding.username) &&
+                UserAuthenticationUtils.verifyEmailFormat(email, binding.email) &&
+                UserAuthenticationUtils.verifyPasswordNotBlank(password, binding.password) &&
                 UserAuthenticationUtils.verifyPasswordRequirements(password, passwordVerify, binding.password, binding.passwordVerify)) {
                 userAuthenticationViewModel.signUp(email, password)
             }

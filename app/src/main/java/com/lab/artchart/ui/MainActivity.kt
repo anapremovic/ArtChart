@@ -16,13 +16,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseUser
 import com.lab.artchart.R
-import com.lab.artchart.database.FirebaseRepository
-import com.lab.artchart.database.FirebaseViewModel
-import com.lab.artchart.database.FirebaseViewModelFactory
+import com.lab.artchart.database.ArtworkViewModel
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    // navbar
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
@@ -30,8 +29,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var repository: FirebaseRepository
-    lateinit var firebaseViewModel: FirebaseViewModel
+    // view models
+    lateinit var artworkViewModel: ArtworkViewModel
     private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,9 +84,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeViewModels() {
-        repository = FirebaseRepository() // initialize repository in MainActivity so it's global
-        val viewModelFactory = FirebaseViewModelFactory(repository)
-        firebaseViewModel = ViewModelProvider(this, viewModelFactory)[FirebaseViewModel::class.java]
+        artworkViewModel = ViewModelProvider(this)[ArtworkViewModel::class.java]
         userAuthenticationViewModel = ViewModelProvider(this)[UserAuthenticationViewModel::class.java]
     }
 

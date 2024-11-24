@@ -31,7 +31,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
-import com.lab.artchart.database.FirebaseViewModel
+import com.lab.artchart.database.ArtworkViewModel
 import com.lab.artchart.databinding.FragmentAddArtBinding
 
 class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap.OnMapClickListener {
@@ -49,7 +49,7 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
     // others
     private var _binding: FragmentAddArtBinding? = null
 
-    private lateinit var firebaseViewModel: FirebaseViewModel
+    private lateinit var artworkViewModel: ArtworkViewModel
     private var artworkImageUri: Uri? = null
     private lateinit var artworkImageView: ImageView
 
@@ -102,9 +102,8 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
 
         // save artwork to database
         saveButton.setOnClickListener {
-            firebaseViewModel = (activity as MainActivity).firebaseViewModel
+            artworkViewModel = (activity as MainActivity).artworkViewModel
             if (artworkImageUri != null) {
-                // TODO: get LngLat by selecting on map
                 var roundedLat: Double? = 0.0
                 if (latitude != null) {
                     roundedLat = (Math.round(latitude!! * 100) / 100.0)
@@ -126,7 +125,7 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
                     roundedLong,
                     binding.description.text.toString())
                 // save to firebase realtime database and firebase storage
-                firebaseViewModel.saveArtwork(testArtwork, artworkImageUri!!)
+                artworkViewModel.saveArtwork(testArtwork, artworkImageUri!!)
                 Toast.makeText(requireContext(), "Saved Artwork to database", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "Please upload artwork image to submit", Toast.LENGTH_SHORT).show()

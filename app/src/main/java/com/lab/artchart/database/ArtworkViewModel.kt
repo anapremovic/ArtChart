@@ -2,6 +2,8 @@ package com.lab.artchart.database
 
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -18,14 +20,15 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class FirebaseRepository {
+class ArtworkViewModel : ViewModel() {
     private var databaseRoot: FirebaseDatabase = FirebaseDatabase.getInstance()
     private var artworkReference: DatabaseReference = databaseRoot.reference.child("artwork")
-    // TODO: Add functionality for reviews
-    // private var reviewReference: DatabaseReference = databaseRoot.reference.child("review")
     private var storageReference: StorageReference = FirebaseStorage.getInstance().getReference("artwork_images")
 
-     fun saveArtwork(artwork: Artwork, imageUri: Uri) {
+    // get flow object as live data
+    val allArtworks = getAllArtwork().asLiveData()
+
+    fun saveArtwork(artwork: Artwork, imageUri: Uri) {
         CoroutineScope(Dispatchers.IO).launch {
             val artworkId = artworkReference.push().key!!
 
@@ -41,7 +44,7 @@ class FirebaseRepository {
         }
     }
 
-    fun getAllArtwork(): Flow<List<Artwork>> {
+    private fun getAllArtwork(): Flow<List<Artwork>> {
         // return flow object using a callback
         return callbackFlow {
             val listener = object : ValueEventListener {
