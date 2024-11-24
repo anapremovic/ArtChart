@@ -1,5 +1,6 @@
 package com.lab.artchart.database
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,49 +16,66 @@ import kotlinx.coroutines.tasks.await
 class UserViewModel : ViewModel() {
     private var databaseRoot: FirebaseDatabase = FirebaseDatabase.getInstance()
     private var userReference: DatabaseReference = databaseRoot.reference.child("users")
-
-    // TODO: profile picture functionality
     private var storageReference: StorageReference = FirebaseStorage.getInstance().getReference("user_profile_pictures")
 
-    var username = MutableLiveData<String>()
+    var user = MutableLiveData<User?>()
     var usernameChanged = MutableLiveData<Boolean>()
     var toastError = MutableLiveData<String>()
 
     fun saveUser(uid: String, user: User) {
         CoroutineScope(Dispatchers.IO).launch {
-            userReference.child(uid).setValue(user).await()
-            Log.i("USER_VIEW_MODEL", "Saved User $uid")
+            try {
+                userReference.child(uid).setValue(user).await()
+                Log.i("USER_VIEW_MODEL", "Saved user $uid")
+            } catch (e: Exception) {
+                Log.e("USER_VIEW_MODEL", "Failed to save user with ID $uid", e)
+                toastError.postValue("Error saving user")
+            }
+        }
+    }
+
+    fun saveProfilePicture(uid: String, imageUri: Uri) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val uploadTask = storageReference.child(uid).putFile(imageUri).await()
+                val imageUrl = uploadTask.storage.downloadUrl.await()
+                userReference.child(uid).child("profilePictureUrl").setValue(imageUrl.toString())
+                Log.i("USER_VIEW_MODEL", "Saved profile picture for user $uid")
+            } catch (e: Exception) {
+                Log.e("USER_VIEW_MODEL", "Failed to save profile picture for user with ID $uid", e)
+                toastError.postValue("Error saving profile picture")
+            }
         }
     }
 
     fun fetchUserByUid(uid: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            userReference.child(uid).child("username").get()
-                .addOnSuccessListener { dataSnapshot ->
-                    if (dataSnapshot.exists()) {
-                        username.postValue(dataSnapshot.getValue(String::class.java))
-                    } else {
-                        username.postValue("")
-                        Log.w("USER_VIEW_MODEL", "Username empty for user $uid")
-                    }
+            try {
+                val dataSnapshot = userReference.child(uid).get().await()
+                if (dataSnapshot.exists()) {
+                    user.postValue(dataSnapshot.getValue(User::class.java))
+                } else {
+                    user.postValue(null)
+                    Log.w("USER_VIEW_MODEL", "No user with ID $uid")
+                    toastError.postValue("Error generating profile")
                 }
-                .addOnFailureListener { e ->
-                    username.postValue("")
-                    Log.e("USER_VIEW_MODEL", "Failed to fetch username for user $uid", e)
-                }
+            } catch (e: Exception) {
+                Log.e("USER_VIEW_MODEL", "Failed to fetch user for ID $uid", e)
+                user.postValue(null)
+                toastError.postValue("Error generating profile")
+            }
         }
     }
 
-    fun updateUsername(uid: String, newUsername: String) {
+    fun changeUsername(uid: String, newUsername: String) {
         CoroutineScope(Dispatchers.IO).launch {
             userReference.child(uid).child("username").setValue(newUsername)
                 .addOnSuccessListener {
-                    Log.i("USER_VIEW_MODEL", "Updated username for user $uid to $newUsername")
+                    Log.i("USER_VIEW_MODEL", "Changed username for user $uid to $newUsername")
                     usernameChanged.postValue(true)
-                    username.postValue(newUsername)
                 }
                 .addOnFailureListener { e ->
-                    Log.e("USER_VIEW_MODEL", "Failed to update username for user $uid", e)
+                    Log.e("USER_VIEW_MODEL", "Failed to change username for user $uid", e)
                     toastError.postValue("Username change error")
                 }
         }

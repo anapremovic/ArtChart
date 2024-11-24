@@ -40,13 +40,17 @@ class ProfileFragment : Fragment() {
 
     // launcher to handle selected image from gallery
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        imageGalleryManager.handleSelectedImage(result)
-
-        // make profile picture circular
-        Glide.with(this)
-            .load(imageGalleryManager.imageUri)
-            .circleCrop()
-            .into(binding.profileImage)
+        val user = userAuthenticationViewModel.currentUser.value
+        if (user == null) {
+            // unexpected behaviour - should not be able to access ProfileFragment if not signed in
+            dismissChangeUsernameDialog()
+            Toast.makeText(requireContext(), "User not signed in", Toast.LENGTH_SHORT).show()
+            Log.w("PROFILE_FRAG", "Tried to save profile picture when no user authenticated")
+        } else {
+            imageGalleryManager.handleSelectedImage(result) // handle selected image
+            userViewModel.saveProfilePicture(user.uid, imageGalleryManager.imageUri!!) // save image to storage
+            loadCircularImage(imageGalleryManager.imageUri!!.toString()) // crop to circle
+        }
     }
 
     // launcher for gallery permission
@@ -147,7 +151,7 @@ class ProfileFragment : Fragment() {
                 // set email from current user
                 binding.emailText.text = user.email.toString()
 
-                // update username live data
+                // update user live data
                 userViewModel.fetchUserByUid(user.uid)
             } else {
                 // unexpected behaviour - fragment should only be accessible when there is a user signed in
@@ -155,9 +159,14 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        // set username from live data
-        userViewModel.username.observe(viewLifecycleOwner) { username ->
-            binding.usernameText.text = username
+        // set username and profile picture from live data
+        userViewModel.user.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                binding.usernameText.text = it.username
+                if (it.profilePictureUrl.isNotBlank()) {
+                    loadCircularImage(it.profilePictureUrl)
+                }
+            }
         }
     }
 
@@ -180,7 +189,7 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "User not signed in", Toast.LENGTH_SHORT).show()
                 Log.w("PROFILE_FRAG", "Tried to update username when no user authenticated")
             } else if (UserAuthenticationUtils.verifyUsernameRequirements(username, usernameInput)) {
-                userViewModel.updateUsername(user.uid, username)
+                userViewModel.changeUsername(user.uid, username)
             }
         }
 
@@ -302,6 +311,14 @@ class ProfileFragment : Fragment() {
     private fun dismissConfirmCredentialsDialog() {
         confirmCredentialsDialog?.dismiss()
         confirmCredentialsDialog = null
+    }
+
+    // load the image async and crop as a circle
+    private fun loadCircularImage(imageUrl: String) {
+        Glide.with(this)
+            .load(imageUrl)
+            .circleCrop()
+            .into(binding.profileImage)
     }
 
     override fun onDestroyView() {
