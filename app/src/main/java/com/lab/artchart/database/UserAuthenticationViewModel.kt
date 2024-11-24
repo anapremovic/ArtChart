@@ -61,20 +61,10 @@ class UserAuthenticationViewModel : ViewModel() {
                     if (task.isSuccessful) {
                         signInSuccessful.postValue(true)
                     } else {
-                        handleUnsuccessfulSignIn(task.exception, email)
+                        handleFirebaseError(task.exception, "Sign in error",
+                            "Failed to sign in user with email $email", email)
                     }
                 }
-        }
-    }
-
-    // log and notify user when sign in fails
-    private fun handleUnsuccessfulSignIn(exception: Exception?, email: String) {
-        if (exception is FirebaseAuthInvalidCredentialsException) {
-            Log.d("USER_AUTH", "User email and password combination invalid for user with email $email", exception)
-            toastError.postValue("Error validating credentials due to invalid username or password")
-        } else {
-            Log.e("USER_AUTH", "Failed to sign in user with email $email", exception)
-            toastError.postValue("Sign in error")
         }
     }
 
@@ -92,20 +82,10 @@ class UserAuthenticationViewModel : ViewModel() {
                     if (task.isSuccessful) {
                         signUpSuccessful.postValue(true)
                     } else {
-                        handleUnsuccessfulSignUp(task.exception, email)
+                        handleFirebaseError(task.exception, "Sign up error",
+                            "Failed to create account for user with email $email", email)
                     }
                 }
-        }
-    }
-
-    // log and notify user when sign up fails
-    private fun handleUnsuccessfulSignUp(exception: Exception?, email: String) {
-        if (exception is FirebaseAuthUserCollisionException) {
-            Log.d("USER_AUTH", "User with email $email already exists", exception)
-            toastError.postValue("This email is already associated with an account")
-        } else {
-            Log.e("USER_AUTH", "Failed to create account for user with email $email", exception)
-            toastError.postValue("Sign up error")
         }
     }
 
@@ -124,20 +104,10 @@ class UserAuthenticationViewModel : ViewModel() {
                     if (task.isSuccessful) {
                         deleteSuccessful.postValue(true)
                     } else {
-                        handleUnsuccessfulDeletion(task.exception)
+                        handleFirebaseError(task.exception, "Account deletion error",
+                            "Failed to delete account for user with email ${currentUser.value?.email}")
                     }
                 }
-        }
-    }
-
-    // prompt re-authentication or log and notify error
-    private fun handleUnsuccessfulDeletion(exception: Exception?) {
-        if (exception is FirebaseAuthRecentLoginRequiredException) {
-            Log.d("USER_AUTH", "Prompting user to re-authenticate in order to delete their account")
-            needReAuthenticate.postValue(true)
-        } else {
-            Log.e("USER_AUTH", "Failed to delete account for user with email ${currentUser.value?.email}", exception)
-            toastError.postValue("Account deletion error")
         }
     }
 
@@ -154,20 +124,32 @@ class UserAuthenticationViewModel : ViewModel() {
                     if (task.isSuccessful) {
                         action()
                     } else {
-                        handleUnsuccessfulReAuthentication(task.exception, email)
+                        handleFirebaseError(task.exception, "Authentication error",
+                            "Failed to re-authenticate user with email $email", email)
                     }
                 }
         }
     }
 
-    // log and notify user when sign in fails
-    private fun handleUnsuccessfulReAuthentication(exception: Exception?, email: String) {
-        if (exception is FirebaseAuthInvalidCredentialsException) {
-            Log.d("USER_AUTH", "User email and password combination invalid for user with email $email", exception)
-            toastError.postValue("Error validating credentials due to invalid username or password")
-        } else {
-            Log.e("USER_AUTH", "Failed to re-authenticate user with email $email", exception)
-            toastError.postValue("Authentication error")
+    // log and notify user when Firebase API call fails
+    private fun handleFirebaseError(exception: Exception?, genericToast: String, genericErrorLog: String, email: String? = null) {
+        when (exception) {
+            is FirebaseAuthRecentLoginRequiredException -> {
+                Log.d("USER_AUTH", "Prompting user to re-authenticate in order to delete their account")
+                needReAuthenticate.postValue(true)
+            }
+            is FirebaseAuthUserCollisionException -> {
+                Log.d("USER_AUTH", "User with email $email already exists", exception)
+                toastError.postValue("This email is already associated with an account")
+            }
+            is FirebaseAuthInvalidCredentialsException -> {
+                Log.d("USER_AUTH", "User email and password combination invalid for user with email $email", exception)
+                toastError.postValue("Error validating credentials due to invalid username or password")
+            }
+            else -> {
+                Log.e("USER_AUTH", genericErrorLog, exception)
+                toastError.postValue(genericToast)
+            }
         }
     }
 
