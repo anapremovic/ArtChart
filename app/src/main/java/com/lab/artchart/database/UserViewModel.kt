@@ -20,6 +20,8 @@ class UserViewModel : ViewModel() {
     private var storageReference: StorageReference = FirebaseStorage.getInstance().getReference("user_profile_pictures")
 
     var username = MutableLiveData<String>()
+    var usernameChanged = MutableLiveData<Boolean>()
+    var toastError = MutableLiveData<String>()
 
     fun saveUser(user: User) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -42,6 +44,21 @@ class UserViewModel : ViewModel() {
                 .addOnFailureListener { e ->
                     username.postValue("")
                     Log.e("USER_VIEW_MODEL", "Failed to fetch username for user $uid", e)
+                }
+        }
+    }
+
+    fun updateUsername(uid: String, newUsername: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            userReference.child(uid).child("username").setValue(newUsername)
+                .addOnSuccessListener {
+                    Log.i("USER_VIEW_MODEL", "Updated username for user $uid to $newUsername")
+                    usernameChanged.postValue(true)
+                    username.postValue(newUsername)
+                }
+                .addOnFailureListener { e ->
+                    Log.e("USER_VIEW_MODEL", "Failed to update username for user $uid", e)
+                    toastError.postValue("Username change error")
                 }
         }
     }

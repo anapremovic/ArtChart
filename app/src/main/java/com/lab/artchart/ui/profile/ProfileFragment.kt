@@ -27,6 +27,7 @@ class ProfileFragment : Fragment() {
 
     private val binding get() = _binding!!
 
+    private var changeUsernameDialog: AlertDialog? = null
     private var changeEmailDialog: AlertDialog? = null
     private var newEmail: String? = null
     private var changePasswordDialog: AlertDialog? = null
@@ -49,8 +50,14 @@ class ProfileFragment : Fragment() {
         userAuthenticationViewModel.toastError.observe(viewLifecycleOwner) {
             Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         }
+        userViewModel.toastError.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+        }
 
         // button listeners
+        binding.changeUsernameButton.setOnClickListener {
+            openChangeUsernameDialog()
+        }
         binding.changeEmailButton.setOnClickListener {
             openChangeEmailDialog()
         }
@@ -65,6 +72,12 @@ class ProfileFragment : Fragment() {
         }
 
         // listen for successful or unsuccessful API calls
+        userViewModel.usernameChanged.observe(viewLifecycleOwner) { changed ->
+            if (changed) {
+                dismissChangeUsernameDialog()
+                Toast.makeText(requireContext(), "Username changed", Toast.LENGTH_LONG).show()
+            }
+        }
         userAuthenticationViewModel.changeEmailSent.observe(viewLifecycleOwner) { sent ->
             if (sent) {
                 dismissChangeEmailDialog()
@@ -76,7 +89,7 @@ class ProfileFragment : Fragment() {
         userAuthenticationViewModel.passwordChanged.observe(viewLifecycleOwner) { changed ->
             if (changed) {
                 dismissChangePasswordDialog()
-                Toast.makeText(requireContext(), "Password updated", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Password changed", Toast.LENGTH_LONG).show()
             }
         }
         userAuthenticationViewModel.deleteSuccessful.observe(viewLifecycleOwner) { success ->
@@ -118,6 +131,32 @@ class ProfileFragment : Fragment() {
         userViewModel.username.observe(viewLifecycleOwner) { username ->
             binding.usernameText.text = username
         }
+    }
+
+    // prompt user to enter a new username
+    private fun openChangeUsernameDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_change_username, null)
+        val usernameInput = view.findViewById<EditText>(R.id.username)
+        val confirmButton = view.findViewById<Button>(R.id.confirm_button)
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(view)
+        changeUsernameDialog = builder.create()
+
+        confirmButton.setOnClickListener {
+            val user = userAuthenticationViewModel.currentUser.value
+            val username = usernameInput.text.toString()
+            if (user == null) {
+                // unexpected behaviour - should not be able to access ProfileFragment if not signed in
+                dismissChangeUsernameDialog()
+                Toast.makeText(requireContext(), "User not signed in", Toast.LENGTH_SHORT).show()
+                Log.w("PROFILE_FRAG", "Tried to update username when no user authenticated")
+            } else if (UserAuthenticationUtils.verifyUsernameRequirements(username, usernameInput)) {
+                userViewModel.updateUsername(user.uid, username)
+            }
+        }
+
+        changeUsernameDialog?.show()
     }
 
     // prompt user to enter a new email
@@ -220,6 +259,10 @@ class ProfileFragment : Fragment() {
         confirmCredentialsDialog?.show()
     }
 
+    private fun dismissChangeUsernameDialog() {
+        changeUsernameDialog?.dismiss()
+        changeUsernameDialog = null
+    }
     private fun dismissChangeEmailDialog() {
         changeEmailDialog?.dismiss()
         changeEmailDialog = null

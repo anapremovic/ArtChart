@@ -45,12 +45,13 @@
     <string name="confirm_credentials">Confirm Credentials</string>
     <string name="confirm_credentials_message">For security reasons, please re-enter your existing credentials.</string>
 
-    <!-- Update Email Dialog -->
-    <string name="change_email_message">Enter your new email address.</string>
+    <!-- ChangeUsernameDialog -->
+    <string name="new_username">New Username</string>
+
+    <!-- ChangeEmailDialog -->
     <string name="new_email">New Email</string>
 
     <!-- ChangePasswordDialog -->
-    <string name="change_password_message">Enter your new password.</string>
     <string name="new_password">New Password</string>
 
     <!-- Common View Texts -->
