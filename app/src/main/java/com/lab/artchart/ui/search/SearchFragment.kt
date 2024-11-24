@@ -2,18 +2,24 @@ package com.lab.artchart.ui.search
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListView
+import android.widget.SearchView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.lab.artchart.MainActivity
+import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.databinding.FragmentSearchBinding
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentSearchBinding? = null
+    private lateinit var listView:ListView
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -26,7 +32,7 @@ class SearchFragment : Fragment() {
 
         // observe remote database items and update listview
         val adapter = ArtworkAdapter(requireContext(), mutableListOf())
-        val listView = binding.artworkListView
+        listView = binding.artworkListView
         listView.adapter = adapter
         val firebaseViewModel = (activity as MainActivity).firebaseViewModel
         firebaseViewModel.allArtworks.observe(viewLifecycleOwner) {
@@ -47,11 +53,32 @@ class SearchFragment : Fragment() {
             startActivity(intent)
         }
 
+        //SEARCH VIEW
+        listView.isTextFilterEnabled = true
+        val searchView = root.findViewById<SearchView>(R.id.search_view)
+        searchView.setOnQueryTextListener(this)
+
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        println("newText: "+newText)
+        if (TextUtils.isEmpty(newText)){
+            println("clearTextFilter")
+            listView.clearTextFilter();
+        }else{
+            println("setFilterText")
+            listView.setFilterText(newText)
+        }
+        return true
     }
 }
