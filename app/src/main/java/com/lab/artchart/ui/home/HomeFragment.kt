@@ -2,6 +2,8 @@ package com.lab.artchart.ui.home
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -13,25 +15,36 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.lab.artchart.databinding.FragmentHomeBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.common.io.Resources
+import com.lab.artchart.MainActivity
 import com.lab.artchart.R
+import com.lab.artchart.database.Artwork
+import com.lab.artchart.database.FirebaseViewModel
 
-class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
+class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener{//, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
     private var _binding: FragmentHomeBinding? = null
 
     private lateinit var mMap: GoogleMap
     private lateinit var locationManager: LocationManager
     private lateinit var  markerOptions: MarkerOptions
     private var mapCentered = false // flag to check if map already centered to user's location
+
+    private lateinit var artworkList:List<Artwork>
+    private lateinit var firebaseViewModel: FirebaseViewModel
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -64,9 +77,23 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-        mMap.setOnMapClickListener(this)
-        mMap.setOnMapLongClickListener(this)
+//        mMap.setOnMapClickListener(this)
+//        mMap.setOnMapLongClickListener(this)
         markerOptions = MarkerOptions()
+
+        firebaseViewModel = (requireActivity() as MainActivity).firebaseViewModel
+        firebaseViewModel.allArtworks.observe(viewLifecycleOwner, Observer { it ->
+            println("Artwork List Updated")
+            artworkList = it
+
+            //Adds all artwork markers
+            for (artwork in artworkList){
+                println("title: "+artwork.title)
+                addArtMarker(artwork)
+            }
+        })
+
+        mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireContext()))
 
         getLocationPermissionOrConfigureLocationManager()
     }
@@ -75,6 +102,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap
     private fun getLocationPermissionOrConfigureLocationManager() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             initLocationManager()
+            //sets the user's current location
+            mMap.isMyLocationEnabled = true
         }
         else{
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -114,19 +143,32 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap
         if (!mapCentered) {
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
             mMap.animateCamera(cameraUpdate)
-            markerOptions.position(latLng)
-            mMap.addMarker(markerOptions)
             mapCentered = true
         }
     }
 
-    override fun onMapClick(latLng: LatLng) {
-        Log.d("HOME_FRAG", "Map short clicked ${latLng.latitude}, ${latLng.longitude}")
+    private fun addArtMarker(artwork: Artwork){
+        if (artwork.latitude != null && artwork.longitude!=null && artwork.title != null) {
+            val latlng = LatLng(artwork.latitude, artwork.longitude)
+
+            val artMarkerOptions = MarkerOptions()
+            artMarkerOptions.position(latlng)
+            artMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+
+            val marker = mMap.addMarker(artMarkerOptions)
+            if (marker != null) {
+                marker.tag = artwork
+            }
+        }
     }
 
-    override fun onMapLongClick(latLng: LatLng) {
-        Log.d("HOME_FRAG", "Map long clicked ${latLng.latitude}, ${latLng.longitude}")
-    }
+//    override fun onMapClick(latLng: LatLng) {
+//        Log.d("HOME_FRAG", "Map short clicked ${latLng.latitude}, ${latLng.longitude}")
+//    }
+//
+//    override fun onMapLongClick(latLng: LatLng) {
+//        Log.d("HOME_FRAG", "Map long clicked ${latLng.latitude}, ${latLng.longitude}")
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
