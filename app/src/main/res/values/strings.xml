@@ -36,19 +36,25 @@
 
     <!-- SignUp/SignIn Activities -->
     <string name="sign_up_for_art_chart">Sign Up for ArtChart</string>
-    <string name="verify_password">Verify Password</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_in_to_art_chart">Sign In to ArtChart</string>
     <string name="sign_in">Sign In</string>
     <string name="show_password">Show Password</string>
 
-    <!-- Re-Authenticate Dialog -->
+    <!-- Confirm Credentials Dialog -->
     <string name="confirm_credentials">Confirm Credentials</string>
     <string name="confirm_credentials_message">For security reasons, please re-enter your credentials.</string>
+
+    <!-- Update Email Dialog -->
+    <string name="change_email_message">Enter your new email address.</string>
+
+    <!-- ChangePasswordDialog -->
+    <string name="change_password_message">Enter your new password.</string>
 
     <!-- Common View Texts -->
     <string name="back">Back</string>
     <string name="confirm">Confirm</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="verify_password">Verify Password</string>
 </resources>

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -23,7 +24,9 @@ class ProfileFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private var reAuthenticationDialog: AlertDialog? = null
+    private var changeEmailDialog: AlertDialog? = null
+    private var changePasswordDialog: AlertDialog? = null
+    private var confirmCredentialsDialog: AlertDialog? = null
 
     override fun onStart() {
         super.onStart()
@@ -42,6 +45,12 @@ class ProfileFragment : Fragment() {
         }
 
         // button listeners
+        binding.changeEmailButton.setOnClickListener {
+            openChangeEmailDialog()
+        }
+        binding.changePasswordButton.setOnClickListener {
+            openChangePasswordDialog()
+        }
         binding.signOutButton.setOnClickListener {
             openConfirmationDialog("Confirm Sign Out", "Are you sure you want to sign out?", ::signOut)
         }
@@ -58,7 +67,7 @@ class ProfileFragment : Fragment() {
             }
         }
         userAuthenticationViewModel.needReAuthenticate.observe(viewLifecycleOwner) {
-            openReAuthenticationDialog()
+            openConfirmCredentialsDialog()
         }
 
         return root
@@ -77,7 +86,52 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    // generic confirmation dialog
+    // prompt user to enter a new email
+    private fun openChangeEmailDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_change_email, null)
+        val emailInput = view.findViewById<EditText>(R.id.email)
+        val confirmButton = view.findViewById<Button>(R.id.confirm_button)
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(view)
+        changeEmailDialog = builder.create()
+
+        confirmButton.setOnClickListener {
+            val email = emailInput.text.toString()
+            if (UserAuthenticationUtils.verifyEmailFormat(email, emailInput)) {
+                userAuthenticationViewModel.changeEmail(email)
+            }
+        }
+
+        changeEmailDialog?.show()
+    }
+
+    // prompt user to enter a new password
+    private fun openChangePasswordDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_change_password, null)
+        val passwordInput = view.findViewById<EditText>(R.id.password)
+        val passwordVerifyInput = view.findViewById<EditText>(R.id.verify_password)
+        val showPasswordCheckBox = view.findViewById<CheckBox>(R.id.show_password_checkbox)
+        val confirmButton = view.findViewById<Button>(R.id.confirm_button)
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(view)
+        changeEmailDialog = builder.create()
+        UserAuthenticationUtils.handleShowPasswordCheckBox(listOf(passwordInput, passwordVerifyInput), showPasswordCheckBox)
+
+        confirmButton.setOnClickListener {
+            val password = passwordInput.text.toString()
+            val passwordVerify = passwordVerifyInput.text.toString()
+            if (UserAuthenticationUtils.verifyPasswordNotBlank(password, passwordInput) &&
+                UserAuthenticationUtils.verifyPasswordRequirements(password, passwordVerify, passwordInput, passwordVerifyInput)) {
+                userAuthenticationViewModel.changePassword(password)
+            }
+        }
+
+        changeEmailDialog?.show()
+    }
+
+    // generic confirmation dialog - prompt user to confirm action
     private fun openConfirmationDialog(title: String, message: String, action: () -> Unit) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(title)
@@ -103,7 +157,8 @@ class ProfileFragment : Fragment() {
         userAuthenticationViewModel.deleteAccount()
     }
 
-    private fun openReAuthenticationDialog() {
+    // prompt user to confirm their credentials
+    private fun openConfirmCredentialsDialog() {
         val view = layoutInflater.inflate(R.layout.dialog_confirm_credentials, null)
         val emailInput = view.findViewById<EditText>(R.id.email)
         val passwordInput = view.findViewById<EditText>(R.id.password)
@@ -111,7 +166,7 @@ class ProfileFragment : Fragment() {
 
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(view)
-        reAuthenticationDialog = builder.create()
+        confirmCredentialsDialog = builder.create()
 
         confirmButton.setOnClickListener {
             val email = emailInput.text.toString()
@@ -126,12 +181,20 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        reAuthenticationDialog?.show()
+        confirmCredentialsDialog?.show()
     }
 
+    private fun dismissUpdateEmailDialog() {
+        changeEmailDialog?.dismiss()
+        changeEmailDialog = null
+    }
+    private fun dismissUpdatePasswordDialog() {
+        changePasswordDialog?.dismiss()
+        changePasswordDialog = null
+    }
     private fun dismissReAuthenticationDialog() {
-        reAuthenticationDialog?.dismiss()
-        reAuthenticationDialog = null
+        confirmCredentialsDialog?.dismiss()
+        confirmCredentialsDialog = null
     }
 
     override fun onDestroyView() {
