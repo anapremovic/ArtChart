@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.databinding.FragmentSearchBinding
@@ -19,8 +18,6 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val galleryViewModel = ViewModelProvider(this)[SearchViewModel::class.java]
-
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -34,7 +31,7 @@ class SearchFragment : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
-        listView.setOnItemClickListener { parent, view, position, id ->
+        listView.setOnItemClickListener { _, _, position, _ ->
             val selected = listView.adapter.getItem(position) as Artwork
             val intent = Intent(requireContext(), ArtInfoActivity::class.java)
             intent.putExtra("title", selected.title)

@@ -13,6 +13,9 @@
     <string name="menu_addArt">Add Art</string>
     <string name="menu_profile">Profile</string>
 
+    <!-- ArtInfoActivity -->
+    <string name="artist_date_format">%1$s, %2$s</string>
+
     <!-- SearchFragment -->
     <string name="search_hint">Search Here</string>
     <string name="filter_by_text">Filter by…</string>
@@ -34,13 +37,6 @@
     <string name="sign_out">Sign Out</string>
     <string name="delete_account">Delete Account</string>
 
-    <!-- SignUp/SignIn Activities -->
-    <string name="sign_up_for_art_chart">Sign Up for ArtChart</string>
-    <string name="sign_up">Sign Up</string>
-    <string name="sign_in_to_art_chart">Sign In to ArtChart</string>
-    <string name="sign_in">Sign In</string>
-    <string name="show_password">Show Password</string>
-
     <!-- Confirm Credentials Dialog -->
     <string name="confirm_credentials">Confirm Credentials</string>
     <string name="confirm_credentials_message">For security reasons, please re-enter your existing credentials.</string>
@@ -53,6 +49,13 @@
 
     <!-- ChangePasswordDialog -->
     <string name="new_password">New Password</string>
+
+    <!-- SignUp/SignIn Activities -->
+    <string name="sign_up_for_art_chart">Sign Up for ArtChart</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in_to_art_chart">Sign In to ArtChart</string>
+    <string name="sign_in">Sign In</string>
+    <string name="show_password">Show Password</string>
 
     <!-- Common View Texts -->
     <string name="back">Back</string>
