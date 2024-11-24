@@ -32,6 +32,8 @@ class SignUpActivity : AppCompatActivity() {
             Toast.makeText(this, "Account created successfully", Toast.LENGTH_LONG).show()
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("NAVIGATE_TO", "ProfileFragment")
+            // ensure we don't create new instances of MainActivity and fragments
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
             finish()
         }

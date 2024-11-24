@@ -1,5 +1,6 @@
 package com.lab.artchart.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import com.google.android.material.navigation.NavigationView
@@ -62,7 +63,6 @@ class MainActivity : AppCompatActivity() {
         userAuthenticationViewModel.currentUser.observe(this) { user ->
             handleNavigation(user)
         }
-        handleSignUpActivityFinished()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -74,6 +74,14 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    // handle navigating to ProfileFragment from SignUpActivity
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.getStringExtra("NAVIGATE_TO") == "ProfileFragment") {
+            navController.navigate(R.id.nav_profile)
+        }
     }
 
     private fun initializeViewModels() {
@@ -106,13 +114,6 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
             }
-        }
-    }
-
-    // handle navigating to ProfileFragment from SignUpActivity
-    private fun handleSignUpActivityFinished() {
-        if (intent.getStringExtra("NAVIGATE_TO") == "ProfileFragment") {
-            navController.navigate(R.id.nav_profile)
         }
     }
 }
