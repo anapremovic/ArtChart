@@ -66,10 +66,10 @@ class UserAuthenticationViewModel : ViewModel() {
     // log and notify user when sign in fails
     private fun handleUnsuccessfulSignIn(exception: Exception?, email: String) {
         if (exception is FirebaseAuthInvalidCredentialsException) {
-            Log.d("SIGN_IN_ACT", "User email and password combination invalid for user with email $email", exception)
+            Log.d("USER_AUTH", "User email and password combination invalid for user with email $email", exception)
             toastError.postValue("Error validating credentials due to invalid username or password")
         } else {
-            Log.e("SIGN_IN_ACT", "Failed to sign in user with email $email", exception)
+            Log.e("USER_AUTH", "Failed to sign in user with email $email", exception)
             toastError.postValue("Sign in error")
         }
     }
@@ -97,10 +97,10 @@ class UserAuthenticationViewModel : ViewModel() {
     // log and notify user when sign up fails
     private fun handleUnsuccessfulSignUp(exception: Exception?, email: String) {
         if (exception is FirebaseAuthUserCollisionException) {
-            Log.d("SIGN_IN_ACT", "User with email $email already exists", exception)
+            Log.d("USER_AUTH", "User with email $email already exists", exception)
             toastError.postValue("This email is already associated with an account")
         } else {
-            Log.e("SIGN_IN_ACT", "Failed to create account for user with email $email", exception)
+            Log.e("USER_AUTH", "Failed to create account for user with email $email", exception)
             toastError.postValue("Sign up error")
         }
     }
