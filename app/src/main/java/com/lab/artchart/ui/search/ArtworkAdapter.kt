@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 //import com.iarcuschin.simpleratingbar.SimpleRatingBar
 import com.lab.artchart.R
@@ -31,8 +32,8 @@ class ArtworkAdapter(private val context: Context, private var artworks: List<Ar
         view.findViewById<TextView>(R.id.artist_name_and_year).text = artistAndYearString
         val latAndLong = artwork.latitude.toString()+", "+artwork.longitude.toString()
         view.findViewById<TextView>(R.id.distance).text = latAndLong
-        //change when reviews are implemented
-//        view.findViewById<SimpleRatingBar>(R.id.rating_bar).rating = 4.5f
+        //TO DO: Set RATING
+        view.findViewById<RatingBar>(R.id.rating_bar_search).rating = 2.5f
 //        view.findViewById<TextView>(R.id.artist_name).text = artwork.artistName
 //        view.findViewById<TextView>(R.id.year).text = artwork.creationYear.toString()
 //        view.findViewById<TextView>(R.id.latitude).text = artwork.latitude.toString()
