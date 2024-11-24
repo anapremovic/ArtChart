@@ -35,6 +35,7 @@ import com.lab.artchart.MainActivity
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.database.FirebaseViewModel
+import com.lab.artchart.ui.search.ArtInfoActivity
 
 class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener{//, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
     private var _binding: FragmentHomeBinding? = null
@@ -93,8 +94,17 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener{//, Google
 
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireContext()))
 
+        //opens art info when clicking on info window
         mMap.setOnInfoWindowClickListener { marker ->
-            val intent = Intent(requireContext(), MainActivity::class.java)
+            val artwork = marker.tag as Artwork
+            val intent = Intent(requireContext(), ArtInfoActivity::class.java)
+            intent.putExtra("title", artwork.title)
+            intent.putExtra("artistName", artwork.artistName)
+            intent.putExtra("creationYear", artwork.creationYear) // int
+            intent.putExtra("latitude", artwork.latitude) // dbl
+            intent.putExtra("longitude", artwork.longitude) // dbl
+            intent.putExtra("description", artwork.description)
+            intent.putExtra("imageUrl", artwork.imageUrl)
             startActivity(intent)
         }
 
