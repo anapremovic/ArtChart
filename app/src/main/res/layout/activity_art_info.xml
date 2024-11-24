@@ -10,6 +10,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_back_arrow"
+            android:background="#e38307"/>
+
         <ImageView
             android:id="@+id/artwork_image"
             android:layout_width="250dp"
@@ -72,7 +79,7 @@
             android:text="Art Location:"/>
 
         <fragment
-            android:id="@+id/map"
+            android:id="@+id/artwork_map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="260dp"/>
