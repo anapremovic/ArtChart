@@ -23,10 +23,10 @@ class UserViewModel : ViewModel() {
     var usernameChanged = MutableLiveData<Boolean>()
     var toastError = MutableLiveData<String>()
 
-    fun saveUser(user: User) {
+    fun saveUser(uid: String, user: User) {
         CoroutineScope(Dispatchers.IO).launch {
-            userReference.child(user.authUid).setValue(user).await()
-            Log.i("USER_VIEW_MODEL", "Saved User ${user.authUid}")
+            userReference.child(uid).setValue(user).await()
+            Log.i("USER_VIEW_MODEL", "Saved User $uid")
         }
     }
 

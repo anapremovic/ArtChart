@@ -81,8 +81,8 @@ class UserAuthenticationViewModel(private val userViewModel: UserViewModel) : Vi
 
                         // save user to real-time database
                         userAuth?.let {
-                            val user = User(authUid = it.uid, username = username)
-                            userViewModel.saveUser(user)
+                            val user = User(username = username)
+                            userViewModel.saveUser(userAuth.uid, user)
                         }
 
                         // verify email
