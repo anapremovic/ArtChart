@@ -20,7 +20,7 @@ class SignUpActivity : AppCompatActivity() {
 
         // create account with user input
         binding.signUpButton.setOnClickListener {
-            userAuthenticationViewModel.verifyInfoAndSignUp(
+            userAuthenticationViewModel.signUp(
                 binding.email.text.toString(),
                 binding.password.text.toString(),
                 binding.passwordVerify.text.toString())

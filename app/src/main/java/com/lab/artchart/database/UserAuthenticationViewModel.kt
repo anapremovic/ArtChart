@@ -5,11 +5,16 @@ import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.auth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
 class UserAuthenticationViewModel : ViewModel() {
@@ -24,9 +29,28 @@ class UserAuthenticationViewModel : ViewModel() {
     var alreadyExists = MutableLiveData<Boolean>()
     var signUpSuccessful = MutableLiveData<Boolean>()
 
+    // currently authenticated user
+    val currentUser: Flow<FirebaseUser?>
+        get() = callbackFlow {
+            val listener = FirebaseAuth.AuthStateListener { auth ->
+                this.trySend(auth.currentUser)
+            }
+            Firebase.auth.addAuthStateListener(listener)
+
+            // remove listener on app closed
+            awaitClose {
+                Firebase.auth.removeAuthStateListener(listener)
+            }
+        }
+
+    // check if there is a currently authenticated user
+    fun currentlySignedIn(): Boolean {
+        return Firebase.auth.currentUser != null
+    }
+
     // call Firebase API to sign user in
     fun signIn(email: String, password: String) {
-        if (verifyEmailAndPassword(email, password)) {
+        if (verifyEmailAndPasswordFormat(email, password)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     Firebase.auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
@@ -43,8 +67,8 @@ class UserAuthenticationViewModel : ViewModel() {
     }
 
     // call Firebase API to create account for user
-    fun verifyInfoAndSignUp(email: String, password: String, passwordVerify: String) {
-        if (verifyEmailAndPassword(email, password) && verifyPasswordSignUp(password, passwordVerify)) {
+    fun signUp(email: String, password: String, passwordVerify: String) {
+        if (verifyEmailAndPasswordFormat(email, password) && verifyPasswordSignUpRequirements(password, passwordVerify)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     Firebase.auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
@@ -60,7 +84,7 @@ class UserAuthenticationViewModel : ViewModel() {
         }
     }
 
-    private fun verifyEmailAndPassword(email: String, password: String): Boolean {
+    private fun verifyEmailAndPasswordFormat(email: String, password: String): Boolean {
         if (email.isBlank()) {
             emailError.value = "Email is required"
             return false
@@ -79,7 +103,7 @@ class UserAuthenticationViewModel : ViewModel() {
         return true
     }
 
-    private fun verifyPasswordSignUp(password: String, passwordVerify: String): Boolean {
+    private fun verifyPasswordSignUpRequirements(password: String, passwordVerify: String): Boolean {
         if (password.length < 6) {
             passwordError.value = "Password must be at least 6 characters long"
             return false

@@ -21,7 +21,7 @@ import kotlinx.coroutines.tasks.await
 class FirebaseRepository {
     private var databaseRoot: FirebaseDatabase = FirebaseDatabase.getInstance()
     private var artworkReference: DatabaseReference = databaseRoot.reference.child("artwork")
-    // TODO: Add functionality for reviews + user authentication
+    // TODO: Add functionality for reviews
     // private var reviewReference: DatabaseReference = databaseRoot.reference.child("review")
     private var storageReference: StorageReference = FirebaseStorage.getInstance().getReference("artwork_images")
 
