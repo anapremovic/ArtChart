@@ -59,11 +59,12 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAddArtBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        artworkViewModel = (activity as MainActivity).artworkViewModel
+        imageGalleryManager = ImageGalleryManager(binding.artworkImage)
 
         // views
         val saveButton = binding.saveButton
         val selectPhotoButton = binding.selectPhotoButton
-        imageGalleryManager = ImageGalleryManager(binding.artworkImage)
 
         // Map stuff
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -76,8 +77,7 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
 
         // save artwork to database
         saveButton.setOnClickListener {
-            artworkViewModel = (activity as MainActivity).artworkViewModel
-            if (imageGalleryManager.imageUri != null) {
+            if (verifyFields()) {
                 val roundedLat = if (latitude != null) {
                     (Math.round(latitude!! * 100) / 100.0)
                 } else {
@@ -88,7 +88,8 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
                 } else {
                     null
                 }
-                val artwork = Artwork(binding.title.text.toString(),
+                val artwork = Artwork(
+                    binding.title.text.toString(),
                     binding.artistName.text.toString(),
                     binding.year.text.toString().toIntOrNull(),
                     roundedLat,
@@ -97,16 +98,47 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
                     null,
                     true) // PETER MADE CHANGES HERE,
                 // ADDED NULL URL AND ART IS ALWAYS TRUE
-                // ISART IS ONLY CHANGED TO FALSE BY FIREBASE TRIGGER
+                // detectArt IS ONLY CHANGED TO FALSE BY FIREBASE TRIGGER
                 // save to firebase realtime database and firebase storage
                 artworkViewModel.saveArtwork(artwork, imageGalleryManager.imageUri!!)
                 Toast.makeText(requireContext(), "Artwork submitted", Toast.LENGTH_SHORT).show()
                 resetFragment()
             }
-
         }
 
         return root
+    }
+
+    // check that the user filled out all the fields
+    private fun verifyFields(): Boolean {
+        var missingTextFields = false
+        if (binding.title.text.toString().isBlank()) {
+            binding.title.error = "Title is required"
+            missingTextFields = true
+        }
+        if (binding.artistName.text.toString().isBlank()) {
+            binding.artistName.error = "Artist name is required"
+            missingTextFields = true
+        }
+        if (binding.year.text.toString().isBlank()) {
+            binding.year.error = "Year is required"
+            missingTextFields = true
+        }
+        if (binding.description.text.toString().isBlank()) {
+            binding.description.error = "Description is required"
+            missingTextFields = true
+        }
+
+        if (imageGalleryManager.imageUri == null) {
+            Toast.makeText(requireContext(), "Please upload artwork image to submit", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (missingTextFields) {
+            Toast.makeText(requireContext(), "Missing one or more fields", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 
     override fun onDestroyView() {
