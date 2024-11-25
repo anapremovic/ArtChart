@@ -100,9 +100,8 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
                 // ISART IS ONLY CHANGED TO FALSE BY FIREBASE TRIGGER
                 // save to firebase realtime database and firebase storage
                 artworkViewModel.saveArtwork(artwork, imageGalleryManager.imageUri!!)
-                Toast.makeText(requireContext(), "Saved Artwork to database", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "Please upload artwork image to submit", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Artwork submitted", Toast.LENGTH_SHORT).show()
+                resetFragment()
             }
 
         }
@@ -113,6 +112,16 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // reset fragment after submitting an artwork
+    private fun resetFragment() {
+        binding.title.text?.clear()
+        binding.artistName.text?.clear()
+        binding.year.text?.clear()
+        binding.description.text?.clear()
+        mapCentered = false
+        binding.artworkImage.setImageResource(R.drawable.default_image)
     }
 
     // mapReady
