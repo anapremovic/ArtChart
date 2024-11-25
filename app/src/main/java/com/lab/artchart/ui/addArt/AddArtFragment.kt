@@ -13,8 +13,10 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -88,6 +90,21 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
         artworkImageView = binding.artworkImage
 
         // Map stuff
+        val mapContainer = view?.findViewById<FrameLayout>(R.id.map_container)
+        mapContainer?.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                    // Tell the parent (ScrollView or NestedScrollView) not to intercept touch events
+                    mapContainer?.parent?.parent?.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_UP -> {
+                    // Allow parent to intercept touch events again
+                    mapContainer?.parent?.parent?.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+            false // Pass the event to the map for further handling
+        }
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
