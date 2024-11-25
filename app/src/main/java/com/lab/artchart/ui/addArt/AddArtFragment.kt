@@ -93,7 +93,11 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
                     binding.year.text.toString().toIntOrNull(),
                     roundedLat,
                     roundedLong,
-                    binding.description.text.toString())
+                    binding.description.text.toString(),
+                    null,
+                    true) // PETER MADE CHANGES HERE,
+                // ADDED NULL URL AND ART IS ALWAYS TRUE
+                // ISART IS ONLY CHANGED TO FALSE BY FIREBASE TRIGGER
                 // save to firebase realtime database and firebase storage
                 artworkViewModel.saveArtwork(artwork, imageGalleryManager.imageUri!!)
                 Toast.makeText(requireContext(), "Saved Artwork to database", Toast.LENGTH_SHORT).show()

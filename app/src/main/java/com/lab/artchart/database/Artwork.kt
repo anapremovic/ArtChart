@@ -7,5 +7,6 @@ data class Artwork(
     val latitude: Double? = null,
     val longitude: Double? = null,
     val description: String? = null,
-    var imageUrl: String? = null
+    var imageUrl: String? = null,
+    var detectArt: Boolean? = null
 )

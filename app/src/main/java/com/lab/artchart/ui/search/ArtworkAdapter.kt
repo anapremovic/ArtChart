@@ -22,6 +22,10 @@ class ArtworkAdapter(private val context: Context, private var artworks: List<Ar
         val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_artwork, parent, false)
 
         val artwork = artworks[position]
+        if (artwork.detectArt == false) {
+            // Do not display this view, return an empty view or a hidden one
+            return View(context)  // You can return a default empty view or a placeholder view
+        }
         val imageView = view.findViewById<ImageView>(R.id.artwork_image)
 
         // set views
