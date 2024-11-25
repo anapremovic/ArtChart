@@ -13,10 +13,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,7 +25,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lab.artchart.CustomMapFragment
@@ -94,19 +91,14 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
         val scrollView = binding.nestedScrollViewAddArt
         val mSupportMapFragment: CustomMapFragment =
             childFragmentManager.findFragmentById(R.id.map) as CustomMapFragment
-        if (mSupportMapFragment != null) mSupportMapFragment.setListener(object :
+        mSupportMapFragment.setListener(object :
             CustomMapFragment.OnTouchListener {
             override fun onTouch() {
-                scrollView?.requestDisallowInterceptTouchEvent(true)
-                println("ArtChart1: ${scrollView == null}")
+                scrollView.requestDisallowInterceptTouchEvent(true)
             }
         })
-
-        // val mapFragment = supportFragmentManager.findFragmentById(com.lab.artchart.R.id.artwork_map) as SupportMapFragment
         mSupportMapFragment.getMapAsync(this)
 
-        //val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        //mapFragment.getMapAsync(this)
 
         // request correct permission based on android version or open gallery if already granted
         selectPhotoButton.setOnClickListener {

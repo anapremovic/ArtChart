@@ -1,6 +1,5 @@
 package com.lab.artchart.ui.search
 
-// import android.R
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -9,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lab.artchart.CustomMapFragment
@@ -64,14 +62,13 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         val scrollView = findViewById<androidx.core.widget.NestedScrollView>(R.id.nestedScrollView)
         val mSupportMapFragment: CustomMapFragment =
             supportFragmentManager.findFragmentById(R.id.artwork_map) as CustomMapFragment
-        if (mSupportMapFragment != null) mSupportMapFragment.setListener(object :
+        mSupportMapFragment.setListener(object :
             CustomMapFragment.OnTouchListener {
             override fun onTouch() {
                 scrollView.requestDisallowInterceptTouchEvent(true)
             }
         })
 
-        // val mapFragment = supportFragmentManager.findFragmentById(com.lab.artchart.R.id.artwork_map) as SupportMapFragment
         mSupportMapFragment.getMapAsync(this)
     }
 
