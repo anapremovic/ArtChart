@@ -1,4 +1,5 @@
 <androidx.core.widget.NestedScrollView
+    android:id="@+id/nestedScrollViewAddArt"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -85,7 +86,7 @@
 
             <fragment
                 android:id="@+id/map"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:name="com.lab.artchart.CustomMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="260dp"/>
 

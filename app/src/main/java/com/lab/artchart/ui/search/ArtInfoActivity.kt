@@ -1,23 +1,21 @@
 package com.lab.artchart.ui.search
 
+// import android.R
 import android.os.Bundle
-import android.view.MotionEvent
-import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintSet.Motion
-import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.lab.artchart.CustomMapFragment
 import com.lab.artchart.R
 import com.squareup.picasso.Picasso
+
 
 class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
 
@@ -63,23 +61,18 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         artistDateText.text = "${artistName}, ${creationYear}"
         descriptionText.text = description
 
-        val mapContainer = findViewById<FrameLayout>(R.id.map_container)
-        mapContainer.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
-                    // Tell the parent (ScrollView or NestedScrollView) not to intercept touch events
-                    mapContainer.parent.parent.requestDisallowInterceptTouchEvent(true)
-                }
-                MotionEvent.ACTION_UP -> {
-                    // Allow parent to intercept touch events again
-                    mapContainer.parent.parent.requestDisallowInterceptTouchEvent(false)
-                }
+        val scrollView = findViewById<androidx.core.widget.NestedScrollView>(R.id.nestedScrollView)
+        val mSupportMapFragment: CustomMapFragment =
+            supportFragmentManager.findFragmentById(R.id.artwork_map) as CustomMapFragment
+        if (mSupportMapFragment != null) mSupportMapFragment.setListener(object :
+            CustomMapFragment.OnTouchListener {
+            override fun onTouch() {
+                scrollView.requestDisallowInterceptTouchEvent(true)
             }
-            false // Pass the event to the map for further handling
-        }
+        })
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.artwork_map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        // val mapFragment = supportFragmentManager.findFragmentById(com.lab.artchart.R.id.artwork_map) as SupportMapFragment
+        mSupportMapFragment.getMapAsync(this)
     }
 
     // Set the map
