@@ -1,4 +1,6 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    android:id="@+id/nestedScrollViewAddArt"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -126,12 +128,17 @@
             android:layout_marginBottom="5dp"
             android:textColor="@color/black"/>
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <FrameLayout
+            android:id="@+id/map_container"
             android:layout_width="match_parent"
             android:layout_height="260dp"
-            android:layout_marginBottom="40dp"/>
+            android:layout_marginBottom="40dp">
+            <fragment
+                android:id="@+id/map"
+                android:name="com.lab.artchart.CustomMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="260dp" />
+        </FrameLayout>
 
         <Button
             android:id="@+id/save_button"
@@ -145,4 +152,4 @@
             android:paddingHorizontal="30dp"/>
 
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

@@ -8,10 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.lab.artchart.CustomMapFragment
 import com.lab.artchart.R
 import com.squareup.picasso.Picasso
 
@@ -61,9 +61,17 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         artistDateText.text = getString(R.string.artist_date_format, artistName, creationYear.toString())
         descriptionText.text = description
 
+        val scrollView = findViewById<androidx.core.widget.NestedScrollView>(R.id.nestedScrollView)
+        val mSupportMapFragment: CustomMapFragment =
+            supportFragmentManager.findFragmentById(R.id.artwork_map) as CustomMapFragment
+        mSupportMapFragment.setListener(object :
+            CustomMapFragment.OnTouchListener {
+            override fun onTouch() {
+                scrollView.requestDisallowInterceptTouchEvent(true)
+            }
+        })
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.artwork_map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        mSupportMapFragment.getMapAsync(this)
     }
 
     // Set the map

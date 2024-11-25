@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.core.widget.NestedScrollView
+    android:id="@+id/nestedScrollView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -145,11 +146,17 @@
                     android:textColor="@color/black"
                     android:textSize="20dp" />
 
-                <fragment
-                    android:id="@+id/artwork_map"
-                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                <FrameLayout
+                    android:id="@+id/map_container"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"/>
+                    android:layout_height="200dp">
+
+                    <fragment
+                        android:id="@+id/artwork_map"
+                        android:name="com.lab.artchart.CustomMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="260dp"/>
+                </FrameLayout>
 
             </LinearLayout>
 
@@ -201,139 +208,6 @@
                 android:textAllCaps="false"
                 android:textSize="18dp"
                 android:layout_gravity="center"/>
-
-            <!--                <androidx.cardview.widget.CardView-->
-            <!--                    android:layout_width="match_parent"-->
-            <!--                    android:layout_height="wrap_content">-->
-
-            <!--                    <LinearLayout-->
-            <!--                        android:layout_width="match_parent"-->
-            <!--                        android:layout_height="wrap_content"-->
-            <!--                        android:orientation="vertical"-->
-            <!--                        android:padding="10dp">-->
-
-            <!--                        <LinearLayout-->
-            <!--                            android:layout_width="match_parent"-->
-            <!--                            android:layout_height="wrap_content"-->
-            <!--                            android:orientation="horizontal">-->
-            <!--                            <ImageView-->
-            <!--                                android:layout_width="30dp"-->
-            <!--                                android:layout_height="30dp"-->
-            <!--                                android:src="@drawable/artchartlogo"-->
-            <!--                        </LinearLayout>-->
-
-            <!--                        <TextView-->
-            <!--                            android:layout_width="match_parent"-->
-            <!--                            android:layout_height="wrap_content"-->
-            <!--                            android:text="One of my favourite art pieces on SFU Campus! It’s such a great location for headshots XD"-->
-            <!--                            android:textColor="@color/black"/>-->
-
-            <!--                    </LinearLayout>-->
-
-
-            <!--                </androidx.cardview.widget.CardView>-->
-
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--    android:padding="16dp">-->
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="vertical">-->
-
-<!--        <ImageButton-->
-<!--            android:id="@+id/back_button"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:src="@drawable/back_arrow"-->
-<!--            android:scaleType="fitXY"-->
-<!--            android:background="@null"-->
-<!--            app:tint="@color/orange" />-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/artwork_image"-->
-<!--            android:layout_width="250dp"-->
-<!--            android:layout_height="250dp"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:src="@drawable/default_image"/>-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/artwork_title"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:textStyle="bold"-->
-<!--            android:textSize="20dp"-->
-<!--            android:text="Title"/>-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/artwork_artist_and_date"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:textStyle="italic"-->
-<!--            android:textSize="16dp"-->
-<!--            android:text="Artist and date"/>-->
-
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:text="Rating: "/>-->
-
-<!--        <RatingBar-->
-<!--            android:id="@+id/rating_bar"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:background="#e38307"/>-->
-
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:text="Description: "/>-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/artwork_description"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:text="Description here"/>-->
-
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:text="Art Location:"/>-->
-
-<!--        <fragment-->
-<!--            android:id="@+id/artwork_map"-->
-<!--            android:name="com.google.android.gms.maps.SupportMapFragment"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="260dp"/>-->
-
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:text="Reviews: "/>-->
-
-<!--        <Button-->
-<!--            android:id="@+id/leave_review_button"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:text="Leave a Review"/>-->
-
-<!--    </LinearLayout>-->
-
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
