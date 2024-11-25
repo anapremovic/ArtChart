@@ -1,7 +1,6 @@
 package com.lab.artchart.ui.search
 
 import android.os.Bundle
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -60,7 +59,6 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         Picasso.get().load(imageUrl).into(artImage)
         titleText.text = title
         artistDateText.text = getString(R.string.artist_date_format, artistName, creationYear.toString())
-        //artistDateText.text = "${artistName} | ${creationYear}"
         descriptionText.text = description
 
 

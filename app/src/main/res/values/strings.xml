@@ -14,7 +14,7 @@
     <string name="menu_profile">Profile</string>
 
     <!-- ArtInfoActivity -->
-    <string name="artist_date_format">%1$s, %2$s</string>
+    <string name="artist_date_format">%1$s | %2$s</string>
 
     <!-- SearchFragment -->
     <string name="search_hint">Search Here</string>

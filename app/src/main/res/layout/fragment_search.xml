@@ -16,33 +16,6 @@
         android:iconifiedByDefault="false"
         android:layout_marginEnd="15dp"/>
 
-<!--    <EditText-->
-<!--        android:id="@+id/text_search"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="8dp"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:layout_marginEnd="8dp"-->
-<!--        android:paddingStart="32dp"-->
-<!--        android:paddingEnd="16dp"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:hint="@string/search_hint"-->
-<!--        android:textColorHint="@color/white"-->
-<!--        android:background="#e38307"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--    <ImageView-->
-<!--        android:layout_width="32dp"-->
-<!--        android:layout_height="32dp"-->
-<!--        android:layout_marginStart="8dp"-->
-<!--        android:layout_marginTop="-30dp"-->
-<!--        android:layout_marginEnd="8dp"-->
-<!--        app:srcCompat="@drawable/ic_search_bar"/>-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
