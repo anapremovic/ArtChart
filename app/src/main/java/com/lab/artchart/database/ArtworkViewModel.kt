@@ -53,8 +53,12 @@ class ArtworkViewModel : ViewModel() {
                     val artworkList = dataSnapshot.children.mapNotNull {
                         it.getValue(Artwork::class.java)
                     }
+
+                    // filter out artworks flagged as not art by AI trigger
+                    val actualArtList = artworkList.filter { it.detectArt == true }
+
                     // send list to flow object
-                    trySend(artworkList).isSuccess
+                    trySend(actualArtList).isSuccess
                 }
 
                 override fun onCancelled(error: DatabaseError) {
