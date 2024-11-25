@@ -15,7 +15,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.lab.artchart.databinding.FragmentHomeBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -25,7 +24,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lab.artchart.R
 
-class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
+class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private var _binding: FragmentHomeBinding? = null
 
     private lateinit var mMap: GoogleMap
@@ -47,8 +46,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val view: View = binding.root
 
@@ -64,8 +61,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-        mMap.setOnMapClickListener(this)
-        mMap.setOnMapLongClickListener(this)
         markerOptions = MarkerOptions()
 
         getLocationPermissionOrConfigureLocationManager()
@@ -118,14 +113,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap
             mMap.addMarker(markerOptions)
             mapCentered = true
         }
-    }
-
-    override fun onMapClick(latLng: LatLng) {
-        Log.d("HOME_FRAG", "Map short clicked ${latLng.latitude}, ${latLng.longitude}")
-    }
-
-    override fun onMapLongClick(latLng: LatLng) {
-        Log.d("HOME_FRAG", "Map long clicked ${latLng.latitude}, ${latLng.longitude}")
     }
 
     override fun onDestroyView() {

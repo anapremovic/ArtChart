@@ -29,4 +29,9 @@
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile"/>
 
+    <fragment
+        android:id="@+id/nav_signIn"
+        android:name="com.lab.artchart.ui.userAuthentication.SignInFragment"
+        tools:layout="@layout/fragment_sign_in"/>
+
 </navigation>

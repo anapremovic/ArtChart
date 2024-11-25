@@ -25,8 +25,7 @@
         android:textAlignment="center"
         android:textSize="32sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
-        android:text="Username"/>
+        android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/emailText"
@@ -34,27 +33,17 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:textAlignment="center"
-        android:text="user email"/>
-
-    <Button
-        android:id="@+id/editBioButton"
-        android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:textColor="@color/black"
-        android:gravity="start"
-        android:text="Edit Bio"/>
+        android:textAlignment="center"/>
 
     <Button
         android:id="@+id/reviewedArtButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:gravity="start"
-        android:text="Reviewed Artwork"/>
+        android:text="@string/reviewed_artwork"/>
 
     <Button
         android:id="@+id/changeProfilePicButton"
@@ -63,7 +52,7 @@
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:gravity="start"
-        android:text="Change Profile Picture"/>
+        android:text="@string/change_profile_picture"/>
 
     <Button
         android:id="@+id/changeUsernameButton"
@@ -72,7 +61,16 @@
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:gravity="start"
-        android:text="Change Username"/>
+        android:text="@string/change_username"/>
+
+    <Button
+        android:id="@+id/changeEmailButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:gravity="start"
+        android:text="@string/change_email"/>
 
     <Button
         android:id="@+id/changePasswordButton"
@@ -81,33 +79,24 @@
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:gravity="start"
-        android:text="Change Password"/>
+        android:text="@string/change_password"/>
 
     <Button
-        android:id="@+id/updateEmailButton"
+        android:id="@+id/signOutButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:gravity="start"
-        android:text="Update Email"/>
+        android:text="@string/sign_out"/>
 
     <Button
-        android:id="@+id/notificationPreferencesButton"
+        android:id="@+id/deleteAccountButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:gravity="start"
-        android:text="Notification Preferences"/>
-
-    <Button
-        android:id="@+id/privacySettinsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:textColor="@color/black"
-        android:gravity="start"
-        android:text="Privacy Settings"/>
+        android:text="@string/delete_account"/>
 
 </LinearLayout>
