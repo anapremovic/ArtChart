@@ -104,6 +104,7 @@ class ProfileFragment : Fragment() {
         // listen for successful or unsuccessful API calls
         userViewModel.usernameChanged.observe(viewLifecycleOwner) { changed ->
             if (changed) {
+                userViewModel.fetchUserByUid(userAuthenticationViewModel.currentUser.value?.uid.toString())
                 dismissChangeUsernameDialog()
                 Toast.makeText(requireContext(), "Username changed", Toast.LENGTH_LONG).show()
             }
