@@ -25,8 +25,8 @@
     <string name="filter_years">Year</string>
 
     <!-- AddArtFragment -->
-    <string name="choose_photo">Choose photo from gallery</string>
-    <string name="submit_art">Submit artwork to ArtChart</string>
+    <string name="choose_photo">Select Photo</string>
+    <string name="submit_art">Submit</string>
 
     <!-- ProfileFragment -->
     <string name="change_profile_picture">Change Profile Picture</string>

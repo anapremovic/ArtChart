@@ -1,6 +1,7 @@
 package com.lab.artchart.ui.home
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
@@ -20,9 +21,14 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.R
+import com.lab.artchart.database.Artwork
+import com.lab.artchart.database.ArtworkViewModel
+import com.lab.artchart.ui.search.ArtInfoActivity
 
 class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private var _binding: FragmentHomeBinding? = null
@@ -31,6 +37,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var locationManager: LocationManager
     private lateinit var  markerOptions: MarkerOptions
     private var mapCentered = false // flag to check if map already centered to user's location
+
+    private lateinit var artworkList:List<Artwork>
+    private lateinit var artworkViewModel: ArtworkViewModel
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -63,6 +72,31 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
         markerOptions = MarkerOptions()
 
+        artworkViewModel = (requireActivity() as MainActivity).artworkViewModel
+        artworkViewModel.allArtworks.observe(viewLifecycleOwner) {
+            artworkList = it
+            //Adds all artwork markers
+            for (artwork in artworkList){
+                addArtMarker(artwork)
+            }
+        }
+
+        mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireContext()))
+
+        //opens art info when clicking on info window
+        mMap.setOnInfoWindowClickListener { marker ->
+            val artwork = marker.tag as Artwork
+            val intent = Intent(requireContext(), ArtInfoActivity::class.java)
+            intent.putExtra("title", artwork.title)
+            intent.putExtra("artistName", artwork.artistName)
+            intent.putExtra("creationYear", artwork.creationYear) // int
+            intent.putExtra("latitude", artwork.latitude) // dbl
+            intent.putExtra("longitude", artwork.longitude) // dbl
+            intent.putExtra("description", artwork.description)
+            intent.putExtra("imageUrl", artwork.imageUrl)
+            startActivity(intent)
+        }
+
         getLocationPermissionOrConfigureLocationManager()
     }
 
@@ -70,6 +104,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private fun getLocationPermissionOrConfigureLocationManager() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             initLocationManager()
+            //sets the user's current location
+            mMap.isMyLocationEnabled = true
         }
         else{
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -109,9 +145,22 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         if (!mapCentered) {
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
             mMap.animateCamera(cameraUpdate)
-            markerOptions.position(latLng)
-            mMap.addMarker(markerOptions)
             mapCentered = true
+        }
+    }
+
+    private fun addArtMarker(artwork: Artwork){
+        if (artwork.latitude != null && artwork.longitude!=null && artwork.title != null) {
+            val latLng = LatLng(artwork.latitude, artwork.longitude)
+
+            val artMarkerOptions = MarkerOptions()
+            artMarkerOptions.position(latLng)
+            artMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+
+            val marker = mMap.addMarker(artMarkerOptions)
+            if (marker != null) {
+                marker.tag = artwork
+            }
         }
     }
 
