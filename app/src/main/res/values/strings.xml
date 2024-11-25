@@ -19,6 +19,6 @@
     <string name="filter_reviews">Reviews</string>
     <string name="filter_years">Year</string>
 
-    <string name="choose_photo">Choose photo from gallery</string>
-    <string name="submit_art">Submit artwork to ArtChart</string>
+    <string name="choose_photo">Select Photo</string>
+    <string name="submit_art">Submit</string>
 </resources>

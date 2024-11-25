@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -37,7 +38,7 @@ import com.lab.artchart.database.Artwork
 import com.lab.artchart.database.FirebaseViewModel
 import com.lab.artchart.ui.search.ArtInfoActivity
 
-class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener{//, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
+class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener{
     private var _binding: FragmentHomeBinding? = null
 
     private lateinit var mMap: GoogleMap
@@ -174,14 +175,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener{//, Google
             }
         }
     }
-
-//    override fun onMapClick(latLng: LatLng) {
-//        Log.d("HOME_FRAG", "Map short clicked ${latLng.latitude}, ${latLng.longitude}")
-//    }
-//
-//    override fun onMapLongClick(latLng: LatLng) {
-//        Log.d("HOME_FRAG", "Map long clicked ${latLng.latitude}, ${latLng.longitude}")
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
