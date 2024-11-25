@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.lab.artchart"
-        minSdk = 30
+        minSdk = 28 // don't push this
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
