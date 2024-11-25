@@ -1,7 +1,7 @@
 [versions]
-agp = "8.6.0"
+agp = "8.6.1"
 google = "4.4.2"
-firebaseBom = "33.5.1"
+firebaseBom = "33.6.0"
 firebaseStorage = "21.0.1"
 firebaseDatabaseKtx = "21.0.0"
 kotlin = "1.9.0"
@@ -14,11 +14,14 @@ material = "1.12.0"
 constraintlayout = "2.2.0"
 lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
-navigationFragmentKtx = "2.8.2"
-navigationUiKtx = "2.8.2"
+navigationFragmentKtx = "2.8.4"
+navigationUiKtx = "2.8.4"
 picasso = "2.8"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 playServicesMaps = "19.0.0"
+activity = "1.9.3"
+firebaseAuthKtx = "23.1.0"
+glide = "4.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +41,10 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage", v
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

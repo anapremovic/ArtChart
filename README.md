@@ -31,8 +31,7 @@ ArtChart is an online art database where you can find public art close to you, s
 
 
 ### Built With
-
-* [![Kotlin][Kotlin.com]][Kotlin-url]
+[![Kotlin][Kotlin.com]][Kotlin-url]
 
 
 ## Getting Started
@@ -50,7 +49,7 @@ ArtChart is an online art database where you can find public art close to you, s
 2. Connect your Android device via USB
 3. Launch the app using Shift+F10. Alternatively, run from command line:
    ```sh
-   ./gradlew installDebug; adb shell am start -n artchart/artchart.MainActivity 
+   ./gradlew installDebug; adb shell am start -n artchart/artchart.ui.MainActivity 
    ```
 
 ### Through APK
@@ -58,9 +57,12 @@ Download the APK file from <a href="https://qq-zhong.github.io/artChart_site/">o
 
 ## Usage
 
-* Submit art pieces to ArtChart.
-* View all art pieces.
-
+* Submit art pieces to ArtChart with precise map location.
+* View art locations on the Home page.
+* View list of all art pieces on the Search page.
+* Filter or search for art pieces on Search page
+* View art details by clicking an art piece from the Home or Search pages.
+* Configure your account.
 
 ## Contributors
 
@@ -72,7 +74,7 @@ Download the APK file from <a href="https://qq-zhong.github.io/artChart_site/">o
 
 ## Acknowledgments
 
-* 
+* <a href="https://github.com/othneildrew/Best-README-Template">README Template</a>
 
 [Kotlin.com]: https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white
 [Kotlin-url]: https://kotlinlang.org/
