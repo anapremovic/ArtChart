@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ListView
 import android.widget.SearchView
 import android.widget.TextView
@@ -20,6 +21,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentSearchBinding? = null
     private lateinit var listView:ListView
+    private lateinit var currArtworkList:List<Artwork>
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -36,6 +38,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         listView.adapter = adapter
         val firebaseViewModel = (activity as MainActivity).firebaseViewModel
         firebaseViewModel.allArtworks.observe(viewLifecycleOwner) {
+            currArtworkList = it
             adapter.replace(it)
             adapter.notifyDataSetChanged()
         }
@@ -58,6 +61,24 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         val searchView = root.findViewById<SearchView>(R.id.search_view)
         searchView.setOnQueryTextListener(this)
 
+        //NAME BUTTON - filter title alphabetically
+        val nameBtn = root.findViewById<Button>(R.id.filterNameButton)
+        nameBtn.setOnClickListener{
+            currArtworkList = currArtworkList.sortedBy { it.title?.lowercase() }
+            adapter.replace(currArtworkList)
+            adapter.notifyDataSetChanged()
+        }
+
+        //YEAR BUTTON - sort by most recent year
+        val yearBtn = root.findViewById<Button>(R.id.filterYearButton)
+        yearBtn.setOnClickListener{
+            currArtworkList = currArtworkList.sortedByDescending { it.creationYear }
+            adapter.replace(currArtworkList)
+            adapter.notifyDataSetChanged()
+        }
+
+        //TO DO -> REVIEW and DISTANCE
+
         return root
     }
 
@@ -71,12 +92,9 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        println("newText: "+newText)
         if (TextUtils.isEmpty(newText)){
-            println("clearTextFilter")
             listView.clearTextFilter();
         }else{
-            println("setFilterText")
             listView.setFilterText(newText)
         }
         return true

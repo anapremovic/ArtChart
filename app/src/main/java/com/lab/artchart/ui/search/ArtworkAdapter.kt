@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso
 
 class ArtworkAdapter(private val context: Context, private var artworks: List<Artwork>) : BaseAdapter(), Filterable {
 
-    private var filteredList:List<Artwork> = artworks
+    private var orig: List<Artwork>? = null
 
     override fun getCount(): Int = artworks.size
 
@@ -58,26 +58,39 @@ class ArtworkAdapter(private val context: Context, private var artworks: List<Ar
         //returns new filter object
         return object :Filter(){
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                println("FILTERING -> constraint: "+constraint)
                 //returned object
-                val oReturn = FilterResults()
-                //holds search results
-                val result:List<Artwork> = if (constraint != null && artworks.isNotEmpty()){
-                    //gets titles with the constraint
-                    artworks.filter {
-                        it.title != null && it.title.lowercase().contains(constraint.toString().lowercase())
-                    }
-                }else{
-                    artworks
+                val results = FilterResults()
+                val filteredList : MutableList<Artwork> = mutableListOf()
+
+                //if list is empty, fill
+                if (orig == null){
+                    orig = artworks
                 }
-//
-                oReturn.values = result
-                return oReturn
+
+                //filter through
+                if (!constraint.isNullOrEmpty() && orig != null){
+                    for (artwork in orig!!){
+                        if (artwork.title?.lowercase()?.contains(constraint.toString().lowercase()) == true){
+                            filteredList.add(artwork)
+                        }
+                    }
+                    results.values = filteredList
+                    results.count = filteredList.size
+                //if there's nothing, show all
+                }else{
+                    results.values = orig
+                    results.count = orig!!.size
+                }
+
+                return results
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                    filteredList = results?.values as? List<Artwork> ?: artworks
-                    notifyDataSetChanged()
+                //update the results
+                if (results != null) {
+                    artworks = results.values as List<Artwork>
+                }
+                notifyDataSetChanged()
             }
 
         }
