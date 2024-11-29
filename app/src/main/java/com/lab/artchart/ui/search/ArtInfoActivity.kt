@@ -1,6 +1,8 @@
 package com.lab.artchart.ui.search
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -53,6 +55,13 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         val backButton = findViewById<LinearLayout>(R.id.back_button)
         backButton.setOnClickListener {
             finish()
+        }
+
+        val leaveReviewButton = findViewById<Button>(R.id.leave_review_button)
+        leaveReviewButton.setOnClickListener {
+            val intent = Intent(this, LeaveReviewActivity::class.java)
+            intent.putExtra("imageUrl", imageUrl)
+            startActivity(intent)
         }
 
         Picasso.get().load(imageUrl).into(backgroundArtImage)
