@@ -1,6 +1,7 @@
 package com.lab.artchart.ui.search
 
 import android.content.Context
+import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +10,18 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
+import com.lab.artchart.database.LocationViewModel
 import com.squareup.picasso.Picasso
 
 
 class ArtworkAdapter(private val context: Context, private var artworks: List<Artwork>) : BaseAdapter(), Filterable {
 
     private var orig: List<Artwork>? = null
+    private var currentLocation: Location? = null
 
     override fun getCount(): Int = artworks.size
 
@@ -34,7 +39,25 @@ class ArtworkAdapter(private val context: Context, private var artworks: List<Ar
         view.findViewById<TextView>(R.id.title).text = artwork.title
         val artistAndYearString = artwork.artistName+" | "+artwork.creationYear
         view.findViewById<TextView>(R.id.artist_name_and_year).text = artistAndYearString
-        val latAndLong = artwork.latitude.toString()+", "+artwork.longitude.toString()
+
+        var latAndLong = ""
+        if (artwork.latitude!=null && artwork.longitude!=null && currentLocation!=null){
+            val artworkLocation = Location("art").apply {
+                latitude = artwork.latitude
+                longitude = artwork.longitude
+            }
+
+            var dist = currentLocation!!.distanceTo(artworkLocation).toInt()
+            var unitString = "m"
+
+            //if more then a thousand, convert to km
+            if (dist>=1000){
+                dist /= 1000
+                unitString = "km"
+            }
+            latAndLong = "$dist $unitString"
+        }
+
         view.findViewById<TextView>(R.id.distance).text = latAndLong
         //TO DO: Set RATING
         // Picasso handles async image loading
@@ -44,6 +67,10 @@ class ArtworkAdapter(private val context: Context, private var artworks: List<Ar
 
     fun replace(newArtworkList: List<Artwork>) {
         artworks = newArtworkList
+    }
+
+    fun updateLocation(location: Location){
+        currentLocation = location
     }
 
     override fun getFilter(): Filter {

@@ -1,6 +1,7 @@
 package com.lab.artchart.ui.search
 
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -10,9 +11,12 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.database.ArtworkViewModel
+import com.lab.artchart.database.LocationViewModel
 import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.databinding.FragmentSearchBinding
 
@@ -22,6 +26,8 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var listView: ListView
     private lateinit var currArtworkList: List<Artwork>
     private lateinit var artworkViewModel: ArtworkViewModel
+
+    private var currentLocation: Location? = null
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -34,12 +40,20 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         val adapter = ArtworkAdapter(requireContext(), mutableListOf())
         listView = binding.artworkListView
         listView.adapter = adapter
+
         val artworkViewModel = (activity as MainActivity).artworkViewModel
         artworkViewModel.allArtworks.observe(viewLifecycleOwner) {
             currArtworkList = it
             adapter.replace(it)
             adapter.notifyDataSetChanged()
         }
+
+        val locationViewModel = ViewModelProvider(requireActivity())[LocationViewModel::class.java]
+        locationViewModel.location.observe(viewLifecycleOwner, Observer { it ->
+            adapter.updateLocation(it)
+            adapter.notifyDataSetChanged()
+            currentLocation = it
+        })
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val selected = listView.adapter.getItem(position) as Artwork
@@ -75,8 +89,30 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
             adapter.notifyDataSetChanged()
         }
 
-        //TO DO -> REVIEW and DISTANCE
+        //DISTANCE BUTTON
+        val distBtn = root.findViewById<Button>(R.id.filterDistanceButton)
+        distBtn.setOnClickListener{
+            if (currentLocation!=null){
+                currArtworkList = currArtworkList.sortedBy { artwork ->
 
+                    if (artwork.latitude==null || artwork.longitude==null){
+                        Float.MAX_VALUE
+                    }else{
+                        val artworkLocation = Location("art").apply {
+                            latitude = artwork.latitude
+                            longitude = artwork.longitude
+                        }
+                        val dist = currentLocation!!.distanceTo(artworkLocation)
+                        dist
+                    }
+                }
+
+                adapter.replace(currArtworkList)
+                adapter.notifyDataSetChanged()
+            }
+        }
+
+        //TO DO -> REVIEW
         return root
     }
 
