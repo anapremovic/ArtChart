@@ -50,10 +50,6 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListe
     private lateinit var imageGalleryManager: ImageGalleryManager
     private lateinit var locationViewModel: LocationViewModel
 
-//    private var isBind = false
-//    private lateinit var locationIntent: Intent
-//    private lateinit var backPressedCallback: OnBackPressedCallback
-
     // launcher to handle selected image from gallery
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         imageGalleryManager.handleSelectedImage(result)
@@ -73,10 +69,8 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListe
         artworkViewModel = (activity as MainActivity).artworkViewModel
         imageGalleryManager = ImageGalleryManager(binding.artworkImage)
 
-        locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
-        //gets the user's current location
+        locationViewModel = ViewModelProvider(requireActivity())[LocationViewModel::class.java]
         locationViewModel.location.observe(viewLifecycleOwner, Observer { it ->
-            println("updated location: "+it);
             updateMap(it)
         })
 
@@ -131,14 +125,6 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListe
                 resetFragment()
             }
         }
-
-//        backPressedCallback = object : OnBackPressedCallback(true){
-//            override fun handleOnBackPressed() {
-//                unBindService()
-//                requireContext().stopService(locationIntent)
-//                isEnabled = false;
-//            }
-//        }
 
         return root
     }
@@ -196,7 +182,6 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListe
         map.mapType = GoogleMap.MAP_TYPE_NORMAL
         artMap.setOnMapClickListener(this)
         markerOptions = MarkerOptions()
-        centerLocationOrCheckPermission()
     }
 
     private fun updateMap(location: Location) {
@@ -213,21 +198,6 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListe
         }
     }
 
-//    override fun onLocationChanged(location: Location) {
-//        val lat = location.latitude
-//        val lng = location.longitude
-//        val latLng = LatLng(lat, lng)
-//        if (!mapCentered) { // add first marker when centered (will remove if user clicks a new location)
-//            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
-//            artMap.animateCamera(cameraUpdate)
-//            markerOptions.position(latLng)
-//            artMap.addMarker(markerOptions)
-//            latitude = latLng.latitude
-//            longitude = latLng.longitude
-//            mapCentered = true
-//        }
-//    }
-
     override fun onMapClick(latLng: LatLng) {
         artMap.clear()
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
@@ -236,47 +206,5 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListe
         latitude = latLng.latitude
         longitude = latLng.longitude
         artMap.addMarker(markerOptions)
-    }
-
-//    private fun initLocationManager() {
-//        try {
-//            locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
-//
-//            if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) return
-//
-//            val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-//            if (location != null)
-//                onLocationChanged(location)
-//
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
-//
-//        } catch (e: SecurityException) {
-//            Log.e("ADD_ART_FRAG", "Security error when initializing location manager: $e")
-//            Toast.makeText(requireContext(), "Allow location services to log art near you", Toast.LENGTH_SHORT).show()
-//        }
-//    }
-
-//    private fun bindService(){
-//        if (!isBind){
-//            requireContext().bindService(locationIntent, locationViewModel, Context.BIND_AUTO_CREATE)
-//            isBind = true
-//        }
-//    }
-//
-//    private fun unBindService(){
-//        if (isBind){
-//            requireContext().unbindService(locationViewModel)
-//            isBind = false;
-//        }
-//    }
-
-    private fun centerLocationOrCheckPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            initLocationManager()
-//            requireContext().startService(locationIntent)
-//            bindService()
-        } else {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
     }
 }

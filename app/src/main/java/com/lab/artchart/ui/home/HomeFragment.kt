@@ -46,18 +46,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    //Location Service
-    private var isBind = false
     private lateinit var locationViewModel: LocationViewModel
-    private lateinit var locationIntent: Intent
-    private lateinit var backPressedCallback: OnBackPressedCallback
 
     // launcher for location permission
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
+            getLocationPermissionOrConfigureLocationManager()
 //            initLocationManager()
-            requireContext().startService(locationIntent)
-            bindService()
+//            requireContext().startService(locationIntent)
+//            bindService()
         }
         else{
             Toast.makeText(requireContext(), "Location services needed to find art near you", Toast.LENGTH_SHORT).show()
@@ -72,22 +69,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        locationIntent = Intent(requireContext(), LocationService::class.java)
-
-        locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
+        locationViewModel = ViewModelProvider(requireActivity())[LocationViewModel::class.java]
         locationViewModel.location.observe(viewLifecycleOwner, Observer { it ->
-//            println("updated location: "+it);
             updateMap(it)
         })
-
-        //Back Pressed
-        backPressedCallback = object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                unBindService()
-                requireContext().stopService(locationIntent)
-                isEnabled = false;
-            }
-        }
 
         return view
     }
@@ -138,31 +123,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun bindService(){
-        if (!isBind){
-            requireContext().bindService(locationIntent, locationViewModel, Context.BIND_AUTO_CREATE)
-            isBind = true
-        }
-    }
-
-    private fun unBindService(){
-        if (isBind){
-            requireContext().unbindService(locationViewModel)
-            isBind = false;
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        backPressedCallback.remove()
-    }
-
     // initialize location manager if location permission already granted or open launch
     private fun getLocationPermissionOrConfigureLocationManager() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 //            initLocationManager()
-            requireContext().startService(locationIntent)
-            bindService()
+//            requireContext().startService(locationIntent)
+//            bindService()
             //sets the user's current location
             mMap.isMyLocationEnabled = true
         }

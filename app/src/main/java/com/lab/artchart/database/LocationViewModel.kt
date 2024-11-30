@@ -1,6 +1,8 @@
 package com.lab.artchart.database
 
 import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.ServiceConnection
 import android.location.Location
 import android.os.Handler
@@ -49,6 +51,16 @@ class LocationViewModel():ViewModel(), ServiceConnection {
     override fun onServiceDisconnected(name: ComponentName?) {
         TODO("Not yet implemented")
     }
+
+//    fun startLocationService(context: Context){
+////        println("LOCATION IS BINDING")
+//        val locationIntent = Intent(context, LocationService::class.java)
+//        context.bindService(locationIntent, this, Context.BIND_AUTO_CREATE)
+//    }
+//
+//    fun stopLocationService(context: Context){
+//        context.unbindService(this)
+//    }
 
     inner class MyMessageHandler(looper: Looper) : Handler(looper){
 
