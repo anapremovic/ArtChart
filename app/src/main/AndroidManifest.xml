@@ -19,10 +19,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ArtChart"
         tools:targetApi="31">
+        <service
+            android:name=".database.LocationService"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD43LVjGevd1d0t4AT_KFJdI-uoibzwMxQ"/>
+            android:value="AIzaSyD43LVjGevd1d0t4AT_KFJdI-uoibzwMxQ" />
 
         <activity
             android:name=".ui.MainActivity"
@@ -35,10 +39,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.search.ArtInfoActivity"
+        <activity
+            android:name=".ui.search.ArtInfoActivity"
             android:exported="false"
             android:label="ArtInfoActivity"
-            android:theme="@style/Theme.ArtChart.NoActionBar"/>
+            android:theme="@style/Theme.ArtChart.NoActionBar" />
         <activity
             android:name=".ui.userAuthentication.SignUpActivity"
             android:exported="false" />
