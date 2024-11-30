@@ -86,22 +86,12 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
         // save artwork to database
         saveButton.setOnClickListener {
             if (verifyFields()) {
-                val roundedLat = if (latitude != null) {
-                    (Math.round(latitude!! * 100) / 100.0)
-                } else {
-                    null
-                }
-                val roundedLong = if (longitude != null) {
-                    (Math.round(longitude!! * 100) / 100.0)
-                } else {
-                    null
-                }
                 val artwork = Artwork(
                     binding.title.text.toString(),
                     binding.artistName.text.toString(),
                     binding.year.text.toString().toIntOrNull(),
-                    roundedLat,
-                    roundedLong,
+                    latitude,
+                    longitude,
                     binding.description.text.toString(),
                     null,
                     true) // PETER MADE CHANGES HERE,

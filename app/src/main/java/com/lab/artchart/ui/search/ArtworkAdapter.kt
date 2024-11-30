@@ -34,8 +34,8 @@ class ArtworkAdapter(private val context: Context, private var artworks: List<Ar
         view.findViewById<TextView>(R.id.title).text = artwork.title
         val artistAndYearString = artwork.artistName+" | "+artwork.creationYear
         view.findViewById<TextView>(R.id.artist_name_and_year).text = artistAndYearString
-        val latAndLong = artwork.latitude.toString()+", "+artwork.longitude.toString()
-        view.findViewById<TextView>(R.id.distance).text = latAndLong
+        val latLng = context.getString(R.string.lat_lng_format, artwork.latitude, artwork.longitude)
+        view.findViewById<TextView>(R.id.distance).text = latLng
         //TO DO: Set RATING
         // Picasso handles async image loading
         Picasso.get().load(artwork.imageUrl).into(imageView)
