@@ -6,7 +6,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -15,9 +17,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lab.artchart.CustomMapFragment
 import com.lab.artchart.R
+import com.lab.artchart.database.UserAuthenticationViewModel
+import com.lab.artchart.database.UserAuthenticationViewModelFactory
+import com.lab.artchart.database.UserViewModel
+import com.lab.artchart.util.UserAuthenticationUtils
 import com.squareup.picasso.Picasso
 
 class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
 
     // Art variables
     private var title: String? = ""
@@ -35,6 +43,9 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_art_info)
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        val userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel)
+        userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
 
         // Extract info from intent
         title = intent.getStringExtra("title")
@@ -57,11 +68,20 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
             finish()
         }
 
+        // open leave review screen or redirect to sign in screen
         val leaveReviewButton = findViewById<Button>(R.id.leave_review_button)
         leaveReviewButton.setOnClickListener {
-            val intent = Intent(this, LeaveReviewActivity::class.java)
-            intent.putExtra("imageUrl", imageUrl)
-            startActivity(intent)
+            userAuthenticationViewModel.currentUser.observe(this) { user ->
+                if (user != null) {
+                    val intent = Intent(this, LeaveReviewActivity::class.java)
+                    intent.putExtra("imageUrl", imageUrl)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "Please sign in to leave a review", Toast.LENGTH_LONG).show()
+                    UserAuthenticationUtils.navigateToSignInScreenFromActivity(this)
+                    finish()
+                }
+            }
         }
 
         Picasso.get().load(imageUrl).into(backgroundArtImage)
