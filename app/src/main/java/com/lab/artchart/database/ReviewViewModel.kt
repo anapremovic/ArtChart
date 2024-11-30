@@ -26,6 +26,7 @@ class ReviewViewModel : ViewModel() {
     val allReviewsForArtwork = MutableLiveData<List<Review>>()
     val allReviewsForUser = MutableLiveData<List<Review>>()
 
+    // saves given review to Firebase
     fun saveReview(review: Review) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -38,6 +39,15 @@ class ReviewViewModel : ViewModel() {
         }
     }
 
+    // get average rating for current artwork or null if no reviews
+    fun getAverageRatingForArtworkOrNull(): Double? {
+        if (allReviewsForArtwork.value.isNullOrEmpty()) {
+            return null
+        }
+        return allReviewsForArtwork.value?.map { it.rating?.toDouble() ?: 0.0 }?.average()
+    }
+
+    // updates live data with all reviews for given artwork
     fun loadAllReviewsForArtwork(artworkId: String) {
         viewModelScope.launch {
             getAllReviewsForIdentifier(artworkId, false).collect { reviews ->
@@ -46,6 +56,7 @@ class ReviewViewModel : ViewModel() {
         }
     }
 
+    // updates live data with all reviews for given user
     fun loadAllReviewsForUser(userId: String) {
         viewModelScope.launch {
             getAllReviewsForIdentifier(userId, true).collect { reviews ->
@@ -54,6 +65,7 @@ class ReviewViewModel : ViewModel() {
         }
     }
 
+    // loads reviews from Firebase into flow object
     private fun getAllReviewsForIdentifier(id: String, fetchingForUser: Boolean): Flow<List<Review>> {
         // return flow object using a callback
         return callbackFlow {
