@@ -33,6 +33,7 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
     private var longitude: Double? = 0.0
     private var description: String? = ""
     private var imageUrl: String? = ""
+    private var artId: String? = ""
 
     // Map
     private lateinit var artMap: GoogleMap
@@ -54,6 +55,7 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         longitude = intent.getDoubleExtra("longitude", 0.0)
         description = intent.getStringExtra("description")
         imageUrl = intent.getStringExtra("imageUrl")
+        artId = intent.getStringExtra("artId")
 
         binding.backButton.setOnClickListener {
             finish()
@@ -65,6 +67,8 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
                 if (user != null) {
                     val intent = Intent(this, LeaveReviewActivity::class.java)
                     intent.putExtra("imageUrl", imageUrl)
+                    intent.putExtra("artId", artId)
+                    intent.putExtra("uid", user.uid)
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, "Please sign in to leave a review", Toast.LENGTH_LONG).show()

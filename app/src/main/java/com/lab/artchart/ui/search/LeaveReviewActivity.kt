@@ -13,8 +13,12 @@ class LeaveReviewActivity: AppCompatActivity() {
         binding = ActivityLeaveReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val imageUrl = intent.getStringExtra("imageUrl")
+        // Extract info from intent
+        imageUrl = intent.getStringExtra("imageUrl")
+        artId = intent.getStringExtra("artId")
+        uid = intent.getStringExtra("uid")
 
+        // load image
         val artImage = binding.artworkReviewImage
         Picasso.get().load(imageUrl).into(artImage)
 
