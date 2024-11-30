@@ -44,6 +44,7 @@ class LeaveReviewActivity: AppCompatActivity() {
         binding.submitReviewButton.setOnClickListener {
             if (verifyFields()) {
                 saveReview()
+                finish()
             }
         }
     }

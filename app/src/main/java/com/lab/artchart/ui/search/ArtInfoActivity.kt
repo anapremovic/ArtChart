@@ -75,6 +75,8 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
                     UserAuthenticationUtils.navigateToSignInScreenFromActivity(this)
                     finish()
                 }
+
+                userAuthenticationViewModel.currentUser.removeObservers(this)
             }
         }
 
