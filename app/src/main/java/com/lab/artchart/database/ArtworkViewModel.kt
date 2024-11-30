@@ -49,9 +49,12 @@ class ArtworkViewModel : ViewModel() {
         return callbackFlow {
             val listener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // convert DataSnapshot to list of artworks
-                    val artworkList = dataSnapshot.children.mapNotNull {
-                        it.getValue(Artwork::class.java)
+                    // convert DataSnapshot to list of artworks and add art IDs
+                    val artworkList = mutableListOf<Artwork>()
+                    for (artSnapshot in dataSnapshot.children) {
+                        val artwork = artSnapshot.getValue(Artwork::class.java)
+                        artwork?.artId = artSnapshot.key // add art ID
+                        artwork?.let { artworkList.add(it) }
                     }
 
                     // filter out artworks flagged as not art by AI trigger
