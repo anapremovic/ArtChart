@@ -30,6 +30,8 @@ class ViewReviewsActivity: AppCompatActivity() {
         // extract extras
         val artId = intent.getStringExtra("artId")
         val uid = intent.getStringExtra("uid")
+        val title = intent.getStringExtra("title")
+
 
         // update list view depending on if entered from ArtInfo page or ProfileFragment
         if (artId != null) {
