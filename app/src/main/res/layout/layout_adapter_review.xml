@@ -27,7 +27,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/black"
-                android:text="Username"/>
+                android:text="Username"
+                android:layout_marginStart="10dp"/>
 
             <View
                 android:layout_width="0dp"
@@ -41,7 +42,6 @@
                 android:layout_gravity="center|start"
                 android:scaleX="0.7"
                 android:scaleY="0.7"/>
-
 
         </LinearLayout>
 
@@ -57,7 +57,8 @@
             android:scrollbars="vertical"
             android:padding="10dp"
             android:background="@android:drawable/edit_text"
-            android:overScrollMode="ifContentScrolls" />
+            android:overScrollMode="ifContentScrolls"
+            android:layout_marginTop="10dp"/>
 
     </LinearLayout>
 
