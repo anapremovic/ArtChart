@@ -183,6 +183,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/leave_review_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_background"
@@ -204,6 +205,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Leave a Review"
+                android:background="@color/white"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:textSize="18dp"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/report_art_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="@color/orange"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/leave_review_section"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Not Art?"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/report_art_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report Non Artwork"
                 android:background="@color/white"
                 android:textColor="@color/black"
                 android:textAllCaps="false"

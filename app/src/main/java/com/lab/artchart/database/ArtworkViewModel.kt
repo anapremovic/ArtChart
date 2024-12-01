@@ -44,6 +44,18 @@ class ArtworkViewModel : ViewModel() {
         }
     }
 
+    fun toggleDetectArtField(artworkId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Locate the artwork by its ID and update the specific field
+                artworkReference.child(artworkId).child("detectArt").setValue(false).await()
+                Log.i("ARTWORK_VIEW_MODEL", "Updated detectArt of Artwork $artworkId to false")
+            } catch (e: Exception) {
+                Log.e("ARTWORK_VIEW_MODEL", "Error updating detectArt of Artwork $artworkId", e)
+            }
+        }
+    }
+
     private fun getAllArtwork(): Flow<List<Artwork>> {
         // return flow object using a callback
         return callbackFlow {

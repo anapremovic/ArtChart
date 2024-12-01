@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -13,10 +14,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lab.artchart.CustomMapFragment
 import com.lab.artchart.R
+import com.lab.artchart.database.ArtworkViewModel
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.database.UserAuthenticationViewModelFactory
 import com.lab.artchart.database.UserViewModel
 import com.lab.artchart.databinding.ActivityArtInfoBinding
+import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.util.UserAuthenticationUtils
 import com.squareup.picasso.Picasso
 
@@ -35,6 +38,8 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
     private var imageUrl: String? = ""
     private var artId: String? = ""
 
+    private lateinit var artworkViewModel: ArtworkViewModel //Peter addition, report button
+
     // Map
     private lateinit var artMap: GoogleMap
     private lateinit var markerOptions: MarkerOptions
@@ -46,6 +51,8 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         val userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel)
         userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
+
+        artworkViewModel = ViewModelProvider(this)[ArtworkViewModel::class.java] //Peter addition, report button
 
         // Extract info from intent
         title = intent.getStringExtra("title")
@@ -61,6 +68,10 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
             finish()
         }
 
+        binding.reportArtButton.setOnClickListener{ //Peter added for report art
+            artworkViewModel.toggleDetectArtField(artId!!)
+            finish()
+        }
         // open leave review screen or redirect to sign in screen
         binding.leaveReviewButton.setOnClickListener {
             userAuthenticationViewModel.currentUser.observe(this) { user ->
