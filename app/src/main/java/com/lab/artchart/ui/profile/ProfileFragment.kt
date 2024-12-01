@@ -63,6 +63,7 @@ class ProfileFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         userAuthenticationViewModel.deleteSuccessful.value = false
+        userViewModel.user.value = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
