@@ -1,6 +1,5 @@
 package com.lab.artchart.ui.userAuthentication
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +8,6 @@ import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.database.UserAuthenticationViewModelFactory
 import com.lab.artchart.database.UserViewModel
 import com.lab.artchart.databinding.ActivitySignUpBinding
-import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.util.UserAuthenticationUtils
 
 class SignUpActivity : AppCompatActivity() {
@@ -42,11 +40,7 @@ class SignUpActivity : AppCompatActivity() {
         // on successful sign up navigate to ProfileActivity
         userAuthenticationViewModel.signUpSuccessful.observe(this) {
             Toast.makeText(this, "Account created successfully, please verify your email to sign in", Toast.LENGTH_LONG).show()
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("NAVIGATE_TO", "SignInFragment")
-            // ensure we don't create new instances of MainActivity and fragments
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            startActivity(intent)
+            UserAuthenticationUtils.navigateToSignInScreenFromActivity(this)
             finish()
         }
         // go back to previous page

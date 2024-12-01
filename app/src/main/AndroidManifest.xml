@@ -42,6 +42,10 @@
         <activity
             android:name=".ui.userAuthentication.SignUpActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.search.LeaveReviewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ArtChart.NoActionBar"/>
     </application>
 
 </manifest>

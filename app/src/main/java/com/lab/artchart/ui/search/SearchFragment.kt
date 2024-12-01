@@ -34,7 +34,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         val adapter = ArtworkAdapter(requireContext(), mutableListOf())
         listView = binding.artworkListView
         listView.adapter = adapter
-        val artworkViewModel = (activity as MainActivity).artworkViewModel
+        artworkViewModel = (activity as MainActivity).artworkViewModel
         artworkViewModel.allArtworks.observe(viewLifecycleOwner) {
             currArtworkList = it
             adapter.replace(it)
@@ -51,6 +51,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
             intent.putExtra("longitude", selected.longitude) // dbl
             intent.putExtra("description", selected.description)
             intent.putExtra("imageUrl", selected.imageUrl)
+            intent.putExtra("artId", selected.artId)
             startActivity(intent)
         }
 
@@ -91,7 +92,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (TextUtils.isEmpty(newText)){
-            listView.clearTextFilter();
+            listView.clearTextFilter()
         }else{
             listView.setFilterText(newText)
         }

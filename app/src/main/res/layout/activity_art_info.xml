@@ -200,6 +200,7 @@
                 android:layout_marginBottom="10dp"/>
 
             <Button
+                android:id="@+id/leave_review_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Leave a Review"

@@ -94,6 +94,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             intent.putExtra("longitude", artwork.longitude) // dbl
             intent.putExtra("description", artwork.description)
             intent.putExtra("imageUrl", artwork.imageUrl)
+            intent.putExtra("artId", artwork.artId)
             startActivity(intent)
         }
 
