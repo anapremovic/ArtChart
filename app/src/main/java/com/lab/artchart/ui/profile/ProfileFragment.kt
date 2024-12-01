@@ -1,6 +1,7 @@
 package com.lab.artchart.ui.profile
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.database.UserViewModel
 import com.lab.artchart.databinding.FragmentProfileBinding
 import com.lab.artchart.ui.MainActivity
+import com.lab.artchart.ui.search.ViewReviewsActivity
 import com.lab.artchart.util.ImageGalleryManager
 import com.lab.artchart.util.UserAuthenticationUtils
 
@@ -99,6 +101,11 @@ class ProfileFragment : Fragment() {
         }
         binding.deleteAccountButton.setOnClickListener {
             openConfirmationDialog("Confirm Delete Account", "Are you sure you want to delete your account? This cannot be undone.", ::deleteAccount)
+        }
+        binding.reviewedArtButton.setOnClickListener {
+            val intent = Intent(activity, ViewReviewsActivity::class.java)
+            intent.putExtra("uid", userAuthenticationViewModel.currentUser.value?.uid.toString())
+            startActivity(intent)
         }
 
         // listen for successful or unsuccessful API calls
