@@ -16,6 +16,7 @@ class LeaveReviewActivity: AppCompatActivity() {
     private lateinit var userViewModel: UserViewModel
 
     // art and review info
+    private var title: String? = null
     private var imageUrl: String? = null
     private var artId: String? = null
     private var uid: String? = null
@@ -30,6 +31,7 @@ class LeaveReviewActivity: AppCompatActivity() {
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
         // Extract info from intent
+        title = intent.getStringExtra("title")
         imageUrl = intent.getStringExtra("imageUrl")
         artId = intent.getStringExtra("artId")
         uid = intent.getStringExtra("uid")
@@ -65,6 +67,7 @@ class LeaveReviewActivity: AppCompatActivity() {
 
     private fun saveReview() {
         val review = Review (
+            title,
             binding.longEditText.text.toString(),
             binding.reviewRatingBar.rating,
             artId,

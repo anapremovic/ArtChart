@@ -44,7 +44,7 @@ class ReviewListAdapter(private val context: Context, private var reviewList: Li
         val username = view.findViewById<TextView>(R.id.username_text)
         username.text = review.username
         val artworkTitle = view.findViewById<TextView>(R.id.art_title_review)
-        // TODO: set artwork title to the review.artTitle
+        artworkTitle.text = review.artworkTitle
 
         return view
     }
