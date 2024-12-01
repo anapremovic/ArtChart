@@ -199,16 +199,37 @@
                 android:textSize="20dp"
                 android:layout_marginBottom="10dp"/>
 
-            <Button
-                android:id="@+id/leave_review_button"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Leave a Review"
-                android:background="@color/white"
-                android:textColor="@color/black"
-                android:textAllCaps="false"
-                android:textSize="18dp"
-                android:layout_gravity="center"/>
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/leave_review_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Leave a Review"
+                    android:background="@color/white"
+                    android:textColor="@color/black"
+                    android:textAllCaps="false"
+                    android:textSize="18dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"/>
+
+                <Button
+                    android:id="@+id/view_review_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View Reviews"
+                    android:background="@color/white"
+                    android:textColor="@color/black"
+                    android:textAllCaps="false"
+                    android:textSize="18dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

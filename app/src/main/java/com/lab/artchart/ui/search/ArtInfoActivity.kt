@@ -80,6 +80,12 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
             }
         }
 
+        binding.viewReviewButton.setOnClickListener {
+            val intent = Intent(this, ViewReviewsActivity::class.java)
+            intent.putExtra("artId", artId)
+            startActivity(intent)
+        }
+
         Picasso.get().load(imageUrl).into(binding.backgroundArtworkImage)
         Picasso.get().load(imageUrl).into(binding.artworkImage)
         binding.artworkTitle.text = title
