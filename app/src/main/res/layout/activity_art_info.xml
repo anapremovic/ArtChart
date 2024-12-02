@@ -173,95 +173,176 @@
                     android:layout_height="wrap_content"
                     android:text="Photo"
                     android:textColor="@color/black"
-                    android:textSize="20dp" />
+                    android:textSize="20dp"/>
 
                 <ImageView
                     android:id="@+id/artwork_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/artchartlogo"/>
+                    android:src="@drawable/artchartlogo"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"/>
 
             </LinearLayout>
         </LinearLayout>
 
+<!--        REVIEWS-->
         <LinearLayout
             android:id="@+id/leave_review_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_background"
-            android:backgroundTint="@color/orange"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/art_info"
-            android:padding="20dp">
+            android:padding="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/art_info">
+<!--            android:background="@drawable/orange_rounded_background"-->
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Reviews"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:layout_marginBottom="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/view_review_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="View Reviews"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:textSize="20dp"
+                    android:background="@drawable/rounded_button"
+                    android:layout_marginBottom="10dp"/>
+    <!--            android:layout_weight="1"-->
+    <!--            android:layout_gravity="center"-->
 
                 <Button
                     android:id="@+id/leave_review_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Leave a Review"
-                    android:background="@color/white"
-                    android:textColor="@color/black"
+                    android:textColor="@color/orange"
                     android:textAllCaps="false"
-                    android:textSize="18dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"/>
-
-                <Button
-                    android:id="@+id/view_review_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="View Reviews"
-                    android:background="@color/white"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:textSize="18dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"/>
-
+                    android:textSize="20dp"
+                    android:background="@drawable/outline_rounded_button"/>
             </LinearLayout>
 
         </LinearLayout>
+
         <LinearLayout
-            android:id="@+id/report_art_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_background"
-            android:backgroundTint="@color/orange"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/leave_review_section"
-            android:padding="20dp">
+            android:padding="20dp"
+            android:layout_marginVertical="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/leave_review_section">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Not Art?"
-                android:textColor="@color/white"
+                android:text="Do you consider this piece to not be art?"
+                android:textColor="@color/black"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:layout_marginBottom="10dp"/>
 
             <Button
                 android:id="@+id/report_art_button"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Report Non Artwork"
-                android:background="@color/white"
-                android:textColor="@color/black"
+                android:text="Report Non-Artwork"
+                android:textColor="@color/orange"
                 android:textAllCaps="false"
-                android:textSize="18dp"
-                android:layout_gravity="center"/>
+                android:textSize="20dp"
+                android:background="@drawable/outline_rounded_button"
+                android:layout_marginBottom="10dp"/>
+
         </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/leave_review_section"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/rounded_background"-->
+<!--            android:backgroundTint="@color/orange"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/art_info"-->
+<!--            android:padding="20dp">-->
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Reviews"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="20dp"-->
+<!--                android:layout_marginBottom="10dp"/>-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/leave_review_button"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Leave a Review"-->
+<!--                    android:background="@color/white"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textSize="18dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_gravity="center"/>-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/view_review_button"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="View Reviews"-->
+<!--                    android:background="@color/white"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textSize="18dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_gravity="center"/>-->
+
+<!--            </LinearLayout>-->
+
+<!--        </LinearLayout>-->
+<!--        <LinearLayout-->
+<!--            android:id="@+id/report_art_section"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/rounded_background"-->
+<!--            android:backgroundTint="@color/orange"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/leave_review_section"-->
+<!--            android:padding="20dp">-->
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Not Art?"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="20dp"-->
+<!--                android:layout_marginBottom="10dp"/>-->
+
+<!--            <Button-->
+<!--                android:id="@+id/report_art_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Report Non Artwork"-->
+<!--                android:background="@color/white"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textSize="18dp"-->
+<!--                android:layout_gravity="center"/>-->
+<!--        </LinearLayout>-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
