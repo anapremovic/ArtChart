@@ -28,7 +28,7 @@ class ArtworkAdapter(private val context: Context,
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_artwork, parent, false)
+        val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.layout_adapter_artwork, parent, false)
 
         val artwork = artworks[position]
         val artworkStats = artworkStatsByArtwork[artwork.artId]
