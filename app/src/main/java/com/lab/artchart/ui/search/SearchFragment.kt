@@ -86,7 +86,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
             adapter.notifyDataSetChanged()
         }
 
-        //TO DO -> REVIEW and DISTANCE
+        //TODO -> REVIEW and DISTANCE
 
         return root
     }
