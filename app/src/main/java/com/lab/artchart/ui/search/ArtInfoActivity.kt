@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.lab.artchart.CustomMapFragment
 import com.lab.artchart.R
 import com.lab.artchart.database.ArtworkViewModel
+import com.lab.artchart.database.ReviewViewModel
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.database.UserAuthenticationViewModelFactory
 import com.lab.artchart.database.UserViewModel
@@ -26,6 +27,7 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
     private lateinit var userViewModel: UserViewModel
     private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
     private lateinit var artworkViewModel: ArtworkViewModel
+    private lateinit var reviewViewModel: ReviewViewModel
 
     // Art variables
     private var title: String? = ""
@@ -49,6 +51,7 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         val userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel)
         userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
         artworkViewModel = ViewModelProvider(this)[ArtworkViewModel::class.java]
+        reviewViewModel = ViewModelProvider(this)[ReviewViewModel::class.java]
 
         // Extract info from intent
         title = intent.getStringExtra("title")
@@ -59,6 +62,8 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         description = intent.getStringExtra("description")
         imageUrl = intent.getStringExtra("imageUrl")
         artId = intent.getStringExtra("artId")
+
+        setAverageRatingAndNumReviews()
 
         binding.backButton.setOnClickListener {
             finish()
@@ -123,5 +128,15 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         artMap.animateCamera(cameraUpdate)
         markerOptions.position(artLatLng)
         artMap.addMarker(markerOptions)
+    }
+
+    // update info UI
+    private fun setAverageRatingAndNumReviews() {
+        reviewViewModel.loadArtworkStatsByArtwork()
+        reviewViewModel.artworkStatsByArtwork.observe(this) {
+            val artworkStats = it[artId]
+            binding.infoRatingBar.rating = artworkStats?.averageRating ?: 0f
+            binding.infoTotalReviews.text = getString(R.string.total_reviews_format, (artworkStats?.reviewCount ?: 0).toString())
+        }
     }
 }
