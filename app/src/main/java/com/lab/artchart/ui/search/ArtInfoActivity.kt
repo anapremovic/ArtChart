@@ -1,10 +1,13 @@
 package com.lab.artchart.ui.search
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -95,8 +98,18 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
             startActivity(intent)
         }
 
-        Picasso.get().load(imageUrl).into(binding.backgroundArtworkImage)
-        Picasso.get().load(imageUrl).into(binding.artworkImage)
+        Glide.with(this)
+            .load(imageUrl)
+            .placeholder(R.drawable.default_image)
+            .into(binding.backgroundArtworkImage)
+
+        Glide.with(this)
+            .load(imageUrl)
+            .placeholder(R.drawable.default_image)
+            .into(binding.artworkImage)
+
+//        Picasso.get().load(imageUrl).into(binding.backgroundArtworkImage)
+//        Picasso.get().load(imageUrl).into(binding.artworkImage)
         binding.artworkTitle.text = title
         binding.artworkArtistAndDate.text = getString(R.string.artist_date_format, artistName, creationYear.toString())
         binding.artworkDescription.text = description

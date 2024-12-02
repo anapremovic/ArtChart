@@ -10,6 +10,7 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.database.ArtworkStats
@@ -41,8 +42,16 @@ class ArtworkAdapter(private val context: Context,
         view.findViewById<TextView>(R.id.distance).text = latLng
         view.findViewById<RatingBar>(R.id.rating_bar_search).rating = artworkStats?.averageRating ?: 0f
         view.findViewById<TextView>(R.id.total_reviews).text = context.getString(R.string.total_reviews_format, (artworkStats?.reviewCount ?: 0).toString())
-        // Picasso handles async image loading
-        Picasso.get().load(artwork.imageUrl).into(view.findViewById<ImageView>(R.id.artwork_image))
+
+        Glide.with(context)
+            .load(artwork.imageUrl)
+            .placeholder(R.drawable.default_image)
+            .into(view.findViewById<ImageView>(R.id.artwork_image))
+
+//        // Picasso handles async image loading
+//        Picasso.get()
+//            .load(artwork.imageUrl)
+//            .into(view.findViewById<ImageView>(R.id.artwork_image))
         return view
     }
 
