@@ -12,6 +12,7 @@ import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
+import com.lab.artchart.database.ArtworkStats
 import com.lab.artchart.database.ArtworkViewModel
 import com.lab.artchart.database.ReviewViewModel
 import com.lab.artchart.ui.MainActivity
@@ -26,6 +27,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var artworkViewModel: ArtworkViewModel
     private lateinit var reviewViewModel: ReviewViewModel
     private lateinit var locationViewModel: LocationViewModel
+    private var artworkStatsByArtId = mapOf<String, ArtworkStats>()
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -50,6 +52,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
             adapter.notifyDataSetChanged()
         }
         reviewViewModel.artworkStatsByArtwork.observe(viewLifecycleOwner) {
+            artworkStatsByArtId = it
             adapter.replaceArtworkStats(it)
             adapter.notifyDataSetChanged()
         }
@@ -114,7 +117,16 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         }
 
-        //TODO -> REVIEW
+        // RATING - sort by highest rating
+        binding.filterRatingsButton.setOnClickListener {
+            currArtworkList = currArtworkList.sortedByDescending { artwork ->
+                val rating = artworkStatsByArtId[artwork.artId]?.averageRating ?: 0f
+                rating
+            }
+
+            adapter.replaceArtworkList(currArtworkList)
+            adapter.notifyDataSetChanged()
+        }
 
         return root
     }
