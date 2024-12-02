@@ -1,12 +1,12 @@
 package com.lab.artchart.ui.search
 
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ListView
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -16,6 +16,7 @@ import com.lab.artchart.database.ArtworkViewModel
 import com.lab.artchart.database.ReviewViewModel
 import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.databinding.FragmentSearchBinding
+import com.lab.artchart.service.LocationViewModel
 
 class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -24,6 +25,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var currArtworkList: List<Artwork>
     private lateinit var artworkViewModel: ArtworkViewModel
     private lateinit var reviewViewModel: ReviewViewModel
+    private lateinit var locationViewModel: LocationViewModel
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -33,6 +35,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         val root: View = binding.root
         artworkViewModel = (activity as MainActivity).artworkViewModel
         reviewViewModel = (activity as MainActivity).reviewViewModel
+        locationViewModel = (activity as MainActivity).locationViewModel
 
         // load review stats
         reviewViewModel.loadArtworkStatsByArtwork()
@@ -71,22 +74,47 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         searchView.setOnQueryTextListener(this)
 
         //NAME BUTTON - filter title alphabetically
-        val nameBtn = root.findViewById<Button>(R.id.filterNameButton)
-        nameBtn.setOnClickListener{
+        binding.filterNameButton.setOnClickListener{
             currArtworkList = currArtworkList.sortedBy { it.title?.lowercase() }
             adapter.replaceArtworkList(currArtworkList)
             adapter.notifyDataSetChanged()
         }
 
         //YEAR BUTTON - sort by most recent year
-        val yearBtn = root.findViewById<Button>(R.id.filterYearButton)
-        yearBtn.setOnClickListener{
+        binding.filterYearButton.setOnClickListener{
             currArtworkList = currArtworkList.sortedByDescending { it.creationYear }
             adapter.replaceArtworkList(currArtworkList)
             adapter.notifyDataSetChanged()
         }
 
-        //TODO -> REVIEW and DISTANCE
+        // DISTANCE BUTTON - sort by distance to user
+        binding.filterDistanceButton.setOnClickListener {
+            locationViewModel.userLocation.observe(viewLifecycleOwner) { userLatLng ->
+                currArtworkList = currArtworkList.sortedBy { artwork ->
+                    if (artwork.latitude == null || artwork.longitude == null) {
+                        Float.MAX_VALUE
+                    } else {
+                        val userLocation = Location("user").apply {
+                            latitude = userLatLng.latitude
+                            longitude = userLatLng.longitude
+                        }
+                        val artworkLocation = Location("art").apply {
+                            latitude = artwork.latitude
+                            longitude = artwork.longitude
+                        }
+
+                        val dist = userLocation.distanceTo(artworkLocation)
+                        dist
+                    }
+                }
+
+                adapter.replaceArtworkList(currArtworkList)
+                adapter.notifyDataSetChanged()
+                locationViewModel.userLocation.removeObservers(viewLifecycleOwner)
+            }
+        }
+
+        //TODO -> REVIEW
 
         return root
     }
