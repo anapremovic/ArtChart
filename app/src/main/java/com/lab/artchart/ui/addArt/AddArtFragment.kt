@@ -88,9 +88,8 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListe
                     longitude,
                     binding.description.text.toString(),
                     null,
-                    false) // PETER MADE CHANGES HERE,
-                // ADDED NULL URL AND ART IS ALWAYS TRUE -> changed to false
-                // detectArt IS ONLY CHANGED TO XXXfalseXXXX TRUE BY FIREBASE TRIGGER
+                    false) // initially flag as NOT ART, Firebase trigger updates it to true
+
                 // save to firebase realtime database and firebase storage
                 artworkViewModel.saveArtwork(artwork, imageGalleryManager.imageUri!!)
                 Toast.makeText(requireContext(), "Artwork submitted", Toast.LENGTH_SHORT).show()
