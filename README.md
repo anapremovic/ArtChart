@@ -27,7 +27,7 @@
 
 ## About The Project
 
-<img src="art_chart_app_icon.png" alt="ArtChart logo" width="200" style="margin-bottom: 10px;" />
+<img src="art_chart_app_icon.png" alt="ArtChart logo" width="200"/>
 <br>
 ArtChart is an online art database where you can find public art close to you, review art, and submit new public art pieces to the app.
 
