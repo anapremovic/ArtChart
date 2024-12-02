@@ -1,20 +1,12 @@
 package com.lab.artchart.ui.home
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.lab.artchart.databinding.FragmentHomeBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -28,31 +20,23 @@ import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.database.ArtworkViewModel
+import com.lab.artchart.service.LocationViewModel
 import com.lab.artchart.ui.search.ArtInfoActivity
 
-class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
+class HomeFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentHomeBinding? = null
 
     private lateinit var mMap: GoogleMap
-    private lateinit var locationManager: LocationManager
     private lateinit var  markerOptions: MarkerOptions
     private var mapCentered = false // flag to check if map already centered to user's location
+    private var googleMapsMyLocationEnabled = false // flag to check if google maps sdk location tracker already enabled
 
     private lateinit var artworkList:List<Artwork>
     private lateinit var artworkViewModel: ArtworkViewModel
+    private lateinit var locationViewModel: LocationViewModel
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
-
-    // launcher for location permission
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            initLocationManager()
-        }
-        else{
-            Toast.makeText(requireContext(), "Location services needed to find art near you", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -71,8 +55,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         mMap = googleMap
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
         markerOptions = MarkerOptions()
+        artworkViewModel = (activity as MainActivity).artworkViewModel
+        locationViewModel = (activity as MainActivity).locationViewModel
 
-        artworkViewModel = (requireActivity() as MainActivity).artworkViewModel
         artworkViewModel.allArtworks.observe(viewLifecycleOwner) {
             artworkList = it
             //Adds all artwork markers
@@ -98,55 +83,31 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             startActivity(intent)
         }
 
-        getLocationPermissionOrConfigureLocationManager()
+        // zoom camera and add user location marker
+        observeUserLocation()
     }
 
-    // initialize location manager if location permission already granted or open launch
-    private fun getLocationPermissionOrConfigureLocationManager() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            initLocationManager()
-            //sets the user's current location
-            mMap.isMyLocationEnabled = true
-        }
-        else{
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    private fun observeUserLocation() {
+        locationViewModel.userLocation.observe(viewLifecycleOwner) {
+            if (!googleMapsMyLocationEnabled) {
+                enableGoogleMapsSdkLocationMarker()
+            }
+
+            if (!mapCentered) {
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(it, 15f)
+                mMap.animateCamera(cameraUpdate)
+                mapCentered = true
+            }
         }
     }
 
-    // configure location manager system service
-    private fun initLocationManager() {
+    // show built in google maps sdk marker
+    private fun enableGoogleMapsSdkLocationMarker() {
         try {
-            locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
-
-            // check if GPS enabled on device
-            if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                Log.w("HOME_FRAG", "GPS not enabled, cannot use location")
-                Toast.makeText(requireContext(), "Enable GPS on your device to find art near you", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            // update camera based on last known location
-            val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (location != null) {
-                onLocationChanged(location)
-            }
-
-            // request location updates from GPS
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5f, this)
+            mMap.isMyLocationEnabled = true
         } catch (e: SecurityException) {
-            Log.e("HOME_FRAG", "Security error when initializing location manager: $e")
-            Toast.makeText(requireContext(), "Allow location services to find art near you", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun onLocationChanged(location: Location) {
-        val latLng = LatLng(location.latitude, location.longitude)
-
-        // update camera to user's location and add a marker
-        if (!mapCentered) {
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
-            mMap.animateCamera(cameraUpdate)
-            mapCentered = true
+            Log.e("HOME_FRAG", "Security error when enabling google maps isMyLocationEnabled: $e")
+            Toast.makeText(requireActivity(), "Allow location services to track your workouts", Toast.LENGTH_SHORT).show()
         }
     }
 

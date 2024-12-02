@@ -1,19 +1,11 @@
 package com.lab.artchart.ui.addArt
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.lab.artchart.ui.MainActivity
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,12 +18,12 @@ import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.database.ArtworkViewModel
 import com.lab.artchart.databinding.FragmentAddArtBinding
+import com.lab.artchart.service.LocationViewModel
 import com.lab.artchart.util.ImageGalleryManager
 
-class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleMap.OnMapClickListener {
+class AddArtFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener {
     // map values and variables
     private lateinit var artMap: GoogleMap
-    private lateinit var locationManager: LocationManager
     private var mapCentered = false
     private lateinit var  markerOptions: MarkerOptions
     private var latitude: Double? = null
@@ -41,6 +33,7 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
     private var _binding: FragmentAddArtBinding? = null
 
     private lateinit var artworkViewModel: ArtworkViewModel
+    private lateinit var locationViewModel: LocationViewModel
     private lateinit var imageGalleryManager: ImageGalleryManager
 
     // launcher to handle selected image from gallery
@@ -60,6 +53,7 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
         _binding = FragmentAddArtBinding.inflate(inflater, container, false)
         val root: View = binding.root
         artworkViewModel = (activity as MainActivity).artworkViewModel
+        locationViewModel = (activity as MainActivity).locationViewModel
         imageGalleryManager = ImageGalleryManager(binding.artworkImage)
 
         // views
@@ -160,21 +154,20 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
         map.mapType = GoogleMap.MAP_TYPE_NORMAL
         artMap.setOnMapClickListener(this)
         markerOptions = MarkerOptions()
-        centerLocationOrCheckPermission()
+        observeUserLocation()
     }
 
-    override fun onLocationChanged(location: Location) {
-        val lat = location.latitude
-        val lng = location.longitude
-        val latLng = LatLng(lat, lng)
-        if (!mapCentered) { // add first marker when centered (will remove if user clicks a new location)
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
-            artMap.animateCamera(cameraUpdate)
-            markerOptions.position(latLng)
-            artMap.addMarker(markerOptions)
-            latitude = latLng.latitude
-            longitude = latLng.longitude
-            mapCentered = true
+    private fun observeUserLocation() {
+        locationViewModel.userLocation.observe(viewLifecycleOwner) {
+            if (!mapCentered) { // add first marker when centered (will remove if user clicks a new location)
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(it, 15f)
+                artMap.animateCamera(cameraUpdate)
+                markerOptions.position(it)
+                artMap.addMarker(markerOptions)
+                latitude = it.latitude
+                longitude = it.longitude
+                mapCentered = true
+            }
         }
     }
 
@@ -186,31 +179,5 @@ class AddArtFragment : Fragment(), OnMapReadyCallback, LocationListener, GoogleM
         latitude = latLng.latitude
         longitude = latLng.longitude
         artMap.addMarker(markerOptions)
-    }
-
-    private fun initLocationManager() {
-        try {
-            locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
-
-            if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) return
-
-            val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (location != null)
-                onLocationChanged(location)
-
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
-
-        } catch (e: SecurityException) {
-            Log.e("ADD_ART_FRAG", "Security error when initializing location manager: $e")
-            Toast.makeText(requireContext(), "Allow location services to log art near you", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun centerLocationOrCheckPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            initLocationManager()
-        } else {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
     }
 }

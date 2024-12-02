@@ -1,8 +1,12 @@
 package com.lab.artchart.ui
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
+import android.widget.Toast
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,6 +15,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -22,22 +28,29 @@ import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.database.UserAuthenticationViewModelFactory
 import com.lab.artchart.database.UserViewModel
 import com.lab.artchart.databinding.ActivityMainBinding
+import com.lab.artchart.service.LocationService
+import com.lab.artchart.service.LocationViewModel
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     // navbar
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
     private lateinit var navController: NavController
 
-    private lateinit var binding: ActivityMainBinding
-
-    // view models
+    // database
     lateinit var artworkViewModel: ArtworkViewModel
     lateinit var userViewModel: UserViewModel
     lateinit var userAuthenticationViewModelFactory: UserAuthenticationViewModelFactory
     private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
     lateinit var reviewViewModel: ReviewViewModel
+
+    // location
+    lateinit var locationViewModel: LocationViewModel
+    private val locationPermissionRequestCode = 101
+    private var isServiceBound = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +59,9 @@ class MainActivity : AppCompatActivity() {
 
         // set up global view models
         initializeViewModels()
+
+        // set up location service
+        startLocationServiceOrRequestPermission()
 
         // navbar
         drawerLayout = binding.drawerLayout
@@ -70,6 +86,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isServiceBound) {
+            applicationContext.unbindService(locationViewModel)
+            val locationIntent = Intent(this, LocationService::class.java)
+            applicationContext.stopService(locationIntent)
+            isServiceBound = false
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
@@ -81,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    // handle navigating to ProfileFragment from SignUpActivity
+    // handle navigating to ProfileFragment from activities
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (intent.getStringExtra("NAVIGATE_TO") == "SignInFragment") {
@@ -95,6 +121,7 @@ class MainActivity : AppCompatActivity() {
         userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel)
         userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
         reviewViewModel = ViewModelProvider(this)[ReviewViewModel::class.java]
+        locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
     }
 
     // set up custom navigation depending on currently signed in user
@@ -120,6 +147,37 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
             }
+        }
+    }
+
+    // start location service if permission granted
+    private fun startLocationServiceOrRequestPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startAndBindLocationService()
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionRequestCode)
+        }
+    }
+
+    // handle denied location permission request
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (grantResults.isNotEmpty() && requestCode == locationPermissionRequestCode) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startAndBindLocationService()
+            } else {
+                Toast.makeText(this, "Location services needed to find art near you", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun startAndBindLocationService() {
+        if (!isServiceBound) {
+            val locationIntent = Intent(this, LocationService::class.java)
+            applicationContext.startService(locationIntent)
+            applicationContext.bindService(locationIntent, locationViewModel, Context.BIND_AUTO_CREATE)
+            isServiceBound = true
         }
     }
 }
