@@ -32,6 +32,11 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
+    override fun onResume() {
+        super.onResume()
+        reviewViewModel.loadArtworkStatsByArtwork()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
