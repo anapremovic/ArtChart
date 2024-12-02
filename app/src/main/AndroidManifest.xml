@@ -19,16 +19,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ArtChart"
         tools:targetApi="31">
+        <service
+            android:name=".service.LocationService"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD43LVjGevd1d0t4AT_KFJdI-uoibzwMxQ"/>
+            android:value="AIzaSyD43LVjGevd1d0t4AT_KFJdI-uoibzwMxQ" />
 
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ArtChart.NoActionBar"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.ArtChart.NoActionBar"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,28 +40,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.search.ArtInfoActivity"
+        <activity
+            android:name=".ui.search.ArtInfoActivity"
             android:exported="false"
             android:label="ArtInfoActivity"
-            android:theme="@style/Theme.ArtChart.NoActionBar"
             android:screenOrientation="portrait"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
+            android:theme="@style/Theme.ArtChart.NoActionBar"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.userAuthentication.SignUpActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.search.LeaveReviewActivity"
             android:exported="false"
-            android:theme="@style/Theme.ArtChart.NoActionBar"
             android:screenOrientation="portrait"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
-        <activity android:name=".ui.search.ViewReviewsActivity"
+            android:theme="@style/Theme.ArtChart.NoActionBar"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+        <activity
+            android:name=".ui.search.ViewReviewsActivity"
             android:exported="false"
-            android:theme="@style/Theme.ArtChart.NoActionBar"
             android:screenOrientation="portrait"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
+            android:theme="@style/Theme.ArtChart.NoActionBar"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
     </application>
 
 </manifest>
