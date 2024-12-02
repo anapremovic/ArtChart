@@ -27,8 +27,9 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.ArtChart.NoActionBar">
+            android:theme="@style/Theme.ArtChart.NoActionBar"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,17 +39,25 @@
         <activity android:name=".ui.search.ArtInfoActivity"
             android:exported="false"
             android:label="ArtInfoActivity"
-            android:theme="@style/Theme.ArtChart.NoActionBar"/>
+            android:theme="@style/Theme.ArtChart.NoActionBar"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
         <activity
             android:name=".ui.userAuthentication.SignUpActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
         <activity
             android:name=".ui.search.LeaveReviewActivity"
             android:exported="false"
-            android:theme="@style/Theme.ArtChart.NoActionBar"/>
+            android:theme="@style/Theme.ArtChart.NoActionBar"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
         <activity android:name=".ui.search.ViewReviewsActivity"
             android:exported="false"
-            android:theme="@style/Theme.ArtChart.NoActionBar"/>
+            android:theme="@style/Theme.ArtChart.NoActionBar"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
     </application>
 
 </manifest>
