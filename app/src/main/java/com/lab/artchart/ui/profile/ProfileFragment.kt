@@ -1,5 +1,6 @@
 package com.lab.artchart.ui.profile
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -42,16 +43,20 @@ class ProfileFragment : Fragment() {
 
     // launcher to handle selected image from gallery
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val user = userAuthenticationViewModel.currentUser.value
-        if (user == null) {
-            // unexpected behaviour - should not be able to access ProfileFragment if not signed in
-            dismissChangeUsernameDialog()
-            Toast.makeText(requireContext(), "User not signed in", Toast.LENGTH_SHORT).show()
-            Log.w("PROFILE_FRAG", "Tried to save profile picture when no user authenticated")
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+            val user = userAuthenticationViewModel.currentUser.value
+            if (user == null) {
+                // unexpected behaviour - should not be able to access ProfileFragment if not signed in
+                dismissChangeUsernameDialog()
+                Toast.makeText(requireContext(), "User not signed in", Toast.LENGTH_SHORT).show()
+                Log.w("PROFILE_FRAG", "Tried to save profile picture when no user authenticated")
+            } else {
+                imageGalleryManager.handleSelectedImage(result) // handle selected image
+                userViewModel.saveProfilePicture(user.uid, imageGalleryManager.imageUri!!) // save image to storage
+                loadCircularImage(imageGalleryManager.imageUri!!.toString()) // crop to circle
+            }
         } else {
-            imageGalleryManager.handleSelectedImage(result) // handle selected image
-            userViewModel.saveProfilePicture(user.uid, imageGalleryManager.imageUri!!) // save image to storage
-            loadCircularImage(imageGalleryManager.imageUri!!.toString()) // crop to circle
+            Log.d("PROFILE_FRAG", "Gallery activity cancelled or no data returned")
         }
     }
 
