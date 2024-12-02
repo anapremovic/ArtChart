@@ -51,6 +51,7 @@
             android:name=".ui.userAuthentication.SignUpActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.ArtChart.NoActionBar"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.search.LeaveReviewActivity"
