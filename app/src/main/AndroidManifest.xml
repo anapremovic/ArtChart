@@ -46,6 +46,9 @@
             android:name=".ui.search.LeaveReviewActivity"
             android:exported="false"
             android:theme="@style/Theme.ArtChart.NoActionBar"/>
+        <activity android:name=".ui.search.ViewReviewsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ArtChart.NoActionBar"/>
     </application>
 
 </manifest>

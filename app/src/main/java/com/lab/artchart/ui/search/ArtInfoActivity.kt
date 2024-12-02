@@ -77,6 +77,7 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
             userAuthenticationViewModel.currentUser.observe(this) { user ->
                 if (user != null) {
                     val intent = Intent(this, LeaveReviewActivity::class.java)
+                    intent.putExtra("title", title)
                     intent.putExtra("imageUrl", imageUrl)
                     intent.putExtra("artId", artId)
                     intent.putExtra("uid", user.uid)
@@ -89,6 +90,13 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
 
                 userAuthenticationViewModel.currentUser.removeObservers(this)
             }
+        }
+
+        binding.viewReviewButton.setOnClickListener {
+            val intent = Intent(this, ViewReviewsActivity::class.java)
+            intent.putExtra("artId", artId)
+            intent.putExtra("title", title)
+            startActivity(intent)
         }
 
         Picasso.get().load(imageUrl).into(binding.backgroundArtworkImage)

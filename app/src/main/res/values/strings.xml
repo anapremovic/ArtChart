@@ -24,6 +24,7 @@
     <string name="filter_reviews">Reviews</string>
     <string name="filter_years">Year</string>
     <string name="lat_lng_format">%1$.2f, %2$.2f</string>
+    <string name="total_reviews_format">(%1$s)</string>
 
     <!-- AddArtFragment -->
     <string name="choose_photo">Select Photo</string>
