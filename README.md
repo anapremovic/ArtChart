@@ -27,8 +27,9 @@
 
 ## About The Project
 
-ArtChart is an online art database where you can find public art close to you, see reviews and write your own, and submit new public art pieces to the app.
-
+<img src="art_chart_app_icon.png" alt="ArtChart logo" width="200" style="margin-bottom: 10px;" />
+<br>
+ArtChart is an online art database where you can find public art close to you, review art, and submit new public art pieces to the app.
 
 ### Built With
 [![Kotlin][Kotlin.com]][Kotlin-url]
@@ -57,12 +58,13 @@ Download the APK file from <a href="https://qq-zhong.github.io/artChart_site/">o
 
 ## Usage
 
-* Submit art pieces to ArtChart with precise map location.
-* View art locations on the Home page.
-* View list of all art pieces on the Search page.
-* Filter or search for art pieces on Search page
+* Home Page: View art near you on the map.
+* Search Page: Search and filter all art.
 * View art details by clicking an art piece from the Home or Search pages.
-* Configure your account.
+* Write reviews for art and see reviews from other users.
+* Add Art Page: Submit new public art pieces on the app.
+* Profile Page: Sign in and configure your account.
+* Submit art pieces to ArtChart with precise map location.
 
 ## Contributors
 
