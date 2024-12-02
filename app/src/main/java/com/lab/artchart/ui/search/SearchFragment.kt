@@ -23,14 +23,21 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentSearchBinding? = null
     private lateinit var listView: ListView
+    private lateinit var adapter: ArtworkAdapter
     private lateinit var currArtworkList: List<Artwork>
     private lateinit var artworkViewModel: ArtworkViewModel
     private lateinit var reviewViewModel: ReviewViewModel
     private lateinit var locationViewModel: LocationViewModel
     private var artworkStatsByArtId = mapOf<String, ArtworkStats>()
+    private var userLocation: Location? = null
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onResume() {
+        super.onResume()
+        reviewViewModel.loadArtworkStatsByArtwork()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -39,11 +46,14 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         reviewViewModel = (activity as MainActivity).reviewViewModel
         locationViewModel = (activity as MainActivity).locationViewModel
 
+        // update location data
+        observeUserLocation()
+
         // load review stats
         reviewViewModel.loadArtworkStatsByArtwork()
 
         // observe remote database items and update listview
-        val adapter = ArtworkAdapter(requireContext(), mutableListOf(), mapOf())
+        adapter = ArtworkAdapter(requireContext(), mutableListOf(), mapOf())
         listView = binding.artworkListView
         listView.adapter = adapter
         artworkViewModel.allArtworks.observe(viewLifecycleOwner) {
@@ -92,29 +102,22 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
 
         // DISTANCE BUTTON - sort by distance to user
         binding.filterDistanceButton.setOnClickListener {
-            locationViewModel.userLocation.observe(viewLifecycleOwner) { userLatLng ->
-                currArtworkList = currArtworkList.sortedBy { artwork ->
-                    if (artwork.latitude == null || artwork.longitude == null) {
-                        Float.MAX_VALUE
-                    } else {
-                        val userLocation = Location("user").apply {
-                            latitude = userLatLng.latitude
-                            longitude = userLatLng.longitude
-                        }
-                        val artworkLocation = Location("art").apply {
-                            latitude = artwork.latitude
-                            longitude = artwork.longitude
-                        }
-
-                        val dist = userLocation.distanceTo(artworkLocation)
-                        dist
+            currArtworkList = currArtworkList.sortedBy { artwork ->
+                if (artwork.latitude == null || artwork.longitude == null) {
+                    Float.MAX_VALUE
+                } else {
+                    val artworkLocation = Location("art").apply {
+                        latitude = artwork.latitude
+                        longitude = artwork.longitude
                     }
-                }
 
-                adapter.replaceArtworkList(currArtworkList)
-                adapter.notifyDataSetChanged()
-                locationViewModel.userLocation.removeObservers(viewLifecycleOwner)
+                    val dist = userLocation?.distanceTo(artworkLocation)
+                    dist
+                }
             }
+
+            adapter.replaceArtworkList(currArtworkList)
+            adapter.notifyDataSetChanged()
         }
 
         // RATING - sort by highest rating
@@ -134,6 +137,18 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun observeUserLocation() {
+        locationViewModel.userLocation.observe(viewLifecycleOwner) { userLatLng ->
+            userLocation = Location("user").apply {
+                latitude = userLatLng.latitude
+                longitude = userLatLng.longitude
+            }
+
+            adapter.updateLocation(userLocation!!)
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
