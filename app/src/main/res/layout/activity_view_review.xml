@@ -12,6 +12,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:clickable="true"
+        android:focusable="true"
         android:padding="10dp">
 
         <ImageButton
@@ -20,7 +21,9 @@
             android:background="@null"
             android:scaleType="fitXY"
             android:src="@drawable/back_arrow"
-            app:tint="@color/black" />
+            app:tint="@color/black"
+            android:focusable="false"
+            android:clickable="false"/>
 
         <TextView
             android:layout_width="match_parent"
