@@ -1,6 +1,7 @@
 package com.lab.artchart.ui.search
 
 import android.content.Context
+import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ class ArtworkAdapter(private val context: Context,
                      private var artworks: List<Artwork>,
                      private var artworkStatsByArtwork: Map<String, ArtworkStats>) : BaseAdapter(), Filterable {
     private var orig: List<Artwork>? = null
+    private var currentLocation: Location? = null
 
     override fun getCount(): Int = artworks.size
 
@@ -37,13 +39,33 @@ class ArtworkAdapter(private val context: Context,
         view.findViewById<TextView>(R.id.title).text = artwork.title
         val artistAndYearString = artwork.artistName+" | "+artwork.creationYear
         view.findViewById<TextView>(R.id.artist_name_and_year).text = artistAndYearString
-        val latLng = context.getString(R.string.lat_lng_format, artwork.latitude, artwork.longitude)
-        view.findViewById<TextView>(R.id.distance).text = latLng
+        setLocation(artwork, view)
         view.findViewById<RatingBar>(R.id.rating_bar_search).rating = artworkStats?.averageRating ?: 0f
         view.findViewById<TextView>(R.id.total_reviews).text = context.getString(R.string.total_reviews_format, (artworkStats?.reviewCount ?: 0).toString())
         // Picasso handles async image loading
         Picasso.get().load(artwork.imageUrl).into(view.findViewById<ImageView>(R.id.artwork_image))
         return view
+    }
+
+    private fun setLocation(artwork: Artwork, view: View) {
+        if (artwork.latitude!=null && artwork.longitude!=null && currentLocation!=null){
+            val artworkLocation = Location("art").apply {
+                latitude = artwork.latitude
+                longitude = artwork.longitude
+            }
+
+            var dist = currentLocation!!.distanceTo(artworkLocation).toInt()
+            var unitString = "m"
+
+            //if more then a thousand, convert to km
+            if (dist>=1000){
+                dist /= 1000
+                unitString = "km"
+            }
+            val distance = "$dist $unitString"
+
+            view.findViewById<TextView>(R.id.distance).text = distance
+        }
     }
 
     fun replaceArtworkList(newArtworkList: List<Artwork>) {
@@ -52,6 +74,10 @@ class ArtworkAdapter(private val context: Context,
 
     fun replaceArtworkStats(newArtworkStatsByArtwork: Map<String, ArtworkStats>) {
         artworkStatsByArtwork = newArtworkStatsByArtwork
+    }
+
+    fun updateLocation(location: Location){
+        currentLocation = location
     }
 
     override fun getFilter(): Filter {

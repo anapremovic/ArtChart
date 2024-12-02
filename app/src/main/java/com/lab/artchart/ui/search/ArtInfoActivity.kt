@@ -63,6 +63,7 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         imageUrl = intent.getStringExtra("imageUrl")
         artId = intent.getStringExtra("artId")
 
+        // query database for average rating and num reviews and update UI
         setAverageRatingAndNumReviews()
 
         binding.backButton.setOnClickListener {
