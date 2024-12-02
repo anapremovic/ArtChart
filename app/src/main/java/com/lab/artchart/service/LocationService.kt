@@ -58,7 +58,7 @@ class LocationService : Service(), LocationListener {
             initialLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
             // update location every 5 seconds
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 0f, this)
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 10f, this)
         } catch (e: SecurityException) {
             Log.e("LOCATION_SERVICE", "Security error when initializing location manager: $e")
             Toast.makeText(this, "Allow location services to find art near you", Toast.LENGTH_SHORT).show()
