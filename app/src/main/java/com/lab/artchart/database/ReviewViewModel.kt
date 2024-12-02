@@ -25,6 +25,7 @@ class ReviewViewModel : ViewModel() {
     // live data updates when load functions called
     val allReviewsForArtwork = MutableLiveData<List<Review>>()
     val allReviewsForUser = MutableLiveData<List<Review>>()
+    val artworkStatsByArtwork = MutableLiveData<Map<String, ArtworkStats>>()
 
     // saves given review to Firebase
     fun saveReview(review: Review) {
@@ -39,12 +40,29 @@ class ReviewViewModel : ViewModel() {
         }
     }
 
-    // get average rating for current artwork or null if no reviews
-    fun getAverageRatingForArtworkOrNull(): Double? {
-        if (allReviewsForArtwork.value.isNullOrEmpty()) {
-            return null
+    // gets average rating for and number of reviews for each artwork and puts them in a map
+    fun loadArtworkStatsByArtwork() {
+        viewModelScope.launch {
+            reviewsReference.get().await().let { snapshot ->
+                // group artworks by art ID
+                val reviewsByArtId = snapshot.children
+                    .mapNotNull { it.getValue(Review::class.java) }
+                    .groupBy { it.artId!! }
+
+                // if there are reviews, extract average rating and number of reviews
+                val stats = reviewsByArtId.mapValues { (_, reviews) ->
+                    var averageRating = 0f
+                    var reviewCount = 0
+                    if (reviews.isNotEmpty()) {
+                        averageRating = reviews.mapNotNull { it.rating }.average().toFloat()
+                        reviewCount = reviews.size
+                    }
+                    ArtworkStats(averageRating, reviewCount)
+                }
+
+                artworkStatsByArtwork.value = stats
+            }
         }
-        return allReviewsForArtwork.value?.map { it.rating?.toDouble() ?: 0.0 }?.average()
     }
 
     // updates live data with all reviews for given artwork

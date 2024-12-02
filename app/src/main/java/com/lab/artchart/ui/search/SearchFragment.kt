@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
 import com.lab.artchart.database.ArtworkViewModel
+import com.lab.artchart.database.ReviewViewModel
 import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.databinding.FragmentSearchBinding
 
@@ -22,6 +23,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var listView: ListView
     private lateinit var currArtworkList: List<Artwork>
     private lateinit var artworkViewModel: ArtworkViewModel
+    private lateinit var reviewViewModel: ReviewViewModel
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -29,15 +31,23 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        artworkViewModel = (activity as MainActivity).artworkViewModel
+        reviewViewModel = (activity as MainActivity).reviewViewModel
+
+        // load review stats
+        reviewViewModel.loadArtworkStatsByArtwork()
 
         // observe remote database items and update listview
-        val adapter = ArtworkAdapter(requireContext(), mutableListOf())
+        val adapter = ArtworkAdapter(requireContext(), mutableListOf(), mapOf())
         listView = binding.artworkListView
         listView.adapter = adapter
-        artworkViewModel = (activity as MainActivity).artworkViewModel
         artworkViewModel.allArtworks.observe(viewLifecycleOwner) {
             currArtworkList = it
-            adapter.replace(it)
+            adapter.replaceArtworkList(it)
+            adapter.notifyDataSetChanged()
+        }
+        reviewViewModel.artworkStatsByArtwork.observe(viewLifecycleOwner) {
+            adapter.replaceArtworkStats(it)
             adapter.notifyDataSetChanged()
         }
 
@@ -64,7 +74,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         val nameBtn = root.findViewById<Button>(R.id.filterNameButton)
         nameBtn.setOnClickListener{
             currArtworkList = currArtworkList.sortedBy { it.title?.lowercase() }
-            adapter.replace(currArtworkList)
+            adapter.replaceArtworkList(currArtworkList)
             adapter.notifyDataSetChanged()
         }
 
@@ -72,7 +82,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         val yearBtn = root.findViewById<Button>(R.id.filterYearButton)
         yearBtn.setOnClickListener{
             currArtworkList = currArtworkList.sortedByDescending { it.creationYear }
-            adapter.replace(currArtworkList)
+            adapter.replaceArtworkList(currArtworkList)
             adapter.notifyDataSetChanged()
         }
 

@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseUser
 import com.lab.artchart.R
 import com.lab.artchart.database.ArtworkViewModel
+import com.lab.artchart.database.ReviewViewModel
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.database.UserAuthenticationViewModelFactory
 import com.lab.artchart.database.UserViewModel
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var userViewModel: UserViewModel
     lateinit var userAuthenticationViewModelFactory: UserAuthenticationViewModelFactory
     private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
+    lateinit var reviewViewModel: ReviewViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +94,7 @@ class MainActivity : AppCompatActivity() {
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel)
         userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
+        reviewViewModel = ViewModelProvider(this)[ReviewViewModel::class.java]
     }
 
     // set up custom navigation depending on currently signed in user
