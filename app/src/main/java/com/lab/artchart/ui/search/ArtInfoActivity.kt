@@ -45,7 +45,7 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
 
     override fun onResume() {
         super.onResume()
-        reviewViewModel.loadArtworkStatsByArtwork()
+        reviewViewModel.loadArtworkStatsByArtId()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -146,7 +146,7 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
 
     // update info UI
     private fun setAverageRatingAndNumReviews() {
-        reviewViewModel.loadArtworkStatsByArtwork()
+        reviewViewModel.loadArtworkStatsByArtId()
         reviewViewModel.artworkStatsByArtId.observe(this) {
             val artworkStats = it[artId]
             binding.infoRatingBar.rating = artworkStats?.averageRating ?: 0f

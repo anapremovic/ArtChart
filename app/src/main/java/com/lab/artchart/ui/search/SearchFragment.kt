@@ -36,7 +36,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onResume() {
         super.onResume()
-        reviewViewModel.loadArtworkStatsByArtwork()
+        reviewViewModel.loadArtworkStatsByArtId()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -50,7 +50,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         observeUserLocation()
 
         // load review stats
-        reviewViewModel.loadArtworkStatsByArtwork()
+        reviewViewModel.loadArtworkStatsByArtId()
 
         // observe remote database items and update listview
         adapter = ArtworkAdapter(requireContext(), mutableListOf(), mapOf())

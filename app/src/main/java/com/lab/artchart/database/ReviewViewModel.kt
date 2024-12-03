@@ -41,7 +41,7 @@ class ReviewViewModel : ViewModel() {
     }
 
     // gets average rating for and number of reviews for each artwork and puts them in a map
-    fun loadArtworkStatsByArtwork() {
+    fun loadArtworkStatsByArtId() {
         viewModelScope.launch {
             reviewsReference.get().await().let { snapshot ->
                 // group artworks by art ID
