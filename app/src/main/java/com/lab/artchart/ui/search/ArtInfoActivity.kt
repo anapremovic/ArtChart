@@ -1,9 +1,7 @@
 package com.lab.artchart.ui.search
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -23,7 +21,6 @@ import com.lab.artchart.database.UserAuthenticationViewModelFactory
 import com.lab.artchart.database.UserViewModel
 import com.lab.artchart.databinding.ActivityArtInfoBinding
 import com.lab.artchart.util.UserAuthenticationUtils
-import com.squareup.picasso.Picasso
 
 class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
     private lateinit var binding: ActivityArtInfoBinding
@@ -104,18 +101,16 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
             startActivity(intent)
         }
 
+        // load images async using Glide
         Glide.with(this)
             .load(imageUrl)
             .placeholder(R.drawable.default_image)
             .into(binding.backgroundArtworkImage)
-
         Glide.with(this)
             .load(imageUrl)
             .placeholder(R.drawable.default_image)
             .into(binding.artworkImage)
 
-//        Picasso.get().load(imageUrl).into(binding.backgroundArtworkImage)
-//        Picasso.get().load(imageUrl).into(binding.artworkImage)
         binding.artworkTitle.text = title
         binding.artworkArtistAndDate.text = getString(R.string.artist_date_format, artistName, creationYear.toString())
         binding.artworkDescription.text = description

@@ -1,7 +1,6 @@
 package com.lab.artchart.ui.search
 
 import android.os.Bundle
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -11,7 +10,6 @@ import com.lab.artchart.database.Review
 import com.lab.artchart.database.ReviewViewModel
 import com.lab.artchart.database.UserViewModel
 import com.lab.artchart.databinding.ActivityLeaveReviewBinding
-import com.squareup.picasso.Picasso
 
 class LeaveReviewActivity: AppCompatActivity() {
     private lateinit var binding: ActivityLeaveReviewBinding
@@ -47,7 +45,6 @@ class LeaveReviewActivity: AppCompatActivity() {
             .load(imageUrl)
             .placeholder(R.drawable.default_image)
             .into(artImage)
-//        Picasso.get().load(imageUrl).into(artImage) // Picasso handles async image load
 
         // button listeners
         binding.backButtonReview.setOnClickListener {

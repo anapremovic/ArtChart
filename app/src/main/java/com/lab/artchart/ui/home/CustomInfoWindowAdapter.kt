@@ -7,17 +7,12 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import com.lab.artchart.R
 import com.lab.artchart.database.Artwork
-import com.squareup.picasso.Picasso
-import java.lang.Exception
 
 class CustomInfoWindowAdapter (private val context: Context) : GoogleMap.InfoWindowAdapter{
 
@@ -37,65 +32,25 @@ class CustomInfoWindowAdapter (private val context: Context) : GoogleMap.InfoWin
         val descString = artwork.artistName+" | "+artwork.creationYear
         desc.text = descString
 
-//        loads image
-//        if (artwork.imageUrl != null){
-//            Glide.with(context)
-//                .load(artwork.imageUrl)
-//                .placeholder(R.drawable.default_image)
-//                .listener(MarkerCallback(marker))
-//                .into(img)
-//        }
-        Picasso.get().load(artwork.imageUrl).into(img, object:com.squareup.picasso.Callback{
-            override fun onSuccess() { //image successfully loaded
-//                println("IMAGE LOADED")
-                //refresh the info window to show image
-                if (marker.isInfoWindowShown){
-                    marker.showInfoWindow()
+        // load image to marker async using Glide
+        Glide.with(context)
+            .load(artwork.imageUrl)
+            .into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    // set the image to the ImageView
+                    img.setImageDrawable(resource)
+
+                    // refresh the info window to show the image
+                    if (marker.isInfoWindowShown) {
+                        marker.showInfoWindow()
+                    }
                 }
-            }
-            override fun onError(e: Exception?) {
-//                println("ERROR")
-            }
-        })
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    img.setImageDrawable(placeholder)
+                }
+            })
 
         return view
-    }
-
-    inner class MarkerCallback(marker: Marker?) : RequestListener<Drawable>{
-        private var marker:Marker? = null
-
-        init {
-            this.marker = marker
-        }
-
-        private fun onSuccess(){
-//            println("LOADED IMAGE")
-            if (marker!=null && marker!!.isInfoWindowShown){
-                marker!!.hideInfoWindow()
-                marker!!.showInfoWindow()
-            }
-        }
-
-        override fun onLoadFailed(
-            e: GlideException?,
-            model: Any?,
-            target: Target<Drawable>?,
-            isFirstResource: Boolean
-        ): Boolean {
-//            println("ERROR LOADING IMAGE")
-            return false
-        }
-
-        override fun onResourceReady(
-            resource: Drawable?,
-            model: Any?,
-            target: Target<Drawable>?,
-            dataSource: DataSource?,
-            isFirstResource: Boolean
-        ): Boolean {
-            onSuccess()
-            return false
-        }
-
     }
 }
