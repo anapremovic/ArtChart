@@ -24,7 +24,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class UserAuthenticationViewModel(private val userViewModel: UserViewModel) : ViewModel() {
+class UserAuthenticationViewModel(private val userViewModel: UserViewModel, private val reviewViewModel: ReviewViewModel) : ViewModel() {
     val currentUser = currentUserFlow.asLiveData()
 
     var signInSuccessful = MutableLiveData<Boolean>()
@@ -176,12 +176,16 @@ class UserAuthenticationViewModel(private val userViewModel: UserViewModel) : Vi
                 val deleteUserDataTask = async {
                     userViewModel.deleteUser(user.uid)
                 }
+                val deletedReviewsTask = async {
+                    reviewViewModel.deleteReviewsForUser(user.uid)
+                }
 
-                // wait for deleting account and deleting user data from real-time database and storage to complete
+                // wait for all tasks to complete
                 deleteAccountTask.await()
                 deleteUserDataTask.await()
+                deletedReviewsTask.await()
 
-                // if both succeed, post success
+                // if all succeed, post success
                 deleteSuccessful.postValue(true)
             } catch (e: Exception) {
                 handleFirebaseError(e, "Account deletion error",

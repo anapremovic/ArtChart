@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.lab.artchart.database.ReviewViewModel
 import com.lab.artchart.database.UserAuthenticationViewModel
 import com.lab.artchart.database.UserAuthenticationViewModelFactory
 import com.lab.artchart.database.UserViewModel
@@ -13,6 +14,7 @@ import com.lab.artchart.util.UserAuthenticationUtils
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var userViewModel: UserViewModel
+    private lateinit var reviewViewModel: ReviewViewModel
     private lateinit var userAuthenticationViewModel: UserAuthenticationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +22,8 @@ class SignUpActivity : AppCompatActivity() {
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        val userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel)
+        reviewViewModel = ViewModelProvider(this)[ReviewViewModel::class.java]
+        val userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel, reviewViewModel)
         userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
 
         // create account with user input if fields correct

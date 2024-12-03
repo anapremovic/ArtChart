@@ -118,9 +118,9 @@ class MainActivity : AppCompatActivity() {
     private fun initializeViewModels() {
         artworkViewModel = ViewModelProvider(this)[ArtworkViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel)
-        userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
         reviewViewModel = ViewModelProvider(this)[ReviewViewModel::class.java]
+        userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel, reviewViewModel)
+        userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
         locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
     }
 

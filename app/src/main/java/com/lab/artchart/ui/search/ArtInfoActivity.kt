@@ -53,10 +53,10 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         binding = ActivityArtInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        val userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel)
+        reviewViewModel = ViewModelProvider(this)[ReviewViewModel::class.java]
+        val userAuthenticationViewModelFactory = UserAuthenticationViewModelFactory(userViewModel, reviewViewModel)
         userAuthenticationViewModel = ViewModelProvider(this, userAuthenticationViewModelFactory)[UserAuthenticationViewModel::class.java]
         artworkViewModel = ViewModelProvider(this)[ArtworkViewModel::class.java]
-        reviewViewModel = ViewModelProvider(this)[ReviewViewModel::class.java]
 
         // Extract info from intent
         title = intent.getStringExtra("title")

@@ -38,7 +38,7 @@ class ReviewListAdapter(
         view.findViewById<TextView>(R.id.art_title_review).text = review.artworkTitle
         view.findViewById<RatingBar>(R.id.review_rating_bar).rating = review.rating!!
         view.findViewById<TextView>(R.id.review_text).text = review.comment
-        view.findViewById<TextView>(R.id.username_text).text = user?.username ?: "n/a"
+        view.findViewById<TextView>(R.id.username_text).text = user?.username ?: "User Not Found"
 
         // load image async using Glide
         if (user != null && user.profilePictureUrl.isNotEmpty()) {

@@ -40,6 +40,22 @@ class ReviewViewModel : ViewModel() {
         }
     }
 
+    // delete all reviews for a given user
+    fun deleteReviewsForUser(uid: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // query reviews where uid matches
+                reviewsReference.orderByChild("uid").equalTo(uid).get().await().children.forEach { snapshot ->
+                    // delete each matching review
+                    snapshot.ref.removeValue().await()
+                }
+                Log.i("REVIEW_VIEW_MODEL", "Successfully deleted all reviews for user with ID $uid")
+            } catch (e: Exception) {
+                Log.e("REVIEW_VIEW_MODEL", "Failed to delete reviews for user with ID $uid: $e")
+            }
+        }
+    }
+
     // gets average rating for and number of reviews for each artwork and puts them in a map
     fun loadArtworkStatsByArtId() {
         viewModelScope.launch {
