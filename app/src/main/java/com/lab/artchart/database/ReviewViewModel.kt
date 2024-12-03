@@ -60,7 +60,7 @@ class ReviewViewModel : ViewModel() {
                     ArtworkStats(averageRating, reviewCount)
                 }
 
-                artworkStatsByArtId.value = stats
+                artworkStatsByArtId.postValue(stats)
             }
         }
     }
