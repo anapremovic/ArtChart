@@ -147,7 +147,7 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
     // update info UI
     private fun setAverageRatingAndNumReviews() {
         reviewViewModel.loadArtworkStatsByArtwork()
-        reviewViewModel.artworkStatsByArtwork.observe(this) {
+        reviewViewModel.artworkStatsByArtId.observe(this) {
             val artworkStats = it[artId]
             binding.infoRatingBar.rating = artworkStats?.averageRating ?: 0f
             binding.infoTotalReviews.text = getString(R.string.total_reviews_format, (artworkStats?.reviewCount ?: 0).toString())

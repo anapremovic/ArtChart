@@ -61,7 +61,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
             adapter.replaceArtworkList(it)
             adapter.notifyDataSetChanged()
         }
-        reviewViewModel.artworkStatsByArtwork.observe(viewLifecycleOwner) {
+        reviewViewModel.artworkStatsByArtId.observe(viewLifecycleOwner) {
             artworkStatsByArtId = it
             adapter.replaceArtworkStats(it)
             adapter.notifyDataSetChanged()

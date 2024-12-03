@@ -25,7 +25,7 @@ class ReviewViewModel : ViewModel() {
     // live data updates when load functions called
     val allReviewsForArtwork = MutableLiveData<List<Review>>()
     val allReviewsForUser = MutableLiveData<List<Review>>()
-    val artworkStatsByArtwork = MutableLiveData<Map<String, ArtworkStats>>()
+    val artworkStatsByArtId = MutableLiveData<Map<String, ArtworkStats>>()
 
     // saves given review to Firebase
     fun saveReview(review: Review) {
@@ -60,7 +60,7 @@ class ReviewViewModel : ViewModel() {
                     ArtworkStats(averageRating, reviewCount)
                 }
 
-                artworkStatsByArtwork.value = stats
+                artworkStatsByArtId.value = stats
             }
         }
     }
