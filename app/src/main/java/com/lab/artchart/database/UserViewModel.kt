@@ -20,7 +20,7 @@ class UserViewModel : ViewModel() {
     private var userReference: DatabaseReference = databaseRoot.reference.child("users")
     private var storageReference: StorageReference = FirebaseStorage.getInstance().getReference("user_profile_pictures")
 
-    var user = MutableLiveData<User?>()
+    var currentlyAuthenticatedUser = MutableLiveData<User?>()
     var usernameChanged = MutableLiveData<Boolean>()
     var toastError = MutableLiveData<String>()
 
@@ -55,15 +55,15 @@ class UserViewModel : ViewModel() {
             try {
                 val dataSnapshot = userReference.child(uid).get().await()
                 if (dataSnapshot.exists()) {
-                    user.postValue(dataSnapshot.getValue(User::class.java))
+                    currentlyAuthenticatedUser.postValue(dataSnapshot.getValue(User::class.java))
                 } else {
-                    user.postValue(null)
+                    currentlyAuthenticatedUser.postValue(null)
                     Log.w("USER_VIEW_MODEL", "No user with ID $uid")
                     toastError.postValue("Error generating profile")
                 }
             } catch (e: Exception) {
                 Log.e("USER_VIEW_MODEL", "Failed to fetch user for ID $uid", e)
-                user.postValue(null)
+                currentlyAuthenticatedUser.postValue(null)
                 toastError.postValue("Error generating profile")
             }
         }

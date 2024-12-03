@@ -63,7 +63,7 @@ class LeaveReviewActivity: AppCompatActivity() {
     }
 
     private fun getUsernameAndProfilePicture() {
-        userViewModel.user.observe(this) {
+        userViewModel.currentlyAuthenticatedUser.observe(this) {
             username = it?.username
             profilePictureUrl = it?.profilePictureUrl
         }

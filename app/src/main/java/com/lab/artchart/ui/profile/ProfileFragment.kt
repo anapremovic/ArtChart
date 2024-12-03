@@ -68,7 +68,7 @@ class ProfileFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         userAuthenticationViewModel.deleteSuccessful.value = false
-        userViewModel.user.value = null
+        userViewModel.currentlyAuthenticatedUser.value = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -173,7 +173,7 @@ class ProfileFragment : Fragment() {
         }
 
         // set username and profile picture from live data
-        userViewModel.user.observe(viewLifecycleOwner) { user ->
+        userViewModel.currentlyAuthenticatedUser.observe(viewLifecycleOwner) { user ->
             user?.let {
                 binding.usernameText.text = it.username
                 if (it.profilePictureUrl.isNotBlank()) {
