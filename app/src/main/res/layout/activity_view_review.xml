@@ -43,7 +43,7 @@
         android:textColor="@color/black"
         android:textSize="40sp"
         android:layout_gravity="center"
-        android:textStyle="bold|italic" />
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/review_list_view"

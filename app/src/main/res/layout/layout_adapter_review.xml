@@ -1,74 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/art_title_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:textColor="@color/black"
             android:text="Art title"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textSize="17dp"
+            android:layout_marginBottom="10dp"/>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp">
+            android:layout_marginBottom="5dp">
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginEnd="8dp"-->
 
             <ImageView
                 android:id="@+id/user_profile_image"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/ic_menu_profile"/>
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_menu_profile"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+            <TextView
+                android:id="@+id/username_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Username"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@+id/user_profile_image"
+                app:layout_constraintTop_toTopOf="@id/user_profile_image"
+                app:layout_constraintBottom_toBottomOf="@id/user_profile_image"/>
 
             <RatingBar
                 android:id="@+id/review_rating_bar"
+                style="@style/Widget.AppCompat.RatingBar.Indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|start"
-                android:scaleX="0.7"
-                android:scaleY="0.7"
-                android:isIndicator="true"/>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/username_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="Username"
-            android:layout_marginStart="8dp"/>
+                android:isIndicator="true"
+                android:scaleY="0.6"
+                android:scaleX="0.6"
+                android:transformPivotX="180dp"
+                android:transformPivotY="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/user_profile_image"
+                app:layout_constraintBottom_toBottomOf="@id/user_profile_image"/>
+<!--            <View-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="1" />-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/review_text"
+            android:text="review description"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:gravity="top|start"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:minLines="2"
             android:scrollbars="vertical"
             android:padding="10dp"
             android:background="@android:drawable/edit_text"
-            android:overScrollMode="ifContentScrolls"
-            android:layout_marginTop="10dp"/>
+            android:overScrollMode="ifContentScrolls"/>
 
     </LinearLayout>
 
