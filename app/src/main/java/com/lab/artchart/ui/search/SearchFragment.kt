@@ -24,10 +24,10 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     private var _binding: FragmentSearchBinding? = null
     private lateinit var listView: ListView
     private lateinit var adapter: ArtworkAdapter
-    private lateinit var currArtworkList: List<Artwork>
     private lateinit var artworkViewModel: ArtworkViewModel
     private lateinit var reviewViewModel: ReviewViewModel
     private lateinit var locationViewModel: LocationViewModel
+    private var currArtworkList = listOf<Artwork>()
     private var artworkStatsByArtId = mapOf<String, ArtworkStats>()
     private var userLocation: Location? = null
 
