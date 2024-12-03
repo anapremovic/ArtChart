@@ -15,6 +15,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lab.artchart.ui.MainActivity
 import com.lab.artchart.R
@@ -31,7 +32,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var mapCentered = false // flag to check if map already centered to user's location
     private var googleMapsMyLocationEnabled = false // flag to check if google maps sdk location tracker already enabled
 
-    private lateinit var artworkList:List<Artwork>
+    private val artworkMarkersByArtId = mutableMapOf<String, Marker>()
     private lateinit var artworkViewModel: ArtworkViewModel
     private lateinit var locationViewModel: LocationViewModel
 
@@ -58,11 +59,20 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         artworkViewModel = (activity as MainActivity).artworkViewModel
         locationViewModel = (activity as MainActivity).locationViewModel
 
-        artworkViewModel.allArtworks.observe(viewLifecycleOwner) {
-            artworkList = it
-            //Adds all artwork markers
-            for (artwork in artworkList){
-                addArtMarker(artwork)
+        artworkViewModel.allArtworks.observe(viewLifecycleOwner) { updatedArtworks ->
+            // remove markers for artworks no longer in the list
+            val currentArtworkIds = updatedArtworks.map { it.artId }.toSet()
+            val markersToRemove = artworkMarkersByArtId.filterKeys { it !in currentArtworkIds }
+            for ((id, marker) in markersToRemove) {
+                marker.remove() // removes the marker from the map
+                artworkMarkersByArtId.remove(id) // removes it from the tracking map
+            }
+
+            // add new markers for artworks in the list
+            for (artwork in updatedArtworks) {
+                if (!artworkMarkersByArtId.containsKey(artwork.artId) && artwork.latitude != null && artwork.longitude != null) {
+                    addArtMarker(artwork)
+                }
             }
         }
 
@@ -111,17 +121,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun addArtMarker(artwork: Artwork){
-        if (artwork.latitude != null && artwork.longitude!=null && artwork.title != null) {
+    private fun addArtMarker(artwork: Artwork) {
+        if (artwork.latitude != null && artwork.longitude != null && artwork.title != null) {
             val latLng = LatLng(artwork.latitude, artwork.longitude)
 
             val artMarkerOptions = MarkerOptions()
-            artMarkerOptions.position(latLng)
-            artMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                                    .position(latLng)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
 
             val marker = mMap.addMarker(artMarkerOptions)
             if (marker != null) {
                 marker.tag = artwork
+                artworkMarkersByArtId[artwork.artId!!] = marker // track marker in map
             }
         }
     }
