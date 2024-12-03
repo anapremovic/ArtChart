@@ -55,7 +55,9 @@ class UserViewModel : ViewModel() {
             try {
                 val dataSnapshot = userReference.child(uid).get().await()
                 if (dataSnapshot.exists()) {
-                    currentlyAuthenticatedUser.postValue(dataSnapshot.getValue(User::class.java))
+                    val user = dataSnapshot.getValue(User::class.java)
+                    user?.uid = dataSnapshot.key
+                    user?.let { currentlyAuthenticatedUser.postValue(it) }
                 } else {
                     currentlyAuthenticatedUser.postValue(null)
                     Log.w("USER_VIEW_MODEL", "No user with ID $uid")
