@@ -43,6 +43,11 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
     private lateinit var artMap: GoogleMap
     private lateinit var markerOptions: MarkerOptions
 
+    override fun onResume() {
+        super.onResume()
+        reviewViewModel.loadArtworkStatsByArtwork()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityArtInfoBinding.inflate(layoutInflater)
