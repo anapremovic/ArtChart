@@ -23,6 +23,7 @@ class UserViewModel : ViewModel() {
     var currentlyAuthenticatedUser = MutableLiveData<User?>()
     var usernameChanged = MutableLiveData<Boolean>()
     var toastError = MutableLiveData<String>()
+    var usersByUid = MutableLiveData<Map<String, User>>()
 
     fun saveUser(uid: String, user: User) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -49,6 +50,24 @@ class UserViewModel : ViewModel() {
             }
         }
     }
+
+    // get uid to user map
+    fun loadUsersByUid() {
+        viewModelScope.launch {
+            userReference.get().await().let { snapshot ->
+                val userMap = snapshot.children
+                    .mapNotNull { childSnapshot ->
+                        val user = childSnapshot.getValue(User::class.java)
+                        val key = childSnapshot.key
+                        if (user != null && key != null) key to user else null
+                    }
+                    .toMap()
+
+                usersByUid.postValue(userMap)
+            }
+        }
+    }
+
 
     fun fetchUserByUid(uid: String) {
         CoroutineScope(Dispatchers.IO).launch {

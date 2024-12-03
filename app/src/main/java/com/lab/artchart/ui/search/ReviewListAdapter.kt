@@ -1,19 +1,21 @@
 package com.lab.artchart.ui.search
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.lab.artchart.R
 import com.lab.artchart.database.Review
+import com.lab.artchart.database.User
 
-class ReviewListAdapter(private val context: Context, private var reviewList: List<Review>) : BaseAdapter() {
+class ReviewListAdapter(
+    private val context: Context,
+    private var reviewList: List<Review>,
+    private var usersByUid: Map<String, User>) : BaseAdapter() {
     override fun getCount(): Int {
         return reviewList.size
     }
@@ -28,29 +30,32 @@ class ReviewListAdapter(private val context: Context, private var reviewList: Li
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.layout_adapter_review, parent, false)
-        val review = reviewList[position]
 
-        val ratingBar = view.findViewById<RatingBar>(R.id.review_rating_bar)
-        ratingBar.rating = review.rating!!
-        val comment = view.findViewById<TextView>(R.id.review_text)
-        comment.text = review.comment
-        if (!review.profilePictureUrl.isNullOrEmpty()) {
-            val userImage = view.findViewById<ImageView>(R.id.user_profile_image)
+        val review = reviewList[position]
+        val user = usersByUid[review.uid]
+
+        // set views
+        view.findViewById<TextView>(R.id.art_title_review).text = review.artworkTitle
+        view.findViewById<RatingBar>(R.id.review_rating_bar).rating = review.rating!!
+        view.findViewById<TextView>(R.id.review_text).text = review.comment
+        view.findViewById<TextView>(R.id.username_text).text = user?.username ?: "n/a"
+
+        // load image async using Glide
+        if (user != null && user.profilePictureUrl.isNotEmpty()) {
             Glide.with(context)
-                .load(review.profilePictureUrl)
+                .load(user.profilePictureUrl)
                 .circleCrop()
-                .into(userImage)
+                .into(view.findViewById(R.id.user_profile_image))
         }
-        val username = view.findViewById<TextView>(R.id.username_text)
-        username.text = review.username
-        val artworkTitle = view.findViewById<TextView>(R.id.art_title_review)
-        artworkTitle.text = review.artworkTitle
 
         return view
     }
 
-    fun replace(newReviewList: List<Review>) {
-        Log.d("REVIEW_LIST_ADAPTER", "Replacing with: $newReviewList")
+    fun replaceReviewList(newReviewList: List<Review>) {
         reviewList = newReviewList
+    }
+
+    fun replaceUserMap(newUserMap: Map<String, User>) {
+        usersByUid = newUserMap
     }
 }

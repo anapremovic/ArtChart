@@ -102,7 +102,6 @@ class ArtInfoActivity: AppCompatActivity(), OnMapReadyCallback  {
         binding.viewReviewButton.setOnClickListener {
             val intent = Intent(this, ViewReviewsActivity::class.java)
             intent.putExtra("artId", artId)
-            intent.putExtra("title", title)
             startActivity(intent)
         }
 
